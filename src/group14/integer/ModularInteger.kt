@@ -27,12 +27,12 @@ data class ModularInteger(
 ) : Number() {
 
     init {
-        require(modulus > 1, { "Modulus must be greater than 1." })
-        require(value in 0 until modulus, { "Value must be in {0,1,...,modulus-1}" })
+        require(modulus > 1, { "Modulus must be greater than 1, got $modulus" })
+        require(value in 0 until modulus, { "Value must be in {0,1,...,modulus-1}, got $value" })
 
         // Check modulus being prime.
         if (modulus < Primes.MAX_PRIME) {
-            require(modulus.isPrime(), { "Modulus must be prime." })
+            require(modulus.isPrime(), { "Modulus must be prime, got $modulus" })
         }
     }
 
@@ -88,6 +88,13 @@ data class ModularInteger(
     fun inverse(): ModularInteger {
         // TODO: Implement inversion.
         return ModularInteger(0, modulus)
+    }
+
+    /**
+     * @return `value`
+     */
+    override fun toString(): String {
+        return value.toString()
     }
 
     override fun toByte() = value.toByte()

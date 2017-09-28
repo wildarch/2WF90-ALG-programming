@@ -3,6 +3,7 @@ package group14.polynomial
 import group14.Primes
 import group14.integer.ModularInteger
 import group14.isPrime
+import group14.superScript
 import java.util.*
 
 /**
@@ -47,9 +48,14 @@ data class Polynomial(
     )
 
     init {
+        // Check for trailing zeroes.
+        if (coefficients.isNotEmpty()) {
+            require(coefficients[coefficients.size - 1].value != 0L, { "Highest coefficient is not zero." })
+        }
+
         // Check modulus being prime.
         if (modulus < Primes.MAX_PRIME) {
-            require(modulus.isPrime(), { "Modulus must be prime." })
+            require(modulus.isPrime(), { "Modulus must be prime, got $modulus" })
         }
     }
 
@@ -59,8 +65,12 @@ data class Polynomial(
      * "The degree of a polynomial is the highest degree of its monomials with non-zero coefficients."
      * #Bless Wikipedia
      */
-    val degree: Int
-        get() = coefficients.size
+    val degree = coefficients.size
+
+    /**
+     * Whether it is the zero polynomial or not.
+     */
+    val zero = coefficients.isEmpty()
 
     /**
      * Checks if `a ≡ b (mod d)`.
@@ -162,6 +172,39 @@ data class Polynomial(
      * E.g. `0` means constant, `3` means coefficient of `X^3`.
      */
     operator fun get(index: Int) = coefficients[index]
+
+    /**
+     * @return E.g. `X⁶ + 2X⁵ + 4X³ + 2X² + X + 1 (Z/5Z)...`
+     */
+    fun toPolynomialString(): String {
+        return buildString {
+            var plus = ""
+            for (i in degree - 1 downTo 0) {
+                val c = coefficients[i].value
+                if (c == 0L) {
+                    continue
+                }
+
+                append("$plus ")
+                plus = "+"
+
+                val coefficientResult = if (c == 1L && i != 0) "" else c.toString()
+                when {
+                    i > 1 -> append("${coefficientResult}X${superScript(i)} ")
+                    i == 1 -> append("X ")
+                    else -> append("$coefficientResult ")
+                }
+            }
+            append("(Z/${modulus}Z)")
+        }.trim()
+    }
+
+    /**
+     * @return `coefficients (mod modulus)`
+     */
+    override fun toString(): String {
+        return "${coefficients.contentToString()} (Z/${modulus}Z)"
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
