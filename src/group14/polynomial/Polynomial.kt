@@ -219,4 +219,8 @@ data class Polynomial(
         result = 31 * result + modulus.hashCode()
         return result
     }
+
+    fun isIrreducible(): Boolean {
+        TODO("not implemented")
+    }
 }
