@@ -65,12 +65,22 @@ data class Polynomial(
      * "The degree of a polynomial is the highest degree of its monomials with non-zero coefficients."
      * #Bless Wikipedia
      */
-    val degree = coefficients.size
+    val degree = coefficients.size - 1
 
     /**
      * Whether it is the zero polynomial or not.
      */
     val zero = coefficients.isEmpty()
+
+    /**
+     * Checks whether the polynomial is irreducible or not.
+     *
+     * @return `true` when this polynomial is irreducible, `false` otherwise.
+     */
+    fun isIrreducible(): Boolean {
+        // TODO: Check irreducibility
+        return false
+    }
 
     /**
      * Checks if `a ≡ b (mod d)`.
@@ -229,9 +239,5 @@ data class Polynomial(
         var result = Arrays.hashCode(coefficients)
         result = 31 * result + modulus.hashCode()
         return result
-    }
-
-    fun isIrreducible(): Boolean {
-        TODO("not implemented")
     }
 }
