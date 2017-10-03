@@ -1,28 +1,28 @@
 package group14.field
 
-import group14.isPrime
 import group14.polynomial.Polynomial
 
 data class FiniteField (
 
         /**
-         * All elements of this Finite Field.
-         */
-        private val elements: Set<Polynomial>,
-
-        /**
-         * All coefficients of the elements are modulo this prime
-         */
-        val modPrime: Int,
-
-        /**
          * All elements are modulo this irreducible polynomial
          */
-        val modPolynomial: Polynomial
+        val polynomial: Polynomial
+
 ) {
+
+    /**
+     * All coefficients of the elements are modulo this prime
+     */
+    val modulus: Long = polynomial.modulus
+
+    /**
+     * All elements of this Finite Field.
+     */
+    val elements: Set<Polynomial> = HashSet()
+
     init {
-        require(modPrime.isPrime(), { "${modPrime} is not prime" })
-        require(modPolynomial.isIrreducible(), { "${modPolynomial} is not irreducible" })
+        require(polynomial.isIrreducible(), { "${polynomial} is not irreducible" })
         TODO("Construction of Finite fields is not supported yet")
     }
 

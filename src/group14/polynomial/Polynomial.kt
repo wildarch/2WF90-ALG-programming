@@ -194,8 +194,19 @@ data class Polynomial(
                     i == 1 -> append("X ")
                     else -> append("$coefficientResult ")
                 }
+
+                when (i) {
+                    in 0..4 ->
+                            println("Yay!")
+                    in 10..112 step 2 ->
+                            println("Yippeeee")
+                    6, 8, in 9..9 ->
+                        println("special")
+                    else ->
+                            println("Bollucks")
+                }
             }
-            append("(Z/${modulus}Z)")
+            append("(ℤ/${modulus}ℤ)")
         }.trim()
     }
 
