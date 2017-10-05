@@ -104,8 +104,14 @@ data class ModularInteger(
      */
     fun inverse(): ModularInteger {
         val euclid = IntegerEuclids(value, modulus)
-        val (_, y, _) = euclid.execute()
-        return ModularInteger(y, modulus)
+        val (x, _, _) = euclid.execute()
+
+        return if (x < 0) {
+            ModularInteger(x + modulus, modulus)
+        }
+        else {
+            ModularInteger(x, modulus)
+        }
     }
 
     /**

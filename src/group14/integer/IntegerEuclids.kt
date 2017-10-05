@@ -8,10 +8,7 @@ package group14.integer
  *
  * @author Ruben Schellekens
  */
-open class IntegerEuclids(
-        val a: Long,
-        val b: Long
-) {
+open class IntegerEuclids(val a: Long, val b: Long) {
 
     var x: Long? = null
         private set(value) {
