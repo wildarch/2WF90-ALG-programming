@@ -92,8 +92,9 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun div(other: ModularInteger): ModularInteger {
-        // TODO: Implement division.
-        return ModularInteger(0, other.modulus)
+        require(modulus == other.modulus, { "Moduli are not equal" })
+
+        return this * other.inverse()
     }
 
     /**
@@ -102,8 +103,9 @@ data class ModularInteger(
      * @throws IllegalArgumentException When the modulus of this integer does not equal the modulus of `other`.
      */
     fun inverse(): ModularInteger {
-        // TODO: Implement inversion.
-        return ModularInteger(0, modulus)
+        val euclid = IntegerEuclids(value, modulus)
+        val (_, y, _) = euclid.execute()
+        return ModularInteger(y, modulus)
     }
 
     /**
