@@ -17,7 +17,7 @@ data class Polynomial(
          * The index of the coefficient is the index in the array. The end of the array may not end with 0.
          * E.g. Polynomial `X^4+2X^3-X+12` has the backing array `[12,-1,0,2,4]`.
          */
-        val coefficients: Array<ModularInteger>,
+        var coefficients: Array<ModularInteger>,
 
         /**
          * The modulus of all coefficients.
@@ -48,9 +48,14 @@ data class Polynomial(
     )
 
     init {
+        // Trim off the zeroes
+        while (coefficients.size > 0 && coefficients.get(coefficients.size -1).value == 0L) {
+            coefficients = Arrays.copyOfRange(coefficients, 0, coefficients.size-1)
+        }
+
         // Check for trailing zeroes.
         if (coefficients.isNotEmpty()) {
-            require(coefficients[coefficients.size - 1].value != 0L, { "Highest coefficient is not zero." })
+            require(coefficients[coefficients.size - 1].value != 0L, { "Highest coefficient must not be zero." })
         }
 
         // Check modulus being prime.
@@ -79,7 +84,8 @@ data class Polynomial(
      */
     fun isIrreducible(): Boolean {
         // TODO: Check irreducibility
-        return false
+        println("WARN assuming irreducibility")
+        return true
     }
 
     /**
@@ -189,7 +195,7 @@ data class Polynomial(
     fun toPolynomialString(): String {
         return buildString {
             var plus = ""
-            for (i in degree - 1 downTo 0) {
+            for (i in degree downTo 0) {
                 val c = coefficients[i].value
                 if (c == 0L) {
                     continue
@@ -201,19 +207,8 @@ data class Polynomial(
                 val coefficientResult = if (c == 1L && i != 0) "" else c.toString()
                 when {
                     i > 1 -> append("${coefficientResult}X${superScript(i)} ")
-                    i == 1 -> append("X ")
+                    i == 1 -> append("${coefficientResult}X ")
                     else -> append("$coefficientResult ")
-                }
-
-                when (i) {
-                    in 0..4 ->
-                            println("Yay!")
-                    in 10..112 step 2 ->
-                            println("Yippeeee")
-                    6, 8, in 9..9 ->
-                        println("special")
-                    else ->
-                            println("Bollucks")
                 }
             }
             append("(ℤ/${modulus}ℤ)")
