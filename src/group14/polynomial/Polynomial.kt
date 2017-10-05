@@ -50,8 +50,8 @@ data class Polynomial(
 
     init {
         // Trim off the zeroes
-        while (coefficients.size > 0 && coefficients.get(coefficients.size -1).value == 0L) {
-            coefficients = Arrays.copyOfRange(coefficients, 0, coefficients.size-1)
+        while (coefficients.size > 0 && coefficients.get(coefficients.size - 1).value == 0L) {
+            coefficients = Arrays.copyOfRange(coefficients, 0, coefficients.size - 1)
         }
 
         // Check for trailing zeroes.
@@ -126,9 +126,13 @@ data class Polynomial(
     @Throws(IllegalArgumentException::class)
     operator fun plus(other: Polynomial): Polynomial {
         require(modulus == other.modulus, { "Moduli not the same" })
-        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree)+1, { ModularInteger(0, modulus) })
+        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree) + 1, { ModularInteger(0, modulus) })
+
         for (i in coefficients.indices) {
             baseCof[i] = coefficients[i]
+        }
+        if (other.coefficients.isEmpty()) {
+            return Polynomial(baseCof, modulus)
         }
         for (i in baseCof.indices) {
             baseCof[i] += other.coefficients[i];
@@ -157,9 +161,12 @@ data class Polynomial(
     @Throws(IllegalArgumentException::class)
     operator fun minus(other: Polynomial): Polynomial {
         require(modulus == other.modulus, { "Moduli not the same" })
-        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree) +1, { ModularInteger(0, modulus) })
+        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree) + 1, { ModularInteger(0, modulus) })
         for (i in coefficients.indices) {
             baseCof[i] = coefficients[i]
+        }
+        if (other.coefficients.isEmpty()) {
+            return Polynomial(baseCof, modulus)
         }
         for (i in baseCof.indices) {
             baseCof[i] -= other.coefficients[i]
@@ -193,10 +200,9 @@ data class Polynomial(
         val newCof = Array<ModularInteger>(degree + other.degree + 1, { ModularInteger(0, modulus) })
         for (i in coefficients.indices) {
             for (j in other.coefficients.indices) {
-                newCof[i+j] += (coefficients[i]*other.coefficients[j])
+                newCof[i + j] += (coefficients[i] * other.coefficients[j])
             }
         }
-
 
         return Polynomial(newCof, modulus)
     }
