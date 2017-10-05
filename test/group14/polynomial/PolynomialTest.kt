@@ -1,10 +1,10 @@
 package group14.polynomial
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-import org.junit.Assert.*
-
 class PolynomialTest {
+
     @Test
     fun toPolynomialString() {
         val poly = Polynomial(3L, 2, 1)

@@ -3,7 +3,6 @@ package group14.field
 import group14.cartesianProduct
 import group14.polynomial.Polynomial
 import java.util.*
-import java.util.stream.Collectors
 
 data class FiniteField (
 
@@ -25,7 +24,7 @@ data class FiniteField (
     private var elements: Set<Polynomial> = HashSet()
 
     init {
-        require(polynomial.isIrreducible(), { "${polynomial} is not irreducible" })
+        require(polynomial.isIrreducible(), { "$polynomial is not irreducible" })
     }
 
     fun getElements(): Set<Polynomial> {
@@ -41,8 +40,7 @@ data class FiniteField (
         elements = exponentsCombos.map { Polynomial(modulus, *it.toLongArray()) }.toSet()
         return elements
 
-
-        TODO("Implement")
+        // TODO: Implement
     }
 
     /**

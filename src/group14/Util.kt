@@ -5,21 +5,21 @@ fun <A> cartesianProduct(s: List<Set<A>>): Set<List<A>> {
         return HashSet()
     }
     else if (s.size == 1) {
-        val set = s.get(0)
-        var res = HashSet<List<A>>()
+        val set = s[0]
+        val res = HashSet<List<A>>()
         for (item in set) {
-            var list = ArrayList<A>()
+            val list = ArrayList<A>()
             list.add(item)
             res.add(list)
         }
         return res
     }
     else {
-        var partialCart = cartesianProduct(s.subList(1, s.size))
-        var res = HashSet<List<A>>()
+        val partialCart = cartesianProduct(s.subList(1, s.size))
+        val res = HashSet<List<A>>()
         for (set in partialCart) {
-            for (item in s.get(0)) {
-                var list = ArrayList<A>()
+            for (item in s[0]) {
+                val list = ArrayList<A>()
                 list.add(item)
                 list.addAll(set)
                 res.add(list)

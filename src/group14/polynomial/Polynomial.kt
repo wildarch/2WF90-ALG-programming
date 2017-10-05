@@ -9,24 +9,7 @@ import java.util.*
 /**
  * @author Ruben Schellekens
  */
-data class Polynomial(
-
-        /**
-         * Array containing all the coefficients of the polynomial, all integers must have the same modulus.
-         *
-         * The index of the coefficient is the index in the array. The end of the array may not end with 0.
-         * E.g. Polynomial `X^4+2X^3-X+12` has the backing array `[12,-1,0,2,4]`.
-         */
-        var coefficients: Array<ModularInteger>,
-
-        /**
-         * The modulus of all coefficients.
-         *
-         * Must be prime.
-         */
-        val modulus: Long
-
-) {
+open class Polynomial {
 
     companion object {
 
@@ -38,19 +21,30 @@ data class Polynomial(
     }
 
     /**
-     * Creates a polynomial with coefficients `coefficients` modulus `modulus`.
+     * Array containing all the coefficients of the polynomial, all integers must have the same modulus.
      *
-     * The `i`th coefficient is the coefficient of `X^i`.
+     * The index of the coefficient is the index in the array. The end of the array may not end with 0.
+     * E.g. Polynomial `X^4+2X^3-X+12` has the backing array `[12,-1,0,2,4]`.
      */
-    constructor(modulus: Long, vararg coefficients: Long) : this(
-            coefficients.map { ModularInteger(it, modulus) }.toTypedArray(),
-            modulus
-    )
+    var coefficients: Array<ModularInteger> = emptyArray()
+        private set(value) {
+            field = value
+        }
 
-    init {
+    /**
+     * The modulus of all coefficients.
+     *
+     * Must be prime.
+     */
+    val modulus: Long
+
+    constructor(coefficients: Array<ModularInteger>, modulus: Long) {
+
+        this.modulus = modulus
+
         // Trim off the zeroes
-        while (coefficients.size > 0 && coefficients.get(coefficients.size -1).value == 0L) {
-            coefficients = Arrays.copyOfRange(coefficients, 0, coefficients.size-1)
+        while (coefficients.isNotEmpty() && coefficients[coefficients.size - 1].value == 0L) {
+            this.coefficients = Arrays.copyOfRange(coefficients, 0, coefficients.size - 1)
         }
 
         // Check for trailing zeroes.
@@ -63,6 +57,16 @@ data class Polynomial(
             require(modulus.isPrime(), { "Modulus must be prime, got $modulus" })
         }
     }
+
+    /**
+     * Creates a polynomial with coefficients `coefficients` modulus `modulus`.
+     *
+     * The `i`th coefficient is the coefficient of `X^i`.
+     */
+    constructor(modulus: Long, vararg coefficients: Long) : this(
+            coefficients.map { ModularInteger(it, modulus) }.toTypedArray(),
+            modulus
+    )
 
     /**
      * Get the degree of this polynomial.
