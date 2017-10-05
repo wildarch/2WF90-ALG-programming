@@ -1,5 +1,4 @@
-package group14.integer
-
+import group14.integer.ModularInteger
 import org.junit.Test
 import java.util.*
 import kotlin.test.assertEquals
@@ -24,6 +23,21 @@ class ModularIntegerTest {
                 val expectedResult = ModularInteger(((a + b) % p).L, p.L)
                 val actualResult = ModularInteger(a.L, p.L) + ModularInteger(b.L, p.L)
                 assertEquals(expectedResult, actualResult, "$a+$b (mod $p)")
+            }
+        }
+    }
+
+    @Test
+    fun `Multiplication`() {
+        val random = Random(213)
+        for (i in 0..100) {
+            for (p in PRIMES) {
+                val a = Math.abs(random.nextInt() % p).toLong()
+                val b = Math.abs(random.nextInt() % p).toLong()
+                val result = (a * b) % p
+                val expectedResult = ModularInteger(result, p.L)
+                val actualResult = ModularInteger(a, p.L) * ModularInteger(b, p.L)
+                assertEquals(expectedResult, actualResult, "$a*$b (mod $p)")
             }
         }
     }

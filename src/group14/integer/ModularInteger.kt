@@ -77,8 +77,12 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun times(other: ModularInteger): ModularInteger {
-        // TODO: Implement multiplication.
-        return ModularInteger(0, other.modulus)
+        require(modulus == other.modulus, { "Moduli are not equal" })
+
+        val result = value * other.value
+        val remainder = result % modulus
+
+        return ModularInteger(remainder, other.modulus)
     }
 
     /**
