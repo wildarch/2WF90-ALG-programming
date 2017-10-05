@@ -60,8 +60,14 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun minus(other: ModularInteger): ModularInteger {
-        // TODO: Implement subtraction.
-        return ModularInteger(0, other.modulus)
+        require(modulus == other.modulus, { "Moduli are not equal" })
+
+        var result = value - other.value
+        if (result < 0) {
+            result += modulus
+        }
+
+        return ModularInteger(result, modulus)
     }
 
     /**
