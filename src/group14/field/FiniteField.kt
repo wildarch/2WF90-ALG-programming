@@ -19,11 +19,17 @@ data class FiniteField (
     /**
      * All elements of this Finite Field.
      */
-    val elements: Set<Polynomial> = HashSet()
+    private val elements: Set<Polynomial> = HashSet()
 
     init {
         require(polynomial.isIrreducible(), { "${polynomial} is not irreducible" })
-        TODO("Construction of Finite fields is not supported yet")
+    }
+
+    fun getElements(): Set<Polynomial> {
+        if (elements.isNotEmpty())
+            return elements
+        val degree = polynomial.degree
+        TODO("Implement")
     }
 
     /**
