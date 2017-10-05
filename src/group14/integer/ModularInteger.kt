@@ -1,6 +1,7 @@
 package group14.integer
 
 import group14.Primes
+import group14.assertState
 import group14.isPrime
 
 /**
@@ -26,6 +27,11 @@ data class ModularInteger(
 
 ) : Number() {
 
+    /**
+     * Whether the integer is zero or not.
+     */
+    val zero = value == 0L
+
     init {
         require(modulus > 1, { "Modulus must be greater than 1, got $modulus" })
         require(value in 0 until modulus, { "Value must be in {0,1,...,modulus-1}, got $value" })
@@ -43,7 +49,7 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun plus(other: ModularInteger): ModularInteger {
-        require(modulus == other.modulus, { "Moduli are not equal" })
+        require(modulus == other.modulus, { "Moduli are not equal: <$modulus> and <${other.modulus}>" })
 
         var result = value + other.value
         if (result >= modulus) {
@@ -60,7 +66,7 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun minus(other: ModularInteger): ModularInteger {
-        require(modulus == other.modulus, { "Moduli are not equal" })
+        require(modulus == other.modulus, { "Moduli are not equal: <$modulus> and <${other.modulus}>" })
 
         var result = value - other.value
         if (result < 0) {
@@ -77,7 +83,7 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun times(other: ModularInteger): ModularInteger {
-        require(modulus == other.modulus, { "Moduli are not equal" })
+        require(modulus == other.modulus, { "Moduli are not equal: <$modulus> and <${other.modulus}>" })
 
         val result = value * other.value
         val remainder = result % modulus
@@ -88,11 +94,13 @@ data class ModularInteger(
     /**
      * Calculates `ab^-1 (mod p)`.
      *
-     * @throws IllegalArgumentException When the modulus of this integer does not equal the modulus of `other`.
+     * @throws IllegalArgumentException When the modulus of this integer does not equal the modulus of `other` or the
+     *              other element is zero.
      */
     @Throws(IllegalArgumentException::class)
     operator fun div(other: ModularInteger): ModularInteger {
-        require(modulus == other.modulus, { "Moduli are not equal" })
+        require(modulus == other.modulus, { "Moduli are not equal: <$modulus> and <${other.modulus}>" })
+        require(!other.zero, { "Cannot divide by zero: other element is zero" })
 
         return this * other.inverse()
     }
@@ -100,9 +108,11 @@ data class ModularInteger(
     /**
      * Calculates the inverse `a^-1 (mod p)`.
      *
-     * @throws IllegalArgumentException When the modulus of this integer does not equal the modulus of `other`.
+     * @throws IllegalStateException When this integer is zero.
      */
     fun inverse(): ModularInteger {
+        assertState(value != 0L, { "Cannot invert 0" })
+
         val euclid = IntegerEuclids(value, modulus)
         val (x, _, _) = euclid.execute()
 
@@ -135,3 +145,23 @@ data class ModularInteger(
 
     override fun toShort() = value.toShort()
 }
+
+/**
+ * Creates a modular integer with `this` value and a given modulus.
+ */
+infix fun Int.modulo(modulus: Long) = ModularInteger(toLong(), modulus)
+
+/**
+ * Creates a modular integer with `this` value and a given modulus.
+ */
+infix fun Long.modulo(modulus: Long) = ModularInteger(this, modulus)
+
+/**
+ * Creates a modular integer with `this` value and a given modulus.
+ */
+infix fun Int.mod(modulus: Long) = this modulo modulus
+
+/**
+ * Creates a modular integer with `this` value and a given modulus.
+ */
+infix fun Long.mod(modulus: Long) = this modulo modulus
