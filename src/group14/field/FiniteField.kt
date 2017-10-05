@@ -1,6 +1,9 @@
 package group14.field
 
+import group14.cartesianProduct
 import group14.polynomial.Polynomial
+import java.util.*
+import java.util.stream.Collectors
 
 data class FiniteField (
 
@@ -19,11 +22,27 @@ data class FiniteField (
     /**
      * All elements of this Finite Field.
      */
-    val elements: Set<Polynomial> = HashSet()
+    private var elements: Set<Polynomial> = HashSet()
 
     init {
         require(polynomial.isIrreducible(), { "${polynomial} is not irreducible" })
-        TODO("Construction of Finite fields is not supported yet")
+    }
+
+    fun getElements(): Set<Polynomial> {
+        if (elements.isNotEmpty())
+            return elements
+        val degree = polynomial.degree
+        val exponentsCombos = cartesianProduct(
+                LongRange(0, degree-1L).map {
+                    LongRange(0, modulus-1).toSet()
+                }
+        )
+        assert(exponentsCombos.size == Math.pow(modulus.toDouble(),  degree.toDouble()).toInt())
+        elements = exponentsCombos.map { Polynomial(modulus, *it.toLongArray()) }.toSet()
+        return elements
+
+
+        TODO("Implement")
     }
 
     /**
