@@ -3,6 +3,7 @@ package group14.polynomial
 import group14.Primes
 import group14.integer.ModularInteger
 import group14.isPrime
+import group14.println
 import group14.superScript
 import java.util.*
 
@@ -105,8 +106,10 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun plus(other: ModularInteger): Polynomial {
-        // TODO: Polynomial addition.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val newCof = this.coefficients.clone()
+        newCof[0] += other
+        return Polynomial(newCof, this.modulus)
     }
 
     /**
@@ -116,8 +119,15 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun plus(other: Polynomial): Polynomial {
-        // TODO: Polynomial addition.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree), { ModularInteger(0, modulus) })
+        for (i in coefficients.indices) {
+            baseCof[i] = coefficients[i]
+        }
+        for (i in baseCof.indices) {
+            baseCof[i] += other.coefficients[i];
+        }
+        return Polynomial(baseCof, this.modulus)
     }
 
     /**
@@ -127,8 +137,10 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun minus(other: ModularInteger): Polynomial {
-        // TODO: Polynomial subtraction.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val baseCof = this.coefficients.clone()
+        baseCof[0] -= other
+        return Polynomial(baseCof, this.modulus)
     }
 
     /**
@@ -138,8 +150,15 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun minus(other: Polynomial): Polynomial {
-        // TODO: Polynomial subtraction.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree), { ModularInteger(0, modulus) })
+        for (i in coefficients.indices) {
+            baseCof[i] = coefficients[i]
+        }
+        for (i in baseCof.indices) {
+            baseCof[i] -= other.coefficients[i]
+        }
+        return Polynomial(baseCof, this.modulus)
     }
 
     /**
@@ -149,8 +168,12 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun times(other: ModularInteger): Polynomial {
-        // TODO: Scalar multiplication.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val baseCof = coefficients.clone()
+        for (i in baseCof.indices) {
+            baseCof[i] *= other;
+        }
+        return Polynomial(baseCof, this.modulus)
     }
 
     /**
@@ -160,8 +183,16 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun times(other: Polynomial): Polynomial {
-        // TODO: Polynomial multiplication.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val newCof = Array<ModularInteger>(degree + other.degree + 1, { ModularInteger(0, modulus) })
+        for (i in coefficients.indices) {
+            for (j in other.coefficients.indices) {
+                newCof[i+j] += (coefficients[i]*coefficients[j])
+            }
+        }
+
+
+        return Polynomial(newCof, modulus)
     }
 
     /**
