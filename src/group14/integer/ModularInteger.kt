@@ -43,8 +43,14 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun plus(other: ModularInteger): ModularInteger {
-        // TODO: Implement addition.
-        return ModularInteger(0, other.modulus)
+        require(modulus == other.modulus, { "Moduli are not equal" })
+
+        var result = value + other.value
+        if (result >= modulus) {
+            result -= modulus
+        }
+
+        return ModularInteger(result, modulus)
     }
 
     /**
