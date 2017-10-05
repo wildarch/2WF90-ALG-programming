@@ -120,7 +120,7 @@ data class Polynomial(
     @Throws(IllegalArgumentException::class)
     operator fun plus(other: Polynomial): Polynomial {
         require(modulus == other.modulus, { "Moduli not the same" })
-        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree), { ModularInteger(0, modulus) })
+        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree)+1, { ModularInteger(0, modulus) })
         for (i in coefficients.indices) {
             baseCof[i] = coefficients[i]
         }
@@ -151,7 +151,7 @@ data class Polynomial(
     @Throws(IllegalArgumentException::class)
     operator fun minus(other: Polynomial): Polynomial {
         require(modulus == other.modulus, { "Moduli not the same" })
-        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree), { ModularInteger(0, modulus) })
+        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree) +1, { ModularInteger(0, modulus) })
         for (i in coefficients.indices) {
             baseCof[i] = coefficients[i]
         }
@@ -187,7 +187,7 @@ data class Polynomial(
         val newCof = Array<ModularInteger>(degree + other.degree + 1, { ModularInteger(0, modulus) })
         for (i in coefficients.indices) {
             for (j in other.coefficients.indices) {
-                newCof[i+j] += (coefficients[i]*coefficients[j])
+                newCof[i+j] += (coefficients[i]*other.coefficients[j])
             }
         }
 
