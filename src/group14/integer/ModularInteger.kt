@@ -43,8 +43,14 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun plus(other: ModularInteger): ModularInteger {
-        // TODO: Implement addition.
-        return ModularInteger(0, other.modulus)
+        require(modulus == other.modulus, { "Moduli are not equal" })
+
+        var result = value + other.value
+        if (result >= modulus) {
+            result -= modulus
+        }
+
+        return ModularInteger(result, modulus)
     }
 
     /**
@@ -54,8 +60,14 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun minus(other: ModularInteger): ModularInteger {
-        // TODO: Implement subtraction.
-        return ModularInteger(0, other.modulus)
+        require(modulus == other.modulus, { "Moduli are not equal" })
+
+        var result = value - other.value
+        if (result < 0) {
+            result += modulus
+        }
+
+        return ModularInteger(result, modulus)
     }
 
     /**
@@ -65,8 +77,12 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun times(other: ModularInteger): ModularInteger {
-        // TODO: Implement multiplication.
-        return ModularInteger(0, other.modulus)
+        require(modulus == other.modulus, { "Moduli are not equal" })
+
+        val result = value * other.value
+        val remainder = result % modulus
+
+        return ModularInteger(remainder, other.modulus)
     }
 
     /**
@@ -76,8 +92,9 @@ data class ModularInteger(
      */
     @Throws(IllegalArgumentException::class)
     operator fun div(other: ModularInteger): ModularInteger {
-        // TODO: Implement division.
-        return ModularInteger(0, other.modulus)
+        require(modulus == other.modulus, { "Moduli are not equal" })
+
+        return this * other.inverse()
     }
 
     /**
@@ -86,8 +103,9 @@ data class ModularInteger(
      * @throws IllegalArgumentException When the modulus of this integer does not equal the modulus of `other`.
      */
     fun inverse(): ModularInteger {
-        // TODO: Implement inversion.
-        return ModularInteger(0, modulus)
+        val euclid = IntegerEuclids(value, modulus)
+        val (_, y, _) = euclid.execute()
+        return ModularInteger(y, modulus)
     }
 
     /**
