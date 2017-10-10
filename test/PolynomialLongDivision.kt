@@ -11,10 +11,21 @@ class PolynomialLongDivision {
         val p2 = Polynomial(5, 4, 3, 1, 2, 3)
         val p1 = Polynomial(5, 1, 2, 2, 1, 2, 1, 2, 1)
 
-        //val expected = Polynomial(5, 0, 0, 3, 3, 0, 1, 2, 1)
-        //val result = p1 / p2
+        val result = p1 / p2
 
-        //Assert.assertEquals(expected.toString(), result.toString())
+        println(result.first.toString())
+        println(result.second.toString())
+
+
+        val a = result.first * p2
+
+        println(a.toPolynomialString())
+
+        println((a+result.second).toPolynomialString())
+
+
+
+        //Assert.assertEquals((result.first * p2 + result.second).toPolynomialString(), ())
 
         /*val m1 = ModularInteger(4, 5);
         val expected2 = Polynomial(5, 3, 3, 1, 2, 3)
