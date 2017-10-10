@@ -76,7 +76,7 @@ open class Polynomial {
      * #Bless Wikipedia
      */
     val degree: Int
-        get() = coefficients.size - 1
+        get() = Math.max(coefficients.size - 1, 0)
 
     /**
      * Whether it is the zero polynomial or not.
@@ -174,7 +174,7 @@ open class Polynomial {
         if (other.coefficients.isEmpty()) {
             return Polynomial(baseCof, modulus)
         }
-        for (i in baseCof.indices) {
+        for (i in 0 until (Math.min(baseCof.size, other.coefficients.size))) {
             baseCof[i] -= other.coefficients[i]
         }
         return Polynomial(baseCof, this.modulus)
@@ -221,22 +221,21 @@ open class Polynomial {
      */
     @Throws(IllegalArgumentException::class)
     operator fun div(other: Polynomial): Pair<Polynomial, Polynomial> {
-        require(modulus == other.modulus, {"Moduli not the same"})
-        require(!other.zero, {"You can not devide by zero"})
+        require(modulus == other.modulus, { "Moduli not the same" })
+        require(!other.zero, { "You can not devide by zero" })
 
         // other/ this \...
         var dif = degree - other.degree
-        if (dif < 0) {
-            return Pair(Polynomial.zero(modulus), Polynomial(coefficients, modulus))
-        }
-        val newCof = Array<ModularInteger>(dif+1, { ModularInteger(0, modulus) })
+        if (dif < 0) return Pair(Polynomial.zero(modulus), Polynomial(coefficients, modulus))
+
+        val newCof = Array<ModularInteger>(dif + 1, { ModularInteger(0, modulus) })
         var quotient = Polynomial.zero(modulus)
         var remainder = Polynomial(coefficients, modulus)
 
         while (dif >= 0) {
             newCof[dif] = remainder.coefficients[remainder.degree] * other.coefficients[other.degree].inverse()
             quotient = Polynomial(newCof, modulus)
-            remainder = this - other*quotient
+            remainder = this - other * quotient
             dif = remainder.degree - other.degree
         }
 
