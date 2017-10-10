@@ -1,5 +1,7 @@
 package group14.parser
 
+import group14.parser.TokenType.WHITESPACE
+
 /**
  * @author Ruben Schellekens
  */
@@ -18,7 +20,14 @@ open class Lexer(input: String) {
     /**
      * The starting column of the current token.
      */
-    var column: Int = 0
+    private var column: Int = 0
+
+    /**
+     * Contains all the whitespace from the last processed whitespace token.
+     *
+     * If the previous token was not whitespace, it will be an empty string.
+     */
+    var whitespaceBuffer: String = ""
         private set(value) {
             field = value
         }
@@ -34,16 +43,44 @@ open class Lexer(input: String) {
         }
 
         for (type in TokenType.values()) {
+            // Consume text.
             val name = type.name
             val group = matcher.group(name) ?: continue
             val token = Token(type, group)
             tokens.add(token)
             column += group.length
+
+            // Update whitespace buffer.
+            if (token.type == WHITESPACE) {
+                whitespaceBuffer = group
+            }
+            else if (lexedTokens() > 1 && lookBehind().type != WHITESPACE) {
+                whitespaceBuffer = ""
+            }
+
             return token
         }
 
         throw AssertionError("Should not happen!")
     }
+
+    /**
+     * [next], but then ignoring whitespace characters.
+     */
+    fun nextIgnoreWhitespace(): Token? {
+        val next = next()
+        return if (next?.type == WHITESPACE) {
+            return next()
+        }
+        else {
+            next
+        }
+    }
+
+    /**
+     * Get the current token without advancing.
+     */
+    fun current() = lookBehind(0)
 
     /**
      * Looks `distance` tokens behind.
@@ -52,6 +89,22 @@ open class Lexer(input: String) {
      */
     @Throws(IndexOutOfBoundsException::class)
     fun lookBehind(distance: Int = 1) = tokens[tokens.size - 1 - distance]
+
+    /**
+     * Looks `distance` tokens behind and if it found whitespace, it will look one further back.
+     *
+     * @throws IndexOutOfBoundsException When there is no token available.
+     */
+    @Throws(IndexOutOfBoundsException::class)
+    fun lookBehindNoWhitespace(distance: Int = 1): Token {
+        val behind = lookBehind(distance)
+        return if (behind.type == WHITESPACE) {
+            lookBehind(distance + 1)
+        }
+        else {
+            behind
+        }
+    }
 
     /**
      * Gets how many tokens have been consumed.
@@ -65,4 +118,9 @@ open class Lexer(input: String) {
         while (next() != null);
         return tokens
     }
+
+    /**
+     * Get the start column index of the currently active token.
+     */
+    fun column() = column - current().value.length
 }

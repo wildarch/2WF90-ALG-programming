@@ -15,6 +15,7 @@ sealed class TokenType {
         private val values = TokenType::class.nestedClasses
                 .filter { !it.isCompanion && !it.isAbstract }
                 .map { it.objectInstance as TokenType }
+                .filter { it.ordinal >= 0 }
                 .sortedBy { it.ordinal }
                 .toList()
 
@@ -54,8 +55,14 @@ sealed class TokenType {
     // Subtypes
     abstract class Operator(ordinal: Int, operator: String) : TokenType(ordinal, operator)
     abstract class UnaryOperator(ordinal: Int, operator: String) : Operator(ordinal, operator)
+    abstract class ParseBlock : TokenType(-1, "")
 
-    // Enum elements.
+    // Parse Blocks.
+    object ROOT : ParseBlock()
+    object MODULUS : ParseBlock()
+    object POLYNOMIAL : ParseBlock()
+
+    // Token Types.
     object WHITESPACE : Operator(0, "[ \t]+")
     object INVERSE : UnaryOperator(1, "\\^-1")
     object NUMBER : TokenType(2, "(?<!\\d)-\\d+|\\d+")
@@ -66,7 +73,7 @@ sealed class TokenType {
     object DIVIDE : Operator(7, "/")
     object REMAINDER : Operator(8, "%")
     object CONGRUENT : Operator(9, "=")
-    object PARAMETER : Operator(10, "[xX]")
+    object PARAMETER : TokenType(10, "[xX]")
     object OPENBRACKET : TokenType(11, "\\[")
     object CLOSEBRACKET : TokenType(12, "]")
     object OPENPARENTHESIS : TokenType(13, "\\(")
