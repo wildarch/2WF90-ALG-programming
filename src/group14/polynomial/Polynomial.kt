@@ -76,7 +76,7 @@ open class Polynomial {
      * #Bless Wikipedia
      */
     val degree: Int
-        get() = coefficients.size - 1
+        get() = Math.max(coefficients.size - 1, 0)
 
     /**
      * Whether it is the zero polynomial or not.
@@ -141,7 +141,7 @@ open class Polynomial {
             return Polynomial(baseCof, modulus)
         }
         for (i in 0 until (Math.min(baseCof.size, other.coefficients.size))) {
-            baseCof[i] += other.coefficients[i];
+            baseCof[i] += other.coefficients[i]
         }
         return Polynomial(baseCof, this.modulus)
     }
@@ -174,7 +174,7 @@ open class Polynomial {
         if (other.coefficients.isEmpty()) {
             return Polynomial(baseCof, modulus)
         }
-        for (i in baseCof.indices) {
+        for (i in 0 until (Math.min(baseCof.size, other.coefficients.size))) {
             baseCof[i] -= other.coefficients[i]
         }
         return Polynomial(baseCof, this.modulus)

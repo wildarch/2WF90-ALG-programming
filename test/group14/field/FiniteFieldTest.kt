@@ -2,6 +2,7 @@ package group14.field
 
 import group14.polynomial.Polynomial
 import org.junit.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -42,7 +43,28 @@ class FiniteFieldTest {
     }
 
     @Test
-    fun `Addition, subtraction and multiplication`() {
+    fun `Addition`() {
+        val poly = Polynomial(2, 1, 1, 1)
+        val field = FiniteField(poly)
+        val a = Polynomial(2, 1, 0)
+        val b = Polynomial(2, 1, 1)
+        val r = Polynomial(2, 0, 1)
+        assertEquals(field.add(a, b), r)
+    }
+
+    @Test
+    fun `Subtraction`() {
+        val poly = Polynomial(2, 1, 1, 1, 1)
+        val field = FiniteField(poly)
+        val a = Polynomial(2, 0, 1)
+        val b = Polynomial(2, 0, 0, 1)
+        val r = Polynomial(2, 0, 1, 1)
+        assertEquals(r, field.subtract(a, b),
+                "${a.toPolynomialString()} - ${b.toPolynomialString()} != ${r.toPolynomialString()}")
+    }
+
+    @Test
+    fun `Addition, subtraction and multiplication land in field`() {
         val poly = Polynomial(3, 1, 0, 1, 1)
         val field = FiniteField(poly)
         val elements = field.getElements()
