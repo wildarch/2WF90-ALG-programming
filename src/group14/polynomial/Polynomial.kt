@@ -141,7 +141,7 @@ open class Polynomial {
             return Polynomial(baseCof, modulus)
         }
         for (i in 0 until (Math.min(baseCof.size, other.coefficients.size))) {
-            baseCof[i] += other.coefficients[i];
+            baseCof[i] += other.coefficients[i]
         }
         return Polynomial(baseCof, this.modulus)
     }
