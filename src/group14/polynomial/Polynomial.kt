@@ -140,7 +140,7 @@ open class Polynomial {
         if (other.coefficients.isEmpty()) {
             return Polynomial(baseCof, modulus)
         }
-        for (i in baseCof.indices) {
+        for (i in 0 until (Math.min(baseCof.size, other.coefficients.size))) {
             baseCof[i] += other.coefficients[i];
         }
         return Polynomial(baseCof, this.modulus)
