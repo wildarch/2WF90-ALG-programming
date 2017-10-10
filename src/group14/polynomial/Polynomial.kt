@@ -221,8 +221,26 @@ open class Polynomial {
      */
     @Throws(IllegalArgumentException::class)
     operator fun div(other: Polynomial): Pair<Polynomial, Polynomial> {
-        // TODO: Polynomial division with remainder.
-        return Pair(Polynomial(emptyArray(), 7), Polynomial(emptyArray(), 7))
+        require(modulus == other.modulus, {"Moduli not the same"})
+        require(!other.zero, {"You can not devide by zero"})
+
+        // other/ this \...
+        var dif = degree - other.degree
+        if (dif < 0) {
+            return Pair(Polynomial.zero(modulus), Polynomial(coefficients, modulus))
+        }
+        val newCof = Array<ModularInteger>(dif+1, { ModularInteger(0, modulus) })
+        var quotient = Polynomial.zero(modulus)
+        var remainder = Polynomial(coefficients, modulus)
+
+        while (dif >= 0) {
+            newCof[dif] = remainder.coefficients[remainder.degree] * other.coefficients[other.degree].inverse()
+            quotient = Polynomial(newCof, modulus)
+            remainder = this - other*quotient
+            dif = remainder.degree - other.degree
+        }
+
+        return Pair(quotient, remainder)
     }
 
     /**
