@@ -25,6 +25,16 @@ class Parser(val lexer: Lexer) {
     private val buffer = ArrayDeque<StringBuilder>()
 
     /**
+     * Contains whether there has been a defined modulus or not.
+     *
+     * `true` when a modulus has been defined, `false` otherwise.
+     */
+    var definedModulus: Boolean = false
+        private set(value) {
+            field = value
+        }
+
+    /**
      * Constructs the parse tree from the given lexer.
      *
      * @return The root node of the parse tree.
@@ -97,7 +107,7 @@ class Parser(val lexer: Lexer) {
                 is Operator -> operator()
                 OPENBRACKET -> polynomial()
                 OPENPARENTHESIS -> modulus()
-                else -> return
+                else -> error("Unexpected Token. Expected an operator, '(', or '['")
             }
             next = next()
         }
@@ -114,11 +124,12 @@ class Parser(val lexer: Lexer) {
         }
 
         // True when at least 1 seperator has been consumed.
-        var separator: Boolean = false
+        var separator = false
 
         // True when at least 1 parameter has been consumed.
-        var parameter: Boolean = false
+        var parameter = false
 
+        // Parse children.
         while (next != null) {
             when (next.type) {
                 NUMBER -> {
@@ -158,31 +169,42 @@ class Parser(val lexer: Lexer) {
      * Parse modulus.
      */
     private fun modulus() {
+        // Open modulus block.
         pushBlock(MODULUS)
         var next = next()
         if (next == null) {
             error("Illegal modulus definition, (mod p) expected")
         }
 
-        when (next?.type) {
-            MODKEYWORD, NUMBER -> {
-                pushChild(next.type)
-                next = next()
-            }
-            else -> error("Expected 'mod' or a prime number")
+        // For the first token, don't accept a closing parentheses.
+        if (next?.type != MODKEYWORD) {
+            error("Expected 'mod'")
         }
+        pushChild(next!!.type)
+        next = next()
 
+        // Parse children.
         while (next != null) {
             when (next.type) {
-                MODKEYWORD, NUMBER -> {
+                NUMBER -> {
+                    // Check if a coefficient modulus hasn't already been defined.
+                    if (definedModulus) {
+                        error("Cannot have multiple coefficient moduli")
+                    }
+                    definedModulus = true
+
                     pushChild(next.type)
+                    next = next()
+                }
+                OPENBRACKET -> {
+                    polynomial()
                     next = next()
                 }
                 CLOSEPARENTHESIS -> {
                     finaliseBlock()
                     return
                 }
-                else -> error("Expected 'mod' or a prime number")
+                else -> error("Expected a modulus (number or [polynomial])")
             }
         }
     }
@@ -216,7 +238,7 @@ class Parser(val lexer: Lexer) {
     @Throws(ParseException::class)
     private fun error(message: String) {
         val item = lexer.current()
-        throw ParseException("$message, got <${item.value}> (col:${lexer.column()}).")
+        throw ParseException("$message; got <${item.value}> (col:${lexer.column()}).")
     }
 
     /**
