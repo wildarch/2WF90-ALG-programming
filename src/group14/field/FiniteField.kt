@@ -4,6 +4,11 @@ import group14.cartesianProduct
 import group14.polynomial.Polynomial
 import java.util.*
 
+/**
+ * A finite field in 'Z/pZ\[X]/f(X)' with p prime, and f an irreducible polynomial.
+ *
+ * @author Daan de Graaf
+ */
 data class FiniteField (
 
         /**
@@ -27,6 +32,14 @@ data class FiniteField (
         require(polynomial.isIrreducible(), { "$polynomial is not irreducible" })
     }
 
+    /**
+     * Get all elements of the field.
+     *
+     * Elements are lazily computed when this function is called,
+     * and then cached for future requests.
+     *
+     * @return All p^n elements of the field
+     */
     fun getElements(): Set<Polynomial> {
         if (elements.isNotEmpty())
             return elements
@@ -39,8 +52,6 @@ data class FiniteField (
         assert(exponentsCombos.size == Math.pow(modulus.toDouble(),  degree.toDouble()).toInt())
         elements = exponentsCombos.map { Polynomial(modulus, *it.toLongArray()) }.toSet()
         return elements
-
-        // TODO: Implement
     }
 
     /**
