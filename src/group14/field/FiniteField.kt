@@ -9,7 +9,7 @@ import java.util.*
  *
  * @author Daan de Graaf
  */
-data class FiniteField (
+data class FiniteField(
 
         /**
          * All elements are modulo this irreducible polynomial
@@ -45,11 +45,11 @@ data class FiniteField (
             return elements
         val degree = polynomial.degree
         val exponentsCombos = cartesianProduct(
-                LongRange(0, degree-1L).map {
-                    LongRange(0, modulus-1).toSet()
+                LongRange(0, degree - 1L).map {
+                    LongRange(0, modulus - 1).toSet()
                 }
         )
-        assert(exponentsCombos.size == Math.pow(modulus.toDouble(),  degree.toDouble()).toInt())
+        assert(exponentsCombos.size == Math.pow(modulus.toDouble(), degree.toDouble()).toInt())
         elements = exponentsCombos.map { Polynomial(modulus, *it.toLongArray()) }.toSet()
         return elements
     }
