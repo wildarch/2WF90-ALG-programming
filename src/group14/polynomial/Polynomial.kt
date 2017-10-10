@@ -43,8 +43,9 @@ open class Polynomial {
         this.modulus = modulus
 
         // Trim off the zeroes
+        this.coefficients = coefficients;
         while (coefficients.isNotEmpty() && coefficients[coefficients.size - 1].value == 0L) {
-            this.coefficients = Arrays.copyOfRange(coefficients, 0, coefficients.size - 1)
+            this.coefficients = Arrays.copyOfRange(coefficients, 0, coefficients.size)
         }
 
         // Check for trailing zeroes.
@@ -74,12 +75,14 @@ open class Polynomial {
      * "The degree of a polynomial is the highest degree of its monomials with non-zero coefficients."
      * #Bless Wikipedia
      */
-    val degree = coefficients.size - 1
+    val degree: Int
+        get() = coefficients.size - 1
 
     /**
      * Whether it is the zero polynomial or not.
      */
-    val zero = coefficients.isEmpty()
+    val zero: Boolean
+        get() = coefficients.isEmpty()
 
     /**
      * Checks whether the polynomial is irreducible or not.
