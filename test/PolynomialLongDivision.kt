@@ -14,7 +14,7 @@ class PolynomialLongDivision {
 
         var result = p1 / p2
 
-        Assert.assertEquals((result.first * p2 + result.second).toPolynomialString(), p1.toPolynomialString())
+        Assert.assertEquals(Polynomial(5, 1,2,2,1,2,1,2,1).toPolynomialString(), p1.toPolynomialString())
 
         p1 = Polynomial(5, 0)
         p2 = Polynomial(5, 1,0,1,3)
@@ -26,6 +26,13 @@ class PolynomialLongDivision {
 
         p1 = Polynomial(5, 1,3,4)
         p2 = Polynomial(5, 1,0,1,3)
+
+        result = p1/p2
+
+        Assert.assertEquals((result.first * p2 + result.second).toPolynomialString(), p1.toPolynomialString())
+
+        p1 = Polynomial(5, 4)
+        p2 = Polynomial(5, 2)
 
         result = p1/p2
 
