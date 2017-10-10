@@ -165,3 +165,8 @@ infix fun Int.mod(modulus: Long) = this modulo modulus
  * Creates a modular integer with `this` value and a given modulus.
  */
 infix fun Long.mod(modulus: Long) = this modulo modulus
+
+/**
+ * Calculates `this` * `other`.
+ */
+operator fun ModularInteger.invoke(other: ModularInteger) = this * other
