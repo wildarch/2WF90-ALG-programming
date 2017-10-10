@@ -16,6 +16,7 @@ import org.junit.runners.Suite
         FiniteFieldTest::class,
         ModularIntegerTest::class,
         PolynomialArithmetic::class,
-        PolynomialTest::class
+        PolynomialTest::class,
+        ConcurrencyTest::class
 )
 object AlgebraTestSuite
