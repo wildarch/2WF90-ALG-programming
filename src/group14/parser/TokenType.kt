@@ -65,7 +65,7 @@ sealed class TokenType {
     // Token Types.
     object WHITESPACE : Operator(0, "[ \t]+")
     object INVERSE : UnaryOperator(1, "\\^-1")
-    object NUMBER : TokenType(2, "(?<!\\d)-\\d+|\\d+")
+    object NUMBER : TokenType(2, "((?<!\\d)-\\d+|\\d+)")
     object ADD : Operator(3, "\\+")
     object SUBTRACT : Operator(4, "-")
     object MULTIPLY : Operator(5, "\\*")

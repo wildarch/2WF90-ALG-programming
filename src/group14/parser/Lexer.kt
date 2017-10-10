@@ -122,5 +122,5 @@ open class Lexer(input: String) {
     /**
      * Get the start column index of the currently active token.
      */
-    fun column() = column - current().value.length
+    fun column() = column - if (lexedTokens() > 1) current().value.length else 0
 }
