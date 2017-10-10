@@ -224,7 +224,6 @@ open class Polynomial {
         require(modulus == other.modulus, { "Moduli not the same" })
         require(!other.zero, { "You can not devide by zero" })
 
-        // other/ this \...
         var dif = degree - other.degree
         if (dif < 0) return Pair(Polynomial.zero(modulus), Polynomial(coefficients, modulus))
 
@@ -233,9 +232,11 @@ open class Polynomial {
         var remainder = Polynomial(coefficients, modulus)
 
         while (dif >= 0) {
+            if (remainder.zero) break;
             newCof[dif] = remainder.coefficients[remainder.degree] * other.coefficients[other.degree].inverse()
             quotient = Polynomial(newCof, modulus)
             remainder = this - other * quotient
+
             dif = remainder.degree - other.degree
         }
 
