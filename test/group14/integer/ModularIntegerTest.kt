@@ -1,6 +1,4 @@
-
-import group14.integer.ModularInteger
-import group14.integer.mod
+package group14.integer
 import org.junit.Test
 import java.util.*
 import kotlin.test.assertEquals

@@ -1,3 +1,5 @@
+package group14
+
 import org.junit.Test
 
 import java.util.*
@@ -13,7 +15,7 @@ class UtilKtTest {
                 HashSet<Int>(Arrays.asList(6, 7, 8, 9))
         ))
 
-        val res = group14.cartesianProduct(sets)
+        val res = cartesianProduct(sets)
         val expected = HashSet<List<Int>>(Arrays.asList(
                 ArrayList(Arrays.asList(1, 3, 6)),
                 ArrayList(Arrays.asList(1, 3, 7)),
