@@ -44,13 +44,13 @@ open class Polynomial {
 
         // Trim off the zeroes
         this.coefficients = coefficients;
-        while (coefficients.isNotEmpty() && coefficients[coefficients.size - 1].value == 0L) {
-            this.coefficients = Arrays.copyOfRange(coefficients, 0, coefficients.size)
+        while (this.coefficients.isNotEmpty() && this.coefficients[this.coefficients.size - 1].value == 0L) {
+            this.coefficients = Arrays.copyOfRange(this.coefficients, 0, this.coefficients.size - 1)
         }
 
         // Check for trailing zeroes.
-        if (coefficients.isNotEmpty()) {
-            require(coefficients[coefficients.size - 1].value != 0L, { "Highest coefficient must not be zero." })
+        if (this.coefficients.isNotEmpty()) {
+            require(this.coefficients[this.coefficients.size - 1].value != 0L, { "Highest coefficient must not be zero." })
         }
 
         // Check modulus being prime.
