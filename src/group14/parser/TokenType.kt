@@ -10,6 +10,14 @@ sealed class TokenType {
     companion object {
 
         /**
+         * List of all token types.
+         */
+        private val values = listOf(
+                WHITESPACE, INVERSE, NUMBER, ADD, SUBTRACT, MULTIPLY, DIVIDE, REMAINDER, CONGRUENT,
+                OPENBRACKET, CLOSEBRACKET, SEPARATOR
+        )
+
+        /**
          * The regex that is used to lex the input.
          */
         val LEXER_REGEX = Pattern.compile(buildString {
@@ -19,34 +27,45 @@ sealed class TokenType {
         }.substring(1))!!
 
         /**
-         * List of all token types.
+         * Lookup map that matches each token type's name to its object.
          */
-        private val values = listOf(
-                ADD, SUBTRACT, MULTIPLY, DIVIDE, REMAINDER, INVERSE, CONGRUENT,
-                OPEN_BRACKET, CLOSE_BRACKET, NUMBER
-        )
+        private val lookup = {
+            val map = HashMap<String, TokenType>()
+            values().forEach {
+                map.put(it.name, it)
+            }
+            map
+        }()
 
         /**
          * Get all token types.
          */
         @JvmStatic
         fun values() = values
+
+        /**
+         * Finds the token type object with the given name.
+         */
+        @JvmStatic
+        operator fun get(name: String) = lookup[name]
     }
 
     // Subtypes
     abstract class Operator(val operator: String) : TokenType(operator)
 
     // Enum elements.
+    object WHITESPACE : Operator("\\s+")
+    object INVERSE : Operator("\\^-1")
+    object NUMBER : TokenType("-?\\d+")
     object ADD : Operator("\\+")
     object SUBTRACT : Operator("-")
     object MULTIPLY : Operator("\\*")
     object DIVIDE : Operator("/")
     object REMAINDER : Operator("%")
-    object INVERSE : Operator("\\^-1")
     object CONGRUENT : Operator("=")
-    object OPEN_BRACKET : TokenType("\\[")
-    object CLOSE_BRACKET : TokenType("]")
-    object NUMBER : TokenType("-?\\d+")
+    object OPENBRACKET : TokenType("\\[")
+    object CLOSEBRACKET : TokenType("]")
+    object SEPARATOR : TokenType(",")
 
     /**
      * The pattern that must match
