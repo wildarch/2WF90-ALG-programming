@@ -9,24 +9,7 @@ import java.util.*
 /**
  * @author Ruben Schellekens
  */
-data class Polynomial(
-
-        /**
-         * Array containing all the coefficients of the polynomial, all integers must have the same modulus.
-         *
-         * The index of the coefficient is the index in the array. The end of the array may not end with 0.
-         * E.g. Polynomial `X^4+2X^3-X+12` has the backing array `[12,-1,0,2,4]`.
-         */
-        val coefficients: Array<ModularInteger>,
-
-        /**
-         * The modulus of all coefficients.
-         *
-         * Must be prime.
-         */
-        val modulus: Long
-
-) {
+open class Polynomial {
 
     companion object {
 
@@ -35,6 +18,45 @@ data class Polynomial(
          */
         @JvmStatic
         fun zero(modulus: Long) = Polynomial(emptyArray(), modulus)
+    }
+
+    /**
+     * Array containing all the coefficients of the polynomial, all integers must have the same modulus.
+     *
+     * The index of the coefficient is the index in the array. The end of the array may not end with 0.
+     * E.g. Polynomial `X^4+2X^3-X+12` has the backing array `[12,-1,0,2,4]`.
+     */
+    var coefficients: Array<ModularInteger> = emptyArray()
+        private set(value) {
+            field = value
+        }
+
+    /**
+     * The modulus of all coefficients.
+     *
+     * Must be prime.
+     */
+    val modulus: Long
+
+    constructor(coefficients: Array<ModularInteger>, modulus: Long) {
+
+        this.modulus = modulus
+
+        // Trim off the zeroes
+        this.coefficients = coefficients;
+        while (this.coefficients.isNotEmpty() && this.coefficients[this.coefficients.size - 1].value == 0L) {
+            this.coefficients = Arrays.copyOfRange(this.coefficients, 0, this.coefficients.size - 1)
+        }
+
+        // Check for trailing zeroes.
+        if (this.coefficients.isNotEmpty()) {
+            require(this.coefficients[this.coefficients.size - 1].value != 0L, { "Highest coefficient must not be zero." })
+        }
+
+        // Check modulus being prime.
+        if (modulus < Primes.MAX_PRIME) {
+            require(modulus.isPrime(), { "Modulus must be prime, got $modulus" })
+        }
     }
 
     /**
@@ -47,30 +69,20 @@ data class Polynomial(
             modulus
     )
 
-    init {
-        // Check for trailing zeroes.
-        if (coefficients.isNotEmpty()) {
-            require(coefficients[coefficients.size - 1].value != 0L, { "Highest coefficient is not zero." })
-        }
-
-        // Check modulus being prime.
-        if (modulus < Primes.MAX_PRIME) {
-            require(modulus.isPrime(), { "Modulus must be prime, got $modulus" })
-        }
-    }
-
     /**
      * Get the degree of this polynomial.
      *
      * "The degree of a polynomial is the highest degree of its monomials with non-zero coefficients."
      * #Bless Wikipedia
      */
-    val degree = coefficients.size - 1
+    val degree: Int
+        get() = coefficients.size - 1
 
     /**
      * Whether it is the zero polynomial or not.
      */
-    val zero = coefficients.isEmpty()
+    val zero: Boolean
+        get() = coefficients.isEmpty()
 
     /**
      * Checks whether the polynomial is irreducible or not.
@@ -79,7 +91,8 @@ data class Polynomial(
      */
     fun isIrreducible(): Boolean {
         // TODO: Check irreducibility
-        return false
+        println("WARN assuming irreducibility")
+        return true
     }
 
     /**
@@ -105,8 +118,10 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun plus(other: ModularInteger): Polynomial {
-        // TODO: Polynomial addition.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val newCof = this.coefficients.clone()
+        newCof[0] += other
+        return Polynomial(newCof, this.modulus)
     }
 
     /**
@@ -116,8 +131,19 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun plus(other: Polynomial): Polynomial {
-        // TODO: Polynomial addition.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree) + 1, { ModularInteger(0, modulus) })
+
+        for (i in coefficients.indices) {
+            baseCof[i] = coefficients[i]
+        }
+        if (other.coefficients.isEmpty()) {
+            return Polynomial(baseCof, modulus)
+        }
+        for (i in baseCof.indices) {
+            baseCof[i] += other.coefficients[i];
+        }
+        return Polynomial(baseCof, this.modulus)
     }
 
     /**
@@ -127,8 +153,10 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun minus(other: ModularInteger): Polynomial {
-        // TODO: Polynomial subtraction.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val baseCof = this.coefficients.clone()
+        baseCof[0] -= other
+        return Polynomial(baseCof, this.modulus)
     }
 
     /**
@@ -138,8 +166,18 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun minus(other: Polynomial): Polynomial {
-        // TODO: Polynomial subtraction.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val baseCof = Array<ModularInteger>(maxOf(degree, other.degree) + 1, { ModularInteger(0, modulus) })
+        for (i in coefficients.indices) {
+            baseCof[i] = coefficients[i]
+        }
+        if (other.coefficients.isEmpty()) {
+            return Polynomial(baseCof, modulus)
+        }
+        for (i in baseCof.indices) {
+            baseCof[i] -= other.coefficients[i]
+        }
+        return Polynomial(baseCof, this.modulus)
     }
 
     /**
@@ -149,8 +187,12 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun times(other: ModularInteger): Polynomial {
-        // TODO: Scalar multiplication.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val baseCof = coefficients.clone()
+        for (i in baseCof.indices) {
+            baseCof[i] *= other;
+        }
+        return Polynomial(baseCof, this.modulus)
     }
 
     /**
@@ -160,8 +202,15 @@ data class Polynomial(
      */
     @Throws(IllegalArgumentException::class)
     operator fun times(other: Polynomial): Polynomial {
-        // TODO: Polynomial multiplication.
-        return Polynomial(emptyArray(), 7)
+        require(modulus == other.modulus, { "Moduli not the same" })
+        val newCof = Array<ModularInteger>(degree + other.degree + 1, { ModularInteger(0, modulus) })
+        for (i in coefficients.indices) {
+            for (j in other.coefficients.indices) {
+                newCof[i + j] += (coefficients[i] * other.coefficients[j])
+            }
+        }
+
+        return Polynomial(newCof, modulus)
     }
 
     /**
@@ -189,7 +238,7 @@ data class Polynomial(
     fun toPolynomialString(): String {
         return buildString {
             var plus = ""
-            for (i in degree - 1 downTo 0) {
+            for (i in degree downTo 0) {
                 val c = coefficients[i].value
                 if (c == 0L) {
                     continue
@@ -201,19 +250,8 @@ data class Polynomial(
                 val coefficientResult = if (c == 1L && i != 0) "" else c.toString()
                 when {
                     i > 1 -> append("${coefficientResult}X${superScript(i)} ")
-                    i == 1 -> append("X ")
+                    i == 1 -> append("${coefficientResult}X ")
                     else -> append("$coefficientResult ")
-                }
-
-                when (i) {
-                    in 0..4 ->
-                            println("Yay!")
-                    in 10..112 step 2 ->
-                            println("Yippeeee")
-                    6, 8, in 9..9 ->
-                        println("special")
-                    else ->
-                            println("Bollucks")
                 }
             }
             append("(ℤ/${modulus}ℤ)")
