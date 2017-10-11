@@ -101,14 +101,35 @@ class Parser(val lexer: Lexer) {
      * Start parsing, requires that the root is on the stack.
      */
     private fun parse() {
+        var previous: Token? = null
         var next = next()
         while (next != null) {
             when (next.type) {
                 is Operator -> operator()
-                OPENBRACKET -> polynomial()
-                OPENPARENTHESIS -> modulus()
+                OPENBRACKET -> {
+                    if (previous?.type == NUMBER || previous?.type == OPENPARENTHESIS || previous?.type is UnaryOperator) {
+                        error("Expected operator")
+                    }
+
+                    polynomial()
+                }
+                OPENPARENTHESIS -> {
+                    modulus()
+                }
+                NUMBER -> {
+                    if (previous?.type == NUMBER) {
+                        error("Cannot have two consecutive numbers")
+                    }
+                    if (previous?.type == OPENBRACKET) {
+                        error("Polynomial must not be followed by a number")
+                    }
+
+                    pushChild(NUMBER)
+                }
                 else -> error("Unexpected Token. Expected an operator, '(', or '['")
             }
+
+            previous = next
             next = next()
         }
     }
@@ -123,6 +144,9 @@ class Parser(val lexer: Lexer) {
             error("Illegal polynomial definition")
         }
 
+        // The previously visited token.
+        var previous: Token? = null
+
         // True when at least 1 seperator has been consumed.
         var separator = false
 
@@ -133,10 +157,22 @@ class Parser(val lexer: Lexer) {
         while (next != null) {
             when (next.type) {
                 NUMBER -> {
+                    if (previous?.type == NUMBER) {
+                        if (separator) {
+                            error("Expected seperator comma")
+                        }
+                        if (parameter) {
+                            error("Expected operator")
+                        }
+                        error("Expected seperator comma, operator, or parameter")
+                    }
                 }
                 SEPARATOR -> {
                     if (parameter) {
                         error("Coefficient list syntax is not allowed in parameter-style definition")
+                    }
+                    if (previous?.type == SEPARATOR) {
+                        error("Expected a coefficient")
                     }
                     separator = true
                 }
@@ -161,6 +197,7 @@ class Parser(val lexer: Lexer) {
             }
 
             pushChild(next.type)
+            previous = next
             next = next()
         }
     }
@@ -238,7 +275,8 @@ class Parser(val lexer: Lexer) {
     @Throws(ParseException::class)
     private fun error(message: String) {
         val item = lexer.current()
-        throw ParseException("$message; got <${item.value}> (col:${lexer.column()}).")
+        val column = lexer.column()
+        throw ParseException("$message; got <${item.value}> (col:$column).", column)
     }
 
     /**

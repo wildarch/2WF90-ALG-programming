@@ -5,6 +5,16 @@ package group14.parser
  */
 open class ParseException : RuntimeException {
 
-    constructor(message: String) : super(message)
-    constructor(message: String, source: Exception) : super(message, source)
+    /**
+     * The `column`th character where the exception was raised.
+     */
+    val column: Int
+
+    constructor(message: String, column: Int) : super(message) {
+        this.column = column
+    }
+
+    constructor(message: String, column: Int, source: Exception) : super(message, source) {
+        this.column = column
+    }
 }
