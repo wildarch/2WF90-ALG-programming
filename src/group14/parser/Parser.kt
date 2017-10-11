@@ -342,6 +342,25 @@ class Parser(val lexer: Lexer) {
         val isRoot: Boolean
             get() = parent == null
 
+        /**
+         * Finds all children in the parse tree (DFS).
+         */
+        fun allChildren(): List<ASTNode> {
+            val list = ArrayList<ASTNode>()
+            allChildren(list)
+            return list
+        }
+
+        /**
+         * Implementation of recursive DFS.
+         */
+        private fun allChildren(list: MutableList<ASTNode>) {
+            for (child in children) {
+                child.allChildren(list)
+                list.add(child)
+            }
+        }
+
         override fun toString(): String {
             return "($type, text: '$text', next: ${next?.type}, prev: ${previous?.type}, children: [${children.joinToString(";")}])"
         }
