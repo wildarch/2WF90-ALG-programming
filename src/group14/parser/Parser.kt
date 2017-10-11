@@ -166,6 +166,9 @@ class Parser(val lexer: Lexer) {
                         }
                         error("Expected seperator comma, operator, or parameter")
                     }
+                    if (previous?.type == PARAMETER) {
+                        error("Operator expected")
+                    }
                 }
                 SEPARATOR -> {
                     if (parameter) {
@@ -185,6 +188,12 @@ class Parser(val lexer: Lexer) {
                 is Operator -> {
                     if (separator) {
                         error("Operators are not allowed in coefficient list-style definition")
+                    }
+                    if (parameter) {
+                        when (next.type) {
+                            ADD, SUBTRACT, POWER, MULTIPLY -> {}
+                            else -> error("Only -, +, * and ^ are allowed in polynomial definitions")
+                        }
                     }
 
                     checkInvalidOperators()
