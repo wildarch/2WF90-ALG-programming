@@ -35,6 +35,16 @@ class Parser(val lexer: Lexer) {
         }
 
     /**
+     * Contains whether there has been a congruence definition or not.
+     *
+     * `true` when a congruence has been defined, `false` otherwise.
+     */
+    var definedCongruency: Boolean = false
+        private set(value) {
+            field = value
+        }
+
+    /**
      * Constructs the parse tree from the given lexer.
      *
      * @return The root node of the parse tree.
@@ -260,7 +270,15 @@ class Parser(val lexer: Lexer) {
      */
     private fun operator() {
         checkInvalidOperators()
-        pushChild(lexer.current().type)
+
+        val current = lexer.current().type
+        if (current == CONGRUENT) {
+            if (definedCongruency) {
+                error("Cannot have multiple congruence operators")
+            }
+            definedCongruency = true
+        }
+        pushChild(current)
     }
 
     /**

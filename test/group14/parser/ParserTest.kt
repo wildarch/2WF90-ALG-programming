@@ -164,7 +164,8 @@ open class ParserTest {
                 "19 + [X] (4)",
                 "7 (mod mod)",
                 "[18] (mod X)",
-                "[X + 16 % 4]"
+                "[X + 16 % 4]",
+                "[34X] = 34 (mod 17) = 23"
         )
 
         for (test in failingTests) {
