@@ -122,7 +122,8 @@ class Parser(val lexer: Lexer) {
     private fun parse() {
         var previous: Token? = null
         var next = next()
-        var expected = ArrayDeque<TokenType>()
+        val expected = ArrayDeque<TokenType>()
+        var braces = 0
 
         while (next != null) {
             // Check expected tokens.
@@ -142,9 +143,17 @@ class Parser(val lexer: Lexer) {
                         }
                     }
 
+                    braces++
                     pushBlock(GROUP)
                 }
-                CLOSEBRACE -> finaliseBlock()
+                CLOSEBRACE -> {
+                    if (braces < 1) {
+                        error("Group has not been opened")
+                    }
+
+                    braces--
+                    finaliseBlock()
+                }
                 OPENBRACKET -> {
                     if (previous?.type == NUMBER || previous?.type == OPENPARENTHESIS || previous?.type is UnaryOperator) {
                         error("Expected operator")
