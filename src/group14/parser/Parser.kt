@@ -123,12 +123,28 @@ class Parser(val lexer: Lexer) {
     private fun parse() {
         var previous: Token? = null
         var next = next()
+        var expected = ArrayDeque<TokenType>()
+
         while (next != null) {
+            // Check expected tokens.
+            val expect = expected.pollFirst()
+            if (expect != null && next.type != expect) {
+                error("Expected $expect")
+            }
+
             when (next.type) {
                 KEYWORD -> pushChild(KEYWORD)
                 is Operator -> operator()
                 PREVIOUS -> pushChild(PREVIOUS)
-                OPENBRACE -> pushBlock(GROUP)
+                OPENBRACE -> {
+                    when (previous?.type) {
+                        is UnaryOperator, OPENBRACKET, NUMBER, CLOSEBRACE -> {
+                            error("Expected an operator")
+                        }
+                    }
+
+                    pushBlock(GROUP)
+                }
                 CLOSEBRACE -> finaliseBlock()
                 OPENBRACKET -> {
                     if (previous?.type == NUMBER || previous?.type == OPENPARENTHESIS || previous?.type is UnaryOperator) {
@@ -149,6 +165,11 @@ class Parser(val lexer: Lexer) {
                     }
 
                     pushChild(NUMBER)
+                }
+                DEFKEYWORD -> {
+                    pushChild(DEFKEYWORD)
+                    expected.addFirst(EQUALS)
+                    expected.addFirst(KEYWORD)
                 }
                 else -> error("Unexpected Token. Expected an operator, '(', or '['")
             }
@@ -215,7 +236,8 @@ class Parser(val lexer: Lexer) {
                     }
                     if (parameter) {
                         when (next.type) {
-                            ADD, SUBTRACT, POWER, MULTIPLY -> {}
+                            ADD, SUBTRACT, POWER, MULTIPLY -> {
+                            }
                             else -> error("Only -, +, * and ^ are allowed in polynomial definitions")
                         }
                     }
@@ -239,6 +261,11 @@ class Parser(val lexer: Lexer) {
      * Parse metadata: mod/field.
      */
     private fun meta() {
+        // Check if in outer scope.
+        if (stack.size != 1) {
+            error("Meta information must not be nested")
+        }
+
         // Open modulus block.
         pushBlock(META)
         var next = next()
@@ -283,7 +310,7 @@ class Parser(val lexer: Lexer) {
                 }
                 OPENBRACKET -> {
                     if (previous?.type == FIELDKEYWORD) {
-                        definedModulus = true
+                        definedField = true
                     }
 
                     polynomial()
@@ -312,7 +339,7 @@ class Parser(val lexer: Lexer) {
         checkInvalidOperators()
 
         val current = lexer.current().type
-        if (current == CONGRUENT) {
+        if (current == EQUALS) {
             if (definedCongruency) {
                 error("Cannot have multiple congruence operators")
             }

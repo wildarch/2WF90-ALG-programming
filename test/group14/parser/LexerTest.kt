@@ -59,7 +59,7 @@ class LexerTest {
         checkToken(lexer.next(), NUMBER, "5")
         checkToken(lexer.next(), CLOSEBRACKET, "]")
         checkToken(lexer.next(), WHITESPACE, " ")
-        checkToken(lexer.next(), CONGRUENT, "=")
+        checkToken(lexer.next(), EQUALS, "=")
         checkToken(lexer.next(), WHITESPACE, "  ")
         checkToken(lexer.next(), OPENBRACKET, "[")
         checkToken(lexer.next(), NUMBER, "6")

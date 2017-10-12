@@ -47,10 +47,10 @@ open class ParserTest {
         assertEquals(POLYNOMIAL, polynomialList.type)
         assertEquals(MULTIPLY, multiply.type)
         assertEquals(NUMBER, minusFive.type)
-        assertEquals(MODULUS, modulus.type)
-        assertEquals(CONGRUENT, congruence.type)
+        assertEquals(META, modulus.type)
+        assertEquals(EQUALS, congruence.type)
         assertEquals(POLYNOMIAL, polynomial.type)
-        assertEquals(MODULUS, modulusPolynomial.type)
+        assertEquals(META, modulusPolynomial.type)
 
         // Children size.
         assertEquals(6, polynomialList.children.size)
@@ -165,7 +165,15 @@ open class ParserTest {
                 "7 (mod mod)",
                 "[18] (mod X)",
                 "[X + 16 % 4]",
-                "[34X] = 34 (mod 17) = 23"
+                "[34X] = 34 (mod 17) = 23",
+                "6 {5}",
+                "{9} {6}",
+                "[X] {4}",
+                "6^-1 {4}",
+                "{(mod 5)}",
+                "def 3",
+                "def kameel 3",
+                "def [X^2]^-1"
         )
 
         for (test in failingTests) {
@@ -178,7 +186,9 @@ open class ParserTest {
         // Valid input.
         val nonFailingTests = listOf(
                 "3^-1*5+[x]",
-                "6 (mod 19) + 14(mod[X])"
+                "6 (mod 19) + 14(mod[X])",
+                "[X^2+X+56] + {4 % {[X] - 67}} (mod 7)",
+                "def kameel = 34"
         )
 
         for (test in nonFailingTests) {
