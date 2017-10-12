@@ -110,7 +110,6 @@ class Parser(val lexer: Lexer) {
      * Finishes off the current block and goes back up 1 level.
      */
     private fun finaliseBlock() {
-        pushChild(lexer.current().type)
         val text = buffer.removeFirst().toString()
         stack.first.text += text
         stack.removeFirst()
