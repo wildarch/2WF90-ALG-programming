@@ -1,5 +1,6 @@
 package group14.polynomial
 
+import com.sun.org.apache.xpath.internal.operations.Mod
 import group14.Primes
 import group14.integer.ModularInteger
 import group14.isPrime
@@ -18,6 +19,33 @@ open class Polynomial {
          */
         @JvmStatic
         fun zero(modulus: Long) = Polynomial(emptyArray(), modulus)
+
+        /**
+         * Returns a polynomial consisting of only 1 term with coefficient 1
+         */
+        @JvmStatic
+        fun singular(modulus: Long, degree: Int): Polynomial {
+            val cof = Array<ModularInteger>(degree + 1, { ModularInteger(0, modulus) })
+            cof[degree] = ModularInteger(1, modulus)
+            return Polynomial(cof, modulus)
+        }
+
+        /**
+         * Returns a random polynomial of given degree and modulus
+         */
+        @JvmStatic
+        fun random(modulus: Long, degree: Int): Polynomial {
+            val cof = Array<ModularInteger>(degree + 1, { ModularInteger(0, modulus) })
+
+            for (i in cof.indices) {
+                if (i == cof.lastIndex) {
+                    cof[i] = ModularInteger(Random().nextInt((modulus - 1).toInt()).toLong() + 1.toLong(), modulus)
+                } else {
+                    cof[i] = ModularInteger(Random().nextInt((modulus).toInt()).toLong(), modulus)
+                }
+            }
+            return Polynomial(cof, modulus)
+        }
     }
 
     /**
@@ -90,9 +118,21 @@ open class Polynomial {
      * @return `true` when this polynomial is irreducible, `false` otherwise.
      */
     fun isIrreducible(): Boolean {
-        // TODO: Check irreducibility
-        println("WARN assuming irreducibility")
-        return true
+        require(degree > 0, { "Degree must positive for a irreducibility test" })
+        if (degree == 1) return true // Polys of degree 1 are always irreducible
+
+        var t = 1
+        var other = (Polynomial.singular(modulus, Math.pow(modulus.toDouble(), t.toDouble()).toInt()) - Polynomial(modulus, 0, 1))
+
+        throw NotImplementedError("Extended euclidian algortihm for polynomials not yet implemented")
+
+        //TODO: Uncomment when EEA implemented
+        /*while (gcd(this, other) == 1) {
+            t++
+            other = (Polynomial.singular(modulus, Math.pow(modulus.toDouble(), t.toDouble()).toInt()) - Polynomial(modulus, 0, 1))
+        }*/
+
+        return t == degree
     }
 
     /**
