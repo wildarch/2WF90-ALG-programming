@@ -35,6 +35,16 @@ class Parser(val lexer: Lexer) {
         }
 
     /**
+     * Contains whether there has been a defined field or not.
+     *
+     * `true` when a field has been defined, `false` otherwise.
+     */
+    var definedField: Boolean = false
+        private set(value) {
+            field = value
+        }
+
+    /**
      * Contains whether there has been a congruence definition or not.
      *
      * `true` when a congruence has been defined, `false` otherwise.
@@ -115,7 +125,11 @@ class Parser(val lexer: Lexer) {
         var next = next()
         while (next != null) {
             when (next.type) {
+                KEYWORD -> pushChild(KEYWORD)
                 is Operator -> operator()
+                PREVIOUS -> pushChild(PREVIOUS)
+                OPENBRACE -> pushBlock(GROUP)
+                CLOSEBRACE -> finaliseBlock()
                 OPENBRACKET -> {
                     if (previous?.type == NUMBER || previous?.type == OPENPARENTHESIS || previous?.type is UnaryOperator) {
                         error("Expected operator")
@@ -124,7 +138,7 @@ class Parser(val lexer: Lexer) {
                     polynomial()
                 }
                 OPENPARENTHESIS -> {
-                    modulus()
+                    meta()
                 }
                 NUMBER -> {
                     if (previous?.type == NUMBER) {
@@ -222,46 +236,72 @@ class Parser(val lexer: Lexer) {
     }
 
     /**
-     * Parse modulus.
+     * Parse metadata: mod/field.
      */
-    private fun modulus() {
+    private fun meta() {
         // Open modulus block.
-        pushBlock(MODULUS)
+        pushBlock(META)
         var next = next()
         if (next == null) {
             error("Illegal modulus definition, (mod p) expected")
         }
 
         // For the first token, don't accept a closing parentheses.
-        if (next?.type != MODKEYWORD) {
-            error("Expected 'mod'")
+        if (next?.type != MODKEYWORD && next?.type != FIELDKEYWORD) {
+            error("Expected 'mod' or 'field' keyword")
         }
+
+        // Only allow 1 field definition
+        if (definedField && next?.type == FIELDKEYWORD) {
+            error("Cannot have multiple field definitions")
+        }
+
         pushChild(next!!.type)
+        var previous: Token? = next
         next = next()
 
         // Parse children.
+        var foundValue = false
         while (next != null) {
             when (next.type) {
                 NUMBER -> {
                     // Check if a coefficient modulus hasn't already been defined.
-                    if (definedModulus) {
+                    if (definedModulus && previous?.type == MODKEYWORD) {
                         error("Cannot have multiple coefficient moduli")
                     }
-                    definedModulus = true
+                    if (definedField && previous?.type == FIELDKEYWORD) {
+                        error("Cannot have multiple field definitions")
+                    }
 
+                    when (previous?.type) {
+                        MODKEYWORD -> definedModulus = true
+                        FIELDKEYWORD -> definedField = true
+                    }
+
+                    foundValue = true
                     pushChild(next.type)
-                    next = next()
                 }
                 OPENBRACKET -> {
+                    if (previous?.type == FIELDKEYWORD) {
+                        definedModulus = true
+                    }
+
                     polynomial()
-                    next = next()
+                    foundValue = true
                 }
                 CLOSEPARENTHESIS -> {
+                    if (!foundValue) {
+                        error("Couldn't find a valid value")
+                    }
+
                     finaliseBlock()
                     return
                 }
                 else -> error("Expected a modulus (number or [polynomial])")
             }
+
+            previous = next
+            next = next()
         }
     }
 
