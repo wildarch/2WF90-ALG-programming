@@ -8,10 +8,10 @@ class TableTest {
     @Test
     fun format() {
         val expected =
-"""      |   Hallo      Chinees?""" + "\n" +
-"""–––––––––––––––––––––––––––––""" + "\n" +
-"""Hello |   1          2       """ + "\n" +
-"""World!|   44444444   12      """
+"""       |   Hallo      Chinees?""" + "\n" +
+"""––––––––––––––––––––––––––––––""" + "\n" +
+"""Hello  |   1          2       """ + "\n" +
+"""World! |   44444444   12      """
         val actual = with(Table<Int>()) {
             addColumnHeaders("Hallo", "Chinees?")
             addRowHeaders("Hello", "World!")
@@ -20,6 +20,7 @@ class TableTest {
             format(3)
         }
         assertEquals(expected, actual)
+        println(actual)
     }
 
 }

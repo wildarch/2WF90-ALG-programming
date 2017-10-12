@@ -97,11 +97,11 @@ open class Table<T> {
 
     private fun formatHeaders(columnPadding: Int) =
             columnHeaders.mapIndexed {
-                index, s -> s.padEnd(columnWidth(index-1)) + ( if (index == 0) "|" else "")
+                index, s -> s.padEnd(columnWidth(index-1)) + ( if (index == 0) " |" else "")
             }.joinToString(" ".repeat(columnPadding))
 
     private fun formatRow(row: MutableList<T>, header: String, columnPadding: Int): String {
-        val l = mutableListOf(header.padEnd(columnWidth(-1)) + "|")
+        val l = mutableListOf(header.padEnd(columnWidth(-1)) + " |")
         l.addAll(
             row.mapIndexed { index, t ->
                 t.toString().padEnd(columnWidth(index))
