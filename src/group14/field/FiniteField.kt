@@ -55,6 +55,55 @@ data class FiniteField (
     }
 
     /**
+     * Returns whether or not the given polynomial is an element of the field
+     */
+    fun isElement(poly: Polynomial): Boolean {
+        if (poly.modulus != modulus) {
+            return false
+        }
+        if (polynomial.degree < poly.degree) {
+            return false
+        }
+        return true
+    }
+
+    /**
+     * Adds two elements within the field
+     *
+     * @return (a + b) mod f, with f the irreducible polynomial of the field
+     */
+    fun add(a: Polynomial, b: Polynomial): Polynomial {
+        require(isElement(a), {"Parameter $a is not an element of $this"})
+        require(isElement(b), {"Parameter $b is not an element of $this"})
+        val (_, r) = (a + b) / polynomial
+        return r
+    }
+
+    /**
+     * Subtracts two elements within the field
+     *
+     * @return (a - b) mod f, with f the irreducible polynomial of the field
+     */
+    fun subtract(a: Polynomial, b: Polynomial): Polynomial {
+        require(isElement(a), {"Parameter $a is not an element of $this"})
+        require(isElement(b), {"Parameter $b is not an element of $this"})
+        val (_, r) = (a - b) / polynomial
+        return r
+    }
+
+    /**
+     * Multiplies two elements within the field
+     *
+     * @return (a * b) mod f, with f the irreducible polynomial of the field
+     */
+    fun multiply(a: Polynomial, b: Polynomial): Polynomial {
+        require(isElement(a), {"Parameter $a is not an element of $this"})
+        require(isElement(b), {"Parameter $b is not an element of $this"})
+        val (_, r) = (a * b) / polynomial
+        return r
+    }
+
+    /**
      * TODO implement
      *
      * Addition table
