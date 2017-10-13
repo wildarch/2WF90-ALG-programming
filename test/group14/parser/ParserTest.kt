@@ -173,7 +173,8 @@ open class ParserTest {
                 "{(mod 5)}",
                 "def 3",
                 "def kameel 3",
-                "def [X^2]^-1"
+                "def [X^2]^-1",
+                "test {3}}"
         )
 
         for (test in failingTests) {
