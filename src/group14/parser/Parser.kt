@@ -179,6 +179,7 @@ class Parser(val lexer: Lexer) {
                     expected.addFirst(EQUALS)
                     expected.addFirst(KEYWORD)
                 }
+                PARAMETER -> error("Parameters must be enclosed with [ and ]")
                 else -> error("Unexpected Token. Expected an operator, '(', or '['")
             }
 
