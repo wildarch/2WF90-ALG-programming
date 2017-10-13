@@ -3,6 +3,8 @@ package group14.integer
 import group14.Primes
 import group14.assertState
 import group14.isPrime
+import group14.parser.Parser
+import group14.parser.TokenType
 
 /**
  * An integer in `Z/pZ` where `p` is prime.
@@ -26,6 +28,25 @@ data class ModularInteger(
         val modulus: Long
 
 ) : Number() {
+
+    companion object {
+
+        /**
+         * Converts a number ASTNode to an actual modular integer.
+         *
+         * @param node
+         *          The number node to convert. Must be of type [TokenType.NUMBER].
+         */
+        @JvmStatic
+        fun fromNode(node: Parser.ASTNode, modulus: Long): ModularInteger {
+            require(node.type == TokenType.NUMBER, { "Node is not a NUMBER, but ${node.type}" })
+
+            val value = node.text.toLong()
+            val times = value / modulus
+            val reduced = value - (times - if (times < 0) 1 else 0) * modulus
+            return ModularInteger(reduced, modulus)
+        }
+    }
 
     /**
      * Whether the integer is zero or not.

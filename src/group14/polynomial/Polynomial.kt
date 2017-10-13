@@ -256,7 +256,7 @@ open class Polynomial {
     fun toPolynomialString(): String {
         return buildString {
             var plus = ""
-            for (i in degree downTo 0) {
+            for (i in degree - 1 downTo 0) {
                 val c = coefficients[i].value
                 if (c == 0L) {
                     continue

@@ -387,7 +387,7 @@ class Parser(val lexer: Lexer) {
      *
      * @author Ruben Schellekens
      */
-    inner class ASTNode {
+    class ASTNode {
 
         /**
          * A list of all children of this node.

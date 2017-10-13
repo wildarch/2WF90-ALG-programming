@@ -1,7 +1,10 @@
 package group14.integer
+import group14.parser.Parser.ASTNode
+import group14.parser.TokenType
 import org.junit.Test
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 /**
  * @author Ruben Schellekens
@@ -11,6 +14,30 @@ class ModularIntegerTest {
     companion object {
 
         val PRIMES = setOf(11, 181, 2, 3, 5, 1819841)
+    }
+
+    @Test
+    fun `From AST`() {
+        val modulus = 17L
+
+        TokenType.values()
+        val node0 = ASTNode(null, "14", TokenType.NUMBER, null, null)
+        val int0 = ModularInteger(14, modulus)
+        val node1 = ASTNode(null, "123456789123456789", TokenType.NUMBER, null, null)
+        val int1 = ModularInteger(8, modulus)
+        val node2 = ASTNode(null, "-123", TokenType.NUMBER, null, null)
+        val int2 = ModularInteger(13, modulus)
+        val node3 = ASTNode(null, "0", TokenType.NUMBER, null, null)
+        val int3 = ModularInteger(0, modulus)
+        val node4 = ASTNode(null, "16", TokenType.KEYWORD, null, null)
+
+        assertEquals(int0, ModularInteger.fromNode(node0, modulus), "14 (mod 17)")
+        assertEquals(int1, ModularInteger.fromNode(node1, modulus), "123456789123456789 (mod 17)")
+        assertEquals(int2, ModularInteger.fromNode(node2, modulus), "-123 (mod 17)")
+        assertEquals(int3, ModularInteger.fromNode(node3, modulus), "0 (mod 17)")
+        assertFailsWith(IllegalArgumentException::class) {
+            ModularInteger.fromNode(node4, modulus)
+        }
     }
 
     @Test

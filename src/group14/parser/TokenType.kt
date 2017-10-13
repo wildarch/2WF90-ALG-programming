@@ -14,7 +14,7 @@ sealed class TokenType {
          */
         private val values = TokenType::class.nestedClasses
                 .filter { !it.isCompanion && !it.isAbstract }
-                .map { it.objectInstance as TokenType }
+                .map { it.objectInstance!! as TokenType }
                 .filter { it.ordinal >= 0 }
                 .sortedBy { it.ordinal }
                 .toList()
