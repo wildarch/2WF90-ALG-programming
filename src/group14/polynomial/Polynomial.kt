@@ -110,7 +110,7 @@ open class Polynomial {
         require(modulus == other.modulus, {"Moduli not the same"})
         require(modulus == with.modulus, {"Modulus of mod not the same"})
         require(with.degree > 0, {"Please make sure the modulus is not a zero polynomial"})
-        return (this/with).second.equals((other/with).second)
+        return ((this - other) / with).second.zero
     }
 
     /**
