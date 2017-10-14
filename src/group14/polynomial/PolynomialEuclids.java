@@ -37,6 +37,7 @@ public class PolynomialEuclids {
         this.b = b;
     }
 
+
     public void execute() {
         Polynomial q, x_old, y_old, u, v;
         x = new Polynomial(a.getModulus(), 1);
