@@ -7,11 +7,10 @@ import org.junit.Assert.*
 class TableTest {
     @Test
     fun format() {
-        val expected =
-"""       |   Hallo      Chinees?""" + "\n" +
-"""––––––––––––––––––––––––––––––""" + "\n" +
-"""Hello  |   1          2       """ + "\n" +
-"""World! |   44444444   12      """
+        val expected = "       |   Hallo      Chinees?\r\n" +
+                "––––––––––––––––––––––––––––––\r\n" +
+                "Hello  |   1          2       \r\n" +
+                "World! |   44444444   12      "
         val actual = with(Table<Int>()) {
             addColumnHeaders("Hallo", "Chinees?")
             addRowHeaders("Hello", "World!")
