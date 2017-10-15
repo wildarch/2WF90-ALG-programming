@@ -18,11 +18,20 @@ open class OperationTable(operation: (a: Polynomial, b: Polynomial) -> Polynomia
         rows.forEach { addRow(it) }
     }
 
+    /**
+     * Formatting style for the elements of the table
+     */
     enum class FormatStyle {
-        PRETTY,
-        COEFF_LIST
+        PRETTY,     // Use `toPolynomialString`
+        COEFF_LIST  // Use `toString`
     }
 
+    /**
+     * Formats the table as human-readable String.
+     * @param columnPadding the number of characters of spacing between each column
+     * @param style the formatting style for polynomial elements
+     * @return Human-readable table
+     */
     fun format(columnPadding: Int, style: FormatStyle): String {
         val formatter = when(style) {
             FormatStyle.PRETTY -> Polynomial::toPolynomialString
