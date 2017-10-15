@@ -20,6 +20,6 @@ import org.junit.runners.Suite
         PolynomialTest::class,
         PolynomialLongDivision::class,
         TableTest::class,
-        ConcurrencyTest::class,
+        ConcurrencyTest::class
 )
 object AlgebraTestSuite
