@@ -5,6 +5,8 @@ import group14.polynomial.Polynomial
 import org.junit.Assert
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class PolynomialLongDivision {
 
@@ -40,6 +42,37 @@ class PolynomialLongDivision {
 
         Assert.assertEquals((result.first * p2 + result.second).toPolynomialString(), p1.toPolynomialString())
 
+    }
+
+    @Test
+    fun `CongruentTest`() {
+        println("Congruent")
+        var a = Polynomial(5, 1,1,1)
+        var b = Polynomial(5, 1,2,0,1)
+        var d = Polynomial(5, 0,1,4, 1)
+        assertTrue { a.congruent(b,d) }
+        b = Polynomial(5, 1,2,1,2)
+        assertFalse { a.congruent(b, d) }
+
+        a = Polynomial(5, 1,4,2,1,2,3,1,4,1)
+        b = a - d
+
+        assertTrue { a.congruent(b, d) }
+
+        a = Polynomial(5, 3)
+        b = Polynomial(5, 2)
+        assertFalse { a.congruent(b, d) }
+
+        d = Polynomial(5, 0,1)
+
+        a = Polynomial(5, 1,4,2,1,2,3,1,4,1)
+        b = a - d
+
+        assertTrue { a.congruent(b, d) }
+
+        a = Polynomial(5, 3)
+        b = Polynomial(5, 2)
+        assertFalse { a.congruent(b, d) }
     }
 
 }
