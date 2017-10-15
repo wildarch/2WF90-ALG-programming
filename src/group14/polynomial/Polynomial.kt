@@ -145,12 +145,17 @@ open class Polynomial {
      * @param with
      *          d (modulus)
      * @return `true` when `other` is congruent with `this` mod `with`, `false` otherwise.
-     * @throws IllegalArgumentException When the modulus of this polynomial does not equal the modulus of `other`.
+     * @throws IllegalArgumentException When the modulus of this polynomial does not equal the modulus of `other`,
+     *                                  Or the modulus of `with` does not equal the modulus of `this`
      */
     @Throws(IllegalArgumentException::class)
     fun congruent(other: Polynomial, with: Polynomial): Boolean {
-        // TODO: Congruence check.
-        return false
+        require(modulus == other.modulus, {"Moduli not the same ($modulus vs ${other.modulus}"})
+        require(modulus == with.modulus, {"Modulus of mod not the same ($modulus vs ${with.modulus})"})
+        require(with.degree > 0, {"Modulus may not be a zero polynomial"})
+
+        val (_, remainder) = ((this - other) / with)
+        return remainder.zero
     }
 
     /**
@@ -299,6 +304,10 @@ open class Polynomial {
         return buildString {
             var plus = ""
             for (i in degree downTo 0) {
+                if (coefficients.size == 0) {
+                    append("0 ")
+                    break
+                }
                 val c = coefficients[i].value
                 if (c == 0L) {
                     continue

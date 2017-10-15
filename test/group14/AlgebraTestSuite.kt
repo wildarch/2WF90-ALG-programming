@@ -19,6 +19,7 @@ import org.junit.runners.Suite
         PolynomialLongDivision::class,
         PolynomialIrreducible::class,
         PolynomialEuclidsTest::class,
+        TableTest::class,
         ConcurrencyTest::class
 )
 object AlgebraTestSuite
