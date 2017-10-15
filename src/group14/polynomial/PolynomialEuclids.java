@@ -8,6 +8,7 @@ import kotlin.Pair;
  *
  * Input: Polynomials a and b (nonzero)
  * Output: Polynomials x, y and gcd(a,b) such that gcd(a, b) = x*a + y*b
+ * Use getX(), getY() or getGCD to obtain these values
  *
  * @author Erik van Bennekum
  */
@@ -44,21 +45,18 @@ public class PolynomialEuclids {
         y = Polynomial.zero(a.getModulus());
         u = Polynomial.zero(a.getModulus());
         v = new Polynomial(a.getModulus(), 1);
-        //y_old = Polynomial.zero(a.getModulus());
-        //x_old = Polynomial.zero(a.getModulus());
-        //q = Polynomial.zero(a.getModulus());
 
         while(!b.getZero()) {
-            System.out.println(a.toPolynomialString() + " " + b.toPolynomialString());
             Pair<Polynomial, Polynomial> div = a.div(b);
+            q = div.getFirst();
             a = b;
-            b = div.getFirst();
-            q = div.getSecond();
+            b = div.getSecond();
+
             x_old = x;
             y_old = y;
             x = u;
             y = v;
-            u = x_old.minus(q/*.times(u)*/);
+            u = x_old.minus(q.times(u));
             v = y_old.minus(q.times(v));
         }
         gcd = a;
