@@ -80,7 +80,7 @@ open class Table<T> {
      * @param elemFormatter the function to map each element to a string, uses `toString` by default
      * @return Table with contents as a human-readable String
      */
-    protected fun format(columnPadding: Int, elemFormatter: (e: T) -> String = { it.toString() }) : String {
+    fun format(columnPadding: Int, elemFormatter: (e: T) -> String = { it.toString() }) : String {
         check(rows.all { it.size == columnHeaders.size - 1 },
                 {"All rows (including the header) must have an equal number of columns"})
         check(rows.size == rowHeaders.size,
