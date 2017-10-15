@@ -4,13 +4,14 @@ import group14.Table
 import group14.polynomial.Polynomial
 
 /**
- * Addition table for the given field
+ * Table resulting from applying a binary operation on each pair of elements for the given field.
+ * The two operands are in the headers.
  * @author Daan de Graaf
  */
 open class OperationTable(operation: (a: Polynomial, b: Polynomial) -> Polynomial,
                      field: FiniteField) : Table<Polynomial>() {
     init {
-        val elements = field.getElements()
+        val elements = field.getElements().sorted()
         val rows = elements.map { a -> elements.map { b -> operation(a, b) } }
         addRowHeaders(*elements.map { it.toPolynomialString() }.toTypedArray())
         addColumnHeaders(*elements.map { it.toPolynomialString() }.toTypedArray())

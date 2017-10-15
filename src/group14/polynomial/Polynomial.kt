@@ -9,7 +9,7 @@ import java.util.*
 /**
  * @author Ruben Schellekens
  */
-open class Polynomial {
+open class Polynomial : Comparable<Polynomial> {
 
     companion object {
 
@@ -299,5 +299,15 @@ open class Polynomial {
         var result = Arrays.hashCode(coefficients)
         result = 31 * result + modulus.hashCode()
         return result
+    }
+
+    override fun compareTo(other: Polynomial): Int {
+        var comp = this.coefficients.size.compareTo(other.coefficients.size)
+        if (comp != 0) return comp
+        for ((a, b) in this.coefficients.zip(other.coefficients).reversed()) {
+            comp = a.value.compareTo(b.value)
+            if (comp != 0) return comp
+        }
+        return 0
     }
 }

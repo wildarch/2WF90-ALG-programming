@@ -27,4 +27,11 @@ class PolynomialTest {
         assertEquals(0, poly.degree, "Polynomials without coefficients has degree 0")
     }
 
+    @Test
+    fun ordering() {
+        val a = Polynomial(2, 1)
+        val b = Polynomial(2)
+        assertEquals(1, a.compareTo(b))
+    }
+
 }
