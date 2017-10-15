@@ -257,6 +257,10 @@ open class Polynomial {
         return buildString {
             var plus = ""
             for (i in degree downTo 0) {
+                if (coefficients.size == 0) {
+                    append("0 ")
+                    break
+                }
                 val c = coefficients[i].value
                 if (c == 0L) {
                     continue

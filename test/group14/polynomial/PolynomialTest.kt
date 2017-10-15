@@ -16,6 +16,12 @@ class PolynomialTest {
     }
 
     @Test
+    fun `Zero polynomial toPolynomialString`() {
+        val poly = Polynomial(3L)
+        assertEquals("0 (ℤ/3ℤ)", poly.toPolynomialString())
+    }
+
+    @Test
     fun `Degree zero`() {
         val poly = Polynomial.zero(2L)
         assertEquals(0, poly.degree, "Polynomials without coefficients has degree 0")
