@@ -77,16 +77,19 @@ open class Table<T> {
     /**
      * Format the table as a multi-line String.
      * @param columnPadding the number of characters of padding to add between each column
+     * @param elemFormatter the function to map each element to a string, uses `toString` by default
      * @return Table with contents as a human-readable String
      */
-    fun format(columnPadding: Int) : String {
+    protected fun format(columnPadding: Int, elemFormatter: (e: T) -> String = { it.toString() }) : String {
         check(rows.all { it.size == columnHeaders.size - 1 },
                 {"All rows (including the header) must have an equal number of columns"})
         check(rows.size == rowHeaders.size,
                 { "There are ${rows.size} rows, but ${rowHeaders.size} row headers" })
 
         val headers = formatHeaders(columnPadding)
-        val rows = rows.zip(rowHeaders).map {(row, header) -> formatRow(row, header, columnPadding)}.toList()
+        val rows = rows.zip(rowHeaders).map {(row, header) ->
+            formatRow(row, header, columnPadding, elemFormatter)
+        }.toList()
         val width = Math.max(headers.length, rows.map { it.length }.max() ?: 0)
         return listOf(
                 headers,
@@ -100,11 +103,12 @@ open class Table<T> {
                 index, s -> s.padEnd(columnWidth(index-1)) + ( if (index == 0) " |" else "")
             }.joinToString(" ".repeat(columnPadding))
 
-    private fun formatRow(row: MutableList<T>, header: String, columnPadding: Int): String {
+    private fun formatRow(row: MutableList<T>, header: String, columnPadding: Int,
+                          elemFormatter: (e: T) -> String): String {
         val l = mutableListOf(header.padEnd(columnWidth(-1)) + " |")
         l.addAll(
             row.mapIndexed { index, t ->
-                t.toString().padEnd(columnWidth(index))
+                elemFormatter(t).padEnd(columnWidth(index))
             }
         )
         return l.joinToString(" ".repeat(columnPadding))
