@@ -121,6 +121,7 @@ open class Polynomial {
         require(degree > 0, { "Degree must positive for a irreducibility test" })
         if (degree == 1) return true // Polys of degree 1 are always irreducible
 
+        // Execute the algorithm from the lecture notes
         var t = 1
         var other = (Polynomial.singular(modulus, Math.pow(modulus.toDouble(), t.toDouble()).toInt()) - Polynomial(modulus, 0, 1))
         var euclid = PolynomialEuclids(this, other)
