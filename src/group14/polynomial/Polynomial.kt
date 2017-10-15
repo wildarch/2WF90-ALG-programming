@@ -123,15 +123,16 @@ open class Polynomial {
 
         var t = 1
         var other = (Polynomial.singular(modulus, Math.pow(modulus.toDouble(), t.toDouble()).toInt()) - Polynomial(modulus, 0, 1))
-
-        throw NotImplementedError("Extended euclidian algortihm for polynomials not yet implemented")
-
-        //TODO: Uncomment when EEA implemented
-        /*while (gcd(this, other) == 1) {
+        var euclid = PolynomialEuclids(this, other)
+        euclid.execute()
+        var gcd = euclid.gcd
+        while (gcd.equals(Polynomial(modulus, 1))) {
             t++
             other = (Polynomial.singular(modulus, Math.pow(modulus.toDouble(), t.toDouble()).toInt()) - Polynomial(modulus, 0, 1))
-        }*/
-
+            euclid = PolynomialEuclids(this, other)
+            euclid.execute()
+            gcd = euclid.gcd
+        }
         return t == degree
     }
 

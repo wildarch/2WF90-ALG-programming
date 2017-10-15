@@ -2,10 +2,7 @@ package group14
 
 import group14.field.FiniteFieldTest
 import group14.integer.ModularIntegerTest
-import group14.polynomial.PolynomialArithmetic
-import group14.polynomial.PolynomialIrreducible
-import group14.polynomial.PolynomialLongDivision
-import group14.polynomial.PolynomialTest
+import group14.polynomial.*
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
@@ -20,6 +17,8 @@ import org.junit.runners.Suite
         PolynomialArithmetic::class,
         PolynomialTest::class,
         PolynomialLongDivision::class,
-        PolynomialIrreducible::class
+        PolynomialIrreducible::class,
+        PolynomialEuclidsTest::class,
+        ConcurrencyTest::class
 )
 object AlgebraTestSuite
