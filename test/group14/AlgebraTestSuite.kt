@@ -18,7 +18,8 @@ import org.junit.runners.Suite
         ModularIntegerTest::class,
         PolynomialArithmetic::class,
         PolynomialTest::class,
+        PolynomialLongDivision::class,
+        TableTest::class,
         ConcurrencyTest::class,
-        PolynomialLongDivision::class
 )
 object AlgebraTestSuite
