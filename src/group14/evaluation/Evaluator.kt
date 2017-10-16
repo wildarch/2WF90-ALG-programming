@@ -5,7 +5,14 @@ import group14.parser.TokenType
 import java.io.PrintStream
 
 /**
- * TODO Description
+ * Executes actions based on a parse tree input.
+ *
+ * The evaluator will write its result to the given output stream whilst using the given state object to keep track
+ * of the evaluation state (duh). This is useful, for example, when the [TokenType.PREVIOUS] token is used. The
+ * previous result needs to be stored to be used later.
+ *
+ * [evaluate] will be called whenever the evaluator should evaluate a parse tree.
+ *
  * @author Ruben Schellekens
  */
 interface Evaluator {
