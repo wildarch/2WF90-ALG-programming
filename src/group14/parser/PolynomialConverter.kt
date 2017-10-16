@@ -142,6 +142,9 @@ open class PolynomialConverter(val node: ASTNode, val modulus: Long) {
 
                 operation = Operation.SUBTRACT
 
+                if (tracker.child().next?.type == TokenType.MULTIPLY) {
+                    tracker.next(operation, coefficient, 0)
+                }
                 if (tracker.child().next?.type != TokenType.PARAMETER) {
                     tracker.push(operation, coefficient, 0)
                     continue@outer
@@ -157,7 +160,14 @@ open class PolynomialConverter(val node: ASTNode, val modulus: Long) {
             else if (tracker.type() == TokenType.ADD) {
                 tracker.next(operation, coefficient, 0) ?: break
                 coefficient = tracker.child().text.toLong()
-                tracker.next(operation, coefficient, 0) ?: break
+
+                when (tracker.child().next?.type) {
+                    TokenType.ADD, TokenType.SUBTRACT, TokenType.NUMBER -> {
+                        tracker.push(operation, coefficient, 0)
+                        continue@outer
+                    }
+                    else -> tracker.next(operation, coefficient, 0) ?: break@outer
+                }
             }
 
             // Read parameter
@@ -175,9 +185,9 @@ open class PolynomialConverter(val node: ASTNode, val modulus: Long) {
                 }
             }
 
-            assert(tracker.type() == TokenType.POWER) { "Token type must be a POWER, got ${tracker.type()}" }
+            check(tracker.type() == TokenType.POWER) { "Token type must be a POWER, got ${tracker.type()}" }
             tracker.next(operation, coefficient, 0) ?: break
-            assert(tracker.type() == TokenType.NUMBER) { "Token type must be a NUMBER, got ${tracker.type()}" }
+            check(tracker.type() == TokenType.NUMBER) { "Token type must be a NUMBER, got ${tracker.type()}" }
             val power = tracker.child().text.toInt()
 
             // Push part.

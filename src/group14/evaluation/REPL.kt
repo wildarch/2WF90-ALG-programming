@@ -1,5 +1,6 @@
 package group14.evaluation
 
+import group14.Primes
 import group14.TaskState
 import group14.launch
 import group14.parser.Lexer
@@ -26,8 +27,11 @@ open class REPL(val output: PrintStream) {
     private var evaluationState: EvaluationState = EvaluationState()
 
     init {
-        // Load lexer regex.
-        regexLoader = launch { TokenType.LEXER_REGEX.matcher("") }
+        // Load lexer regex; also loads primes.
+        regexLoader = launch {
+            TokenType.LEXER_REGEX.matcher("")
+            Primes.isPrimeNumber(3)
+        }
 
         // Let the fun begin.
         start()

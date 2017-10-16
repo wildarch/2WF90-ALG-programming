@@ -256,7 +256,12 @@ class Parser(val lexer: Lexer) {
                     }
                     if (parameter) {
                         when (next.type) {
-                            ADD, SUBTRACT, POWER, MULTIPLY -> {
+                            ADD, SUBTRACT, MULTIPLY -> {
+                            }
+                            POWER -> {
+                                if (previous?.type != PARAMETER) {
+                                    error("Power must be proceeded by a parameter")
+                                }
                             }
                             else -> error("Only -, +, * and ^ are allowed in polynomial definitions")
                         }
