@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class PolynomialTest {
 
     @Test
-    fun toPolynomialString() {
+    fun `Polynomial String aka Pretty Printer TM`() {
         val poly = Polynomial(3L, 2, 1)
         assertEquals("X + 2 (ℤ/3ℤ)", poly.toPolynomialString())
 
@@ -36,9 +36,8 @@ class PolynomialTest {
     @Test
     fun `Random`() {
         for (i in 0..100) {
-            var poly = Polynomial.random(5, 3)
+            val poly = Polynomial.random(5, 3)
             assertEquals(3, poly.degree)
         }
     }
-
 }
