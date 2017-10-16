@@ -26,6 +26,7 @@ import org.junit.runners.Suite
         ParserTest::class,
         PolynomialTest::class,
         ConcurrencyTest::class,
-        PolynomialLongDivision::class
+        PolynomialLongDivision::class,
+        TableTest::class,
 )
 object AlgebraTestSuite
