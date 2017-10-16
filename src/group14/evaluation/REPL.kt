@@ -34,16 +34,13 @@ open class REPL(val output: PrintStream, val options: Set<Option>) {
 
     init {
         // Load lexer regex.
-        val millis = System.currentTimeMillis()
         regexLoader = launch {
             TokenType.LEXER_REGEX.matcher("")
-            System.err.println("Loaded regex in ${System.currentTimeMillis() - millis}ms")
         }
 
         // Load prime numbers.
         primeLoader = launch {
             Primes.isPrimeNumber(3)
-            System.err.println("Loaded primes in ${System.currentTimeMillis() - millis}ms")
         }
 
         // Let the fun begin.
