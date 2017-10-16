@@ -1,6 +1,5 @@
 package group14.polynomial
 
-import group14.integer.ModularInteger
 import java.util.concurrent.TimeoutException
 
 open class IrreducibleGenerator(val modulus: Long, val degree: Int) {
