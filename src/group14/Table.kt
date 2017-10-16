@@ -62,7 +62,7 @@ open class Table<T> {
         addRow(elements.asList())
     }
 
-    private fun columnWidth(c: Int): Int {
+    private fun columnWidth(c: Int, elemFormatter: (e: T) -> String = { it.toString() }): Int {
         if (columnHeaders.size < c) {
             throw IndexOutOfBoundsException("Requested header of column $c, but table has only ${columnHeaders.size} columnHeaders")
         }
@@ -70,7 +70,7 @@ open class Table<T> {
             return rowHeaders.map { it.length }.max() ?: 0
         }
         return rows.fold(columnHeaders[c+1].length) {
-            w, row -> Math.max(w, row[c].toString().length)
+            w, row -> Math.max(w, elemFormatter(row[c]).length)
         }
     }
 
@@ -80,7 +80,7 @@ open class Table<T> {
      * @param elemFormatter the function to map each element to a string, uses `toString` by default
      * @return Table with contents as a human-readable String
      */
-    protected fun format(columnPadding: Int, elemFormatter: (e: T) -> String = { it.toString() }) : String {
+    fun format(columnPadding: Int, elemFormatter: (e: T) -> String = { it.toString() }) : String {
         check(rows.all { it.size == columnHeaders.size - 1 },
                 {"All rows (including the header) must have an equal number of columns"})
         check(rows.size == rowHeaders.size,
