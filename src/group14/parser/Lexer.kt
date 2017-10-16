@@ -85,17 +85,17 @@ open class Lexer(input: String) {
     /**
      * Looks `distance` tokens behind.
      *
-     * @throws IndexOutOfBoundsException When there is no token available.
+     * @throws ArrayIndexOutOfBoundsException When there is no token available.
      */
-    @Throws(IndexOutOfBoundsException::class)
+    @Throws(ArrayIndexOutOfBoundsException::class)
     fun lookBehind(distance: Int = 1) = tokens[tokens.size - 1 - distance]
 
     /**
      * Looks `distance` tokens behind and if it found whitespace, it will look one further back.
      *
-     * @throws IndexOutOfBoundsException When there is no token available.
+     * @throws ArrayIndexOutOfBoundsException When there is no token available.
      */
-    @Throws(IndexOutOfBoundsException::class)
+    @Throws(ArrayIndexOutOfBoundsException::class)
     fun lookBehindNoWhitespace(distance: Int = 1): Token {
         val behind = lookBehind(distance)
         return if (behind.type == WHITESPACE) {

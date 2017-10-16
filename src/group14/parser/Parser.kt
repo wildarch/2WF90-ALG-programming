@@ -206,7 +206,7 @@ class Parser(val lexer: Lexer) {
         // The previously visited token.
         var previous: Token? = null
 
-        // True when at least 1 seperator has been consumed.
+        // True when at least 1 separator has been consumed.
         var separator = false
 
         // True when at least 1 parameter has been consumed.

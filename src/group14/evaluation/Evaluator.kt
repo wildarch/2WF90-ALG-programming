@@ -5,6 +5,7 @@ import group14.parser.TokenType
 import java.io.PrintStream
 
 /**
+ * TODO Description
  * @author Ruben Schellekens
  */
 interface Evaluator {
@@ -36,7 +37,6 @@ interface Evaluator {
             }
 
             // Keyword
-            @Suppress("WhenWithOnlyElse")
             return when (firstChild.text) {
                 "parsetree" -> ParsetreeEvaluation()
                 "exit" -> ExitEvaluation()
