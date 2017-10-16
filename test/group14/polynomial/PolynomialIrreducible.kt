@@ -1,6 +1,5 @@
 package group14.polynomial
 
-import group14.integer.ModularInteger
 import org.junit.Assert
 import org.junit.Test
 import kotlin.test.assertTrue
