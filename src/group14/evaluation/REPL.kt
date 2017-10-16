@@ -1,5 +1,6 @@
 package group14.evaluation
 
+import group14.Option
 import group14.Primes
 import group14.TaskState
 import group14.launch
@@ -14,7 +15,7 @@ import java.io.PrintStream
  *
  * @author Ruben Schellekens
  */
-open class REPL(val output: PrintStream) {
+open class REPL(val output: PrintStream, val options: Set<Option>) {
 
     /**
      * loads the lexer regex asynchronously to prevent the user from noticing the loading time.
@@ -80,6 +81,11 @@ open class REPL(val output: PrintStream) {
         catch (parseException: ParseException) {
             output.println("    ${" ".repeat(parseException.column)}^")
             output.println("ParseException: ${parseException.message}")
+
+            if (Option.SHOW_STACKTRACE in options) {
+                parseException.printStackTrace(output)
+            }
+
             return
         }
     }

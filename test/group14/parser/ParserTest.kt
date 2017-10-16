@@ -53,13 +53,13 @@ open class ParserTest {
         assertEquals(META, modulusPolynomial.type)
 
         // Children size.
-        assertEquals(6, polynomialList.children.size)
+        assertEquals(5, polynomialList.children.size)
         assertEquals(0, multiply.children.size)
         assertEquals(0, minusFive.children.size)
-        assertEquals(3, modulus.children.size)
+        assertEquals(2, modulus.children.size)
         assertEquals(0, congruence.children.size)
-        assertEquals(11, polynomial.children.size)
-        assertEquals(3, modulusPolynomial.children.size)
+        assertEquals(10, polynomial.children.size)
+        assertEquals(2, modulusPolynomial.children.size)
 
         // Text leaf contents.
         assertEquals("3", polynomialList.children[0].text)
@@ -83,7 +83,6 @@ open class ParserTest {
         assertEquals("^", polynomial.children[8].text)
         assertEquals("2", polynomial.children[9].text)
         assertEquals("mod", modulusPolynomial.children[0].text)
-        assertEquals("[181+3X^3-16*X^9]", modulusPolynomial.children[1].text)
 
         // Next
         for (i in 0..3) {
@@ -205,6 +204,6 @@ open class ParserTest {
 
         // Simple parse thing.
         val input = "[3, 4] + [X^2] (mod 3)"
-        assertEquals(15, Parser(Lexer(input)).constructParseTree().allChildren().size)
+        assertEquals(12, Parser(Lexer(input)).constructParseTree().allChildren().size)
     }
 }
