@@ -68,13 +68,11 @@ open class Lexer(input: String) {
      * [next], but then ignoring whitespace characters.
      */
     fun nextIgnoreWhitespace(): Token? {
-        val next = next()
-        return if (next?.type == WHITESPACE) {
-            return next()
+        var next = next()
+        while (next?.type == WHITESPACE) {
+            next = next()
         }
-        else {
-            next
-        }
+        return next
     }
 
     /**
@@ -97,13 +95,13 @@ open class Lexer(input: String) {
      */
     @Throws(IndexOutOfBoundsException::class)
     fun lookBehindNoWhitespace(distance: Int = 1): Token {
-        val behind = lookBehind(distance)
-        return if (behind.type == WHITESPACE) {
-            lookBehind(distance + 1)
+        var behind = lookBehind(distance)
+        var i = 1
+        while (behind.type == WHITESPACE) {
+            behind = lookBehind(distance + i)
+            i++
         }
-        else {
-            behind
-        }
+        return behind
     }
 
     /**

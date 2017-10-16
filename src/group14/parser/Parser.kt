@@ -380,9 +380,15 @@ class Parser(val lexer: Lexer) {
      * Throws an error when problems are found.
      */
     private fun checkInvalidOperators() {
-        if (lexer.lexedTokens() > 1) {
-            val behind = lexer.lookBehindNoWhitespace().type.javaClass.superclass
-            val current = lexer.current().type.javaClass.superclass
+        if (lexer.lexedTokens() > 2) {
+            val behindType = lexer.lookBehindNoWhitespace().type
+            val currentType = lexer.current().type
+            if (behindType !is Operator || currentType !is Operator) {
+                return
+            }
+
+            val behind = behindType.javaClass.superclass
+            val current = currentType.javaClass.superclass
             if (behind == current) {
                 error("Cannot have two consecutive operators")
             }

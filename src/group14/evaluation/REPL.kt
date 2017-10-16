@@ -23,15 +23,27 @@ open class REPL(val output: PrintStream, val options: Set<Option>) {
     private var regexLoader: TaskState<Unit>? = null
 
     /**
+     * Loads the primes from the file asynchronously to prevent the user from noticing the loading time.
+     */
+    private var primeLoader: TaskState<Unit>? = null
+
+    /**
      * The current evaluation state. So helpful comment #Yay.
      */
     private var evaluationState: EvaluationState = EvaluationState()
 
     init {
-        // Load lexer regex; also loads primes.
+        // Load lexer regex.
+        val millis = System.currentTimeMillis()
         regexLoader = launch {
             TokenType.LEXER_REGEX.matcher("")
+            System.err.println("Loaded regex in ${System.currentTimeMillis() - millis}ms")
+        }
+
+        // Load prime numbers.
+        primeLoader = launch {
             Primes.isPrimeNumber(3)
+            System.err.println("Loaded primes in ${System.currentTimeMillis() - millis}ms")
         }
 
         // Let the fun begin.
@@ -65,7 +77,7 @@ open class REPL(val output: PrintStream, val options: Set<Option>) {
      * Evaluates the given input.
      */
     private fun evaluate(input: String) {
-        waitForRegex()
+        waitForLoads()
 
         // Parse input
         val lexer = Lexer(input)
@@ -100,13 +112,19 @@ open class REPL(val output: PrintStream, val options: Set<Option>) {
     }
 
     /**
-     * When the regex is being loaded, wait for it to load.
+     * Wait for the background loading tasks (primes & regex).
      */
-    private fun waitForRegex() {
+    private fun waitForLoads() {
         // Make sure the regex is loaded.
         if (regexLoader != null) {
             regexLoader!!.wait()
             regexLoader = null
+        }
+
+        // Make sure the primes are loaded.
+        if (primeLoader != null) {
+            primeLoader!!.wait()
+            primeLoader = null
         }
     }
 }
