@@ -1,13 +1,16 @@
 package group14.field
 
 import group14.polynomial.Polynomial
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-import org.junit.Assert.*
-
+/*
+ * @author Daan de Graaf
+ */
 class MultiplicationTableTest {
+
     @Test
-    fun `to String`() {
+    fun `Format`() {
         val poly = Polynomial(3, 2, 1, 1)
         val field = FiniteField(poly)
         val table = MultiplicationTable(field)
@@ -28,5 +31,4 @@ class MultiplicationTableTest {
         println(actual)
         assertEquals(expected, actual)
     }
-
 }
