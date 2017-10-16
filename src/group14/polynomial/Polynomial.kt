@@ -118,22 +118,20 @@ open class Polynomial {
      * @return `true` when this polynomial is irreducible, `false` otherwise.
      */
     fun isIrreducible(): Boolean {
-        require(degree > 0, { "Degree must positive for a irreducibility test" })
-        if (degree == 1) return true // Polys of degree 1 are always irreducible
-
+        require(degree > 0, { "Degree must be positive for a irreducibility test" })
+        if (degree == 1)
+            // Polynomials of degree 1 are always irreducible
+            return true
         // Execute the algorithm from the lecture notes
-        var t = 1
-        var other = (Polynomial.singular(modulus, Math.pow(modulus.toDouble(), t.toDouble()).toInt()) - Polynomial(modulus, 0, 1))
-        var euclid = PolynomialEuclids(this, other)
-        euclid.execute()
-        var gcd = euclid.gcd
-        while (gcd.equals(Polynomial(modulus, 1))) {
+        var t = 0
+        do {
             t++
-            other = (Polynomial.singular(modulus, Math.pow(modulus.toDouble(), t.toDouble()).toInt()) - Polynomial(modulus, 0, 1))
-            euclid = PolynomialEuclids(this, other)
+            val other = (Polynomial.singular(modulus, Math.pow(modulus.toDouble(), t.toDouble()).toInt()) - Polynomial(modulus, 0, 1))
+            val euclid = PolynomialEuclids(this, other)
             euclid.execute()
-            gcd = euclid.gcd
-        }
+            val gcd = euclid.gcd
+        } while (gcd == Polynomial(modulus, 1))
+
         return t == degree
     }
 
