@@ -3,6 +3,9 @@ package group14.polynomial
 import group14.Primes
 import group14.integer.ModularInteger
 import group14.isPrime
+import group14.parser.Parser.ASTNode
+import group14.parser.PolynomialConverter
+import group14.parser.TokenType
 import group14.superScript
 import java.util.*
 
@@ -18,6 +21,18 @@ open class Polynomial {
          */
         @JvmStatic
         fun zero(modulus: Long) = Polynomial(emptyArray(), modulus)
+
+        /**
+         * Converts a polynomial ASTNode (both list form and paramter form) to an actual polynomial.
+         *
+         * @param node
+         *          The polynomial node to convert. Must be of type [TokenType.POLYNOMIAL].
+         */
+        @JvmStatic
+        fun fromNode(node: ASTNode, modulus: Long): Polynomial {
+            require(node.type == TokenType.POLYNOMIAL, { "Node is not a POLYNOMIAL, but ${node.type}" })
+            return PolynomialConverter(node, modulus).convert()
+        }
     }
 
     /**
@@ -253,10 +268,16 @@ open class Polynomial {
     /**
      * @return E.g. `X⁶ + 2X⁵ + 4X³ + 2X² + X + 1 (Z/5Z)...`
      */
+    @Suppress("RemoveCurlyBracesFromTemplate")
     fun toPolynomialString(): String {
         return buildString {
+            if (coefficients.isEmpty()) {
+                append("0 (ℤ/${modulus}ℤ)")
+                return@buildString
+            }
+
             var plus = ""
-            for (i in degree - 1 downTo 0) {
+            for (i in degree downTo 0) {
                 val c = coefficients[i].value
                 if (c == 0L) {
                     continue
@@ -272,6 +293,7 @@ open class Polynomial {
                     else -> append("$coefficientResult ")
                 }
             }
+
             append("(ℤ/${modulus}ℤ)")
         }.trim()
     }

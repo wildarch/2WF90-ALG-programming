@@ -198,6 +198,11 @@ class Parser(val lexer: Lexer) {
             error("Illegal polynomial definition")
         }
 
+        when (next?.type) {
+            NUMBER, PARAMETER, SUBTRACT -> {}
+            else -> error("Polynomial must start with a number or a parameter")
+        }
+
         // The previously visited token.
         var previous: Token? = null
 
@@ -220,11 +225,14 @@ class Parser(val lexer: Lexer) {
                         }
                         error("Expected seperator comma, operator, or parameter")
                     }
-                    if (previous?.type == PARAMETER) {
+                    if (previous?.type == PARAMETER && !next.value.startsWith("-")) {
                         error("Operator expected")
                     }
                 }
                 SEPARATOR -> {
+                    if (previous == null) {
+                        error("Polynomial may not start with a seperator")
+                    }
                     if (parameter) {
                         error("Coefficient list syntax is not allowed in parameter-style definition")
                     }
@@ -236,6 +244,9 @@ class Parser(val lexer: Lexer) {
                 PARAMETER -> {
                     if (separator) {
                         error("Parameters are not allowed in coefficient list-style definition")
+                    }
+                    if (previous?.type == POWER) {
+                        error("Cannot have a parameter directly after a power")
                     }
                     parameter = true
                 }

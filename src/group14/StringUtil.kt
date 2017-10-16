@@ -12,5 +12,5 @@ private val SUPERSCRIPT = "⁰¹²³⁴⁵⁶⁷⁸⁹".toCharArray()
  */
 fun superScript(number: Number) = number.toLong().toString()
         .toCharArray()
-        .map { SUPERSCRIPT[Integer.parseInt(it.toString())] }
-        .joinToString()
+        .map { SUPERSCRIPT[it.toString().toInt()] }
+        .joinToString("")

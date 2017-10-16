@@ -40,10 +40,16 @@ data class ModularInteger(
         @JvmStatic
         fun fromNode(node: Parser.ASTNode, modulus: Long): ModularInteger {
             require(node.type == TokenType.NUMBER, { "Node is not a NUMBER, but ${node.type}" })
+            return reduce(node.text.toLong(), modulus)
+        }
 
-            val value = node.text.toLong()
+        /**
+         * Creates a modular integer and reduces the value to make it fall in the range [0,modulus).
+         */
+        @JvmStatic
+        fun reduce(value: Long, modulus: Long): ModularInteger {
             val times = value / modulus
-            val reduced = value - (times - if (times < 0) 1 else 0) * modulus
+            val reduced = value - (times - if (value < 0) 1 else 0) * modulus
             return ModularInteger(reduced, modulus)
         }
     }

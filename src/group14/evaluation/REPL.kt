@@ -27,7 +27,7 @@ open class REPL(val output: PrintStream) {
 
     init {
         // Load lexer regex.
-        regexLoader = launch { TokenType.LEXER_REGEX }
+        regexLoader = launch { TokenType.LEXER_REGEX.matcher("") }
 
         // Let the fun begin.
         start()
