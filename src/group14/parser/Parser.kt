@@ -225,6 +225,7 @@ class Parser(val lexer: Lexer) {
                         }
                         error("Expected seperator comma, operator, or parameter")
                     }
+
                     if (previous?.type == PARAMETER && !next.value.startsWith("-")) {
                         error("Operator expected")
                     }
