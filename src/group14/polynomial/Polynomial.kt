@@ -257,7 +257,7 @@ open class Polynomial : Comparable<Polynomial> {
         return buildString {
             var plus = ""
             for (i in degree downTo 0) {
-                if (coefficients.size == 0) {
+                if (coefficients.isEmpty()) {
                     append("0 ")
                     break
                 }
@@ -280,6 +280,22 @@ open class Polynomial : Comparable<Polynomial> {
         }.trim()
     }
 
+    override fun compareTo(other: Polynomial): Int {
+        var compared = coefficients.size.compareTo(other.coefficients.size)
+        if (compared != 0) {
+            return compared
+        }
+
+        for ((a, b) in coefficients.zip(other.coefficients).reversed()) {
+            compared = a.value.compareTo(b.value)
+            if (compared != 0) {
+                return compared
+            }
+        }
+
+        return 0
+    }
+
     /**
      * @return `coefficients (mod modulus)`
      */
@@ -299,15 +315,5 @@ open class Polynomial : Comparable<Polynomial> {
         var result = Arrays.hashCode(coefficients)
         result = 31 * result + modulus.hashCode()
         return result
-    }
-
-    override fun compareTo(other: Polynomial): Int {
-        var comp = this.coefficients.size.compareTo(other.coefficients.size)
-        if (comp != 0) return comp
-        for ((a, b) in this.coefficients.zip(other.coefficients).reversed()) {
-            comp = a.value.compareTo(b.value)
-            if (comp != 0) return comp
-        }
-        return 0
     }
 }
