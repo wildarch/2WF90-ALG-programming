@@ -1,6 +1,7 @@
 package group14
 
 import group14.Primes.MAX_PRIME
+import java.util.*
 
 /**
  * Stores & checks primes under [MAX_PRIME].
@@ -54,10 +55,27 @@ object Primes {
     fun isPrimeNumber(other: Number): Boolean {
         val value = other.toInt()
         if (value > MAX_PRIME) {
-            throw IllegalArgumentException("Integer is larger than MAX_PRIME=${MAX_PRIME}.")
+            throw IllegalArgumentException("Integer is larger than MAX_PRIME=$MAX_PRIME.")
         }
 
         return primes.contains(value)
+    }
+
+    /**
+     * Generates a random prime `< bound`.
+     *
+     * @param bound
+     *          The maximum size of the prime, exclusive. Must be smaller than [MAX_PRIME].
+     * @param random
+     *          The random object to use to generate the random prime.
+     */
+    @JvmStatic
+    fun random(bound: Int = MAX_PRIME, random: Random = Random()): Int {
+        require(bound <= MAX_PRIME) { "bound is not smaller than MAX_PRIME ($bound > $MAX_PRIME)" }
+        val list = primes
+                .filter { it < bound }
+                .toList()
+        return list[random.nextInt(list.size)]
     }
 }
 

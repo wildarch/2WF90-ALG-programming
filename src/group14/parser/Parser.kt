@@ -179,6 +179,7 @@ class Parser(val lexer: Lexer) {
                     expected.addFirst(EQUALS)
                     expected.addFirst(KEYWORD)
                 }
+                PARAMETER -> error("Parameters must be enclosed with [ and ]")
                 else -> error("Unexpected Token. Expected an operator, '(', or '['")
             }
 
@@ -192,22 +193,24 @@ class Parser(val lexer: Lexer) {
      */
     private fun polynomial() {
         pushBlock(POLYNOMIAL)
-        var next = next()
-        if (next == null) {
-            error("Illegal polynomial definition")
+        var next: Token = next() ?: error("Illegal polynomial definition")
+
+        when (next.type) {
+            NUMBER, PARAMETER, SUBTRACT -> {}
+            else -> error("Polynomial must start with a number or a parameter")
         }
 
         // The previously visited token.
         var previous: Token? = null
 
-        // True when at least 1 seperator has been consumed.
+        // True when at least 1 separator has been consumed.
         var separator = false
 
         // True when at least 1 parameter has been consumed.
         var parameter = false
 
         // Parse children.
-        while (next != null) {
+        while (true) {
             when (next.type) {
                 NUMBER -> {
                     if (previous?.type == NUMBER) {
@@ -219,15 +222,19 @@ class Parser(val lexer: Lexer) {
                         }
                         error("Expected seperator comma, operator, or parameter")
                     }
-                    if (previous?.type == PARAMETER) {
+
+                    if (previous?.type == PARAMETER && !next.value.startsWith("-")) {
                         error("Operator expected")
                     }
                 }
                 SEPARATOR -> {
+                    if (previous == null) {
+                        error("Polynomial may not start with a seperator")
+                    }
                     if (parameter) {
                         error("Coefficient list syntax is not allowed in parameter-style definition")
                     }
-                    if (previous?.type == SEPARATOR) {
+                    if (previous.type == SEPARATOR) {
                         error("Expected a coefficient")
                     }
                     separator = true
@@ -235,6 +242,9 @@ class Parser(val lexer: Lexer) {
                 PARAMETER -> {
                     if (separator) {
                         error("Parameters are not allowed in coefficient list-style definition")
+                    }
+                    if (previous?.type == POWER) {
+                        error("Cannot have a parameter directly after a power")
                     }
                     parameter = true
                 }
@@ -244,7 +254,12 @@ class Parser(val lexer: Lexer) {
                     }
                     if (parameter) {
                         when (next.type) {
-                            ADD, SUBTRACT, POWER, MULTIPLY -> {
+                            ADD, SUBTRACT, MULTIPLY -> {
+                            }
+                            POWER -> {
+                                if (previous?.type != PARAMETER) {
+                                    error("Power must be proceeded by a parameter")
+                                }
                             }
                             else -> error("Only -, +, * and ^ are allowed in polynomial definitions")
                         }
@@ -261,7 +276,7 @@ class Parser(val lexer: Lexer) {
 
             pushChild(next.type)
             previous = next
-            next = next()
+            next = next() ?: break
         }
     }
 
@@ -276,10 +291,7 @@ class Parser(val lexer: Lexer) {
 
         // Open modulus block.
         pushBlock(META)
-        var next = next()
-        if (next == null) {
-            error("Illegal modulus definition, (mod p) expected")
-        }
+        var next: Token? = next() ?: error("Illegal modulus definition, (mod p) expected")
 
         // For the first token, don't accept a closing parentheses.
         if (next?.type != MODKEYWORD && next?.type != FIELDKEYWORD) {
@@ -287,11 +299,11 @@ class Parser(val lexer: Lexer) {
         }
 
         // Only allow 1 field definition
-        if (definedField && next?.type == FIELDKEYWORD) {
+        if (definedField && next.type == FIELDKEYWORD) {
             error("Cannot have multiple field definitions")
         }
 
-        pushChild(next!!.type)
+        pushChild(next.type)
         var previous: Token? = next
         next = next()
 
@@ -362,9 +374,15 @@ class Parser(val lexer: Lexer) {
      * Throws an error when problems are found.
      */
     private fun checkInvalidOperators() {
-        if (lexer.lexedTokens() > 1) {
-            val behind = lexer.lookBehindNoWhitespace().type.javaClass.superclass
-            val current = lexer.current().type.javaClass.superclass
+        if (lexer.lexedTokens() > 2) {
+            val behindType = lexer.lookBehindNoWhitespace().type
+            val currentType = lexer.current().type
+            if (behindType !is Operator || currentType !is Operator) {
+                return
+            }
+
+            val behind = behindType.javaClass.superclass
+            val current = currentType.javaClass.superclass
             if (behind == current) {
                 error("Cannot have two consecutive operators")
             }
@@ -375,7 +393,7 @@ class Parser(val lexer: Lexer) {
      * Throws a parse exception.
      */
     @Throws(ParseException::class)
-    private fun error(message: String) {
+    private fun error(message: String): Nothing {
         val item = lexer.current()
         val column = lexer.column()
         throw ParseException("$message; got <${item.value}> (col:$column).", column)
@@ -386,7 +404,7 @@ class Parser(val lexer: Lexer) {
      *
      * @author Ruben Schellekens
      */
-    inner class ASTNode {
+    class ASTNode {
 
         /**
          * A list of all children of this node.

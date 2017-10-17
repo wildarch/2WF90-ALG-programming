@@ -3,6 +3,8 @@ package group14.integer
 import group14.Primes
 import group14.assertState
 import group14.isPrime
+import group14.parser.Parser
+import group14.parser.TokenType
 
 /**
  * An integer in `Z/pZ` where `p` is prime.
@@ -27,6 +29,36 @@ data class ModularInteger(
 
 ) : Number() {
 
+    companion object {
+
+        /**
+         * Converts a number ASTNode to an actual modular integer.
+         *
+         * @param node
+         *          The number node to convert. Must be of type [TokenType.NUMBER].
+         */
+        @JvmStatic
+        fun fromNode(node: Parser.ASTNode, modulus: Long): ModularInteger {
+            require(node.type == TokenType.NUMBER, { "Node is not a NUMBER, but ${node.type}" })
+            return reduce(node.text.toLong(), modulus)
+        }
+
+        /**
+         * Creates a modular integer and reduces the value to make it fall in the range [0,modulus).
+         */
+        @JvmStatic
+        fun reduce(value: Long, modulus: Long): ModularInteger {
+            val times = value / modulus
+            val reduced = value - (times - if (value < 0) 1 else 0) * modulus
+            return if (reduced == modulus) {
+                ModularInteger(0, modulus)
+            }
+            else {
+                ModularInteger(reduced, modulus)
+            }
+        }
+    }
+
     /**
      * Whether the integer is zero or not.
      */
@@ -34,7 +66,7 @@ data class ModularInteger(
 
     init {
         require(modulus > 1, { "Modulus must be greater than 1, got $modulus" })
-        require(value in 0 until modulus, { "Value must be in {0,1,...,modulus-1}, got $value" })
+        require(value in 0 until modulus, { "Value must be in {0,1,...,modulus-1}, got $value (mod=$modulus)" })
 
         // Check modulus being prime.
         if (modulus < Primes.MAX_PRIME) {
