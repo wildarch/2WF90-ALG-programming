@@ -12,7 +12,7 @@ open class HelpEvaluation : Evaluator {
 
     override fun evaluate(tree: Parser.ASTNode, output: PrintStream, state: EvaluationState) {
         output.println()
-        output.println("!NYI! [some expression] (mod p)")
+        output.println("[some expression] (mod p)")
         output.println("- Outputs the result of the expression modulo p.")
         output.println("!NYI! [some expression] (mod p) (field d(X))")
         output.println("- Outputs the result of the expression modulo p in a given field.")

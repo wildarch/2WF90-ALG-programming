@@ -30,7 +30,7 @@ open class REPL(val output: PrintStream, val options: Set<Option>) {
     /**
      * The current evaluation state. So helpful comment #Yay.
      */
-    private var evaluationState: EvaluationState = EvaluationState()
+    private var evaluationState: EvaluationState = EvaluationState(options)
 
     init {
         // Load lexer regex.
@@ -56,7 +56,6 @@ open class REPL(val output: PrintStream, val options: Set<Option>) {
         while (true) {
             val input = read()
             evaluate(input)
-            output.println()
         }
     }
 
@@ -94,8 +93,13 @@ open class REPL(val output: PrintStream, val options: Set<Option>) {
             if (Option.SHOW_STACKTRACE in options) {
                 parseException.printStackTrace(output)
             }
+        }
+        catch (evaluationException: EvaluationException) {
+            output.println("EvaluationException: ${evaluationException.message}")
 
-            return
+            if (Option.SHOW_STACKTRACE in options) {
+                evaluationException.printStackTrace(output)
+            }
         }
     }
 

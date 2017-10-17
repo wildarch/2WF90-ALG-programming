@@ -25,22 +25,12 @@ interface Evaluator {
         fun create(rootNode: Parser.ASTNode): Evaluator {
             // Regular evaluation.
             if (rootNode.children.isEmpty()) {
-                return object : Evaluator {
-                    // Placeholder
-                    override fun evaluate(tree: Parser.ASTNode, output: PrintStream, state: EvaluationState) {
-                        println("Not yet implemented!")
-                    }
-                }
+                return InputEvaluation()
             }
 
             val firstChild = rootNode.children[0]
             if (firstChild.type != TokenType.KEYWORD) {
-                return object : Evaluator {
-                    // Placeholder
-                    override fun evaluate(tree: Parser.ASTNode, output: PrintStream, state: EvaluationState) {
-                        println("Not yet implemented!")
-                    }
-                }
+                return InputEvaluation()
             }
 
             // Keyword
