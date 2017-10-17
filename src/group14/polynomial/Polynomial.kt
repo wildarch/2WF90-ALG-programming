@@ -1,6 +1,7 @@
 package group14.polynomial
 
 import group14.Primes
+import group14.evaluation.arithmetic.EvaluationObject
 import group14.integer.ModularInteger
 import group14.integer.mod
 import group14.isPrime
@@ -13,7 +14,7 @@ import java.util.*
 /**
  * @author Ruben Schellekens
  */
-open class Polynomial {
+open class Polynomial : EvaluationObject {
 
     companion object {
 
