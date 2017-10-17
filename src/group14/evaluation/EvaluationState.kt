@@ -11,5 +11,5 @@ data class EvaluationState(
         var modulus: Long? = null,
         var polynomialModulus: Polynomial? = null,
         var field: FiniteField? = null,
-        var result: Result?
+        var result: Result? = null
 )

@@ -39,11 +39,30 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
      * @return A [Result]: The resulting ModularInteger, Polynomial or Boolean.
      */
     fun evaluate(): Result {
+        // General idea is to scan for each precedence and combine the left operand, operator and
+        // right operand to its calculated value.
+
         for (operators in precedence) {
             var i = 1
-            while (i < elements.size - 1) {
-                val previous = elements[i - 1]
+            while (i < elements.size) {
+                var previous = elements[i - 1]
                 val operator = elements[i]
+
+                // Precedence.
+                if (operator !in operators) {
+                    i += 2
+                    continue
+                }
+
+                // Manage nested evaluations.
+                if (previous is ArithmeticEvaluation) {
+                    val evaluationResult = previous.evaluate().value()
+                    when (evaluationResult) {
+                        is Boolean -> throw EvaluationException("Cannot have nested evaluations that evaluate to booleans")
+                        is ModularInteger -> previous = evaluationResult
+                        is Polynomial -> previous = evaluationResult
+                    }
+                }
 
                 // Inverse
                 if (operator == TokenType.INVERSE) {
@@ -64,7 +83,20 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 }
 
                 // Two sided
-                val next = elements[i + 1]
+                if (i + 1 >= elements.size) {
+                    throw EvaluationException("Operator $operator doesn't have a right hand side")
+                }
+                var next = elements[i + 1]
+
+                // Manage nested evaluations.
+                if (next is ArithmeticEvaluation) {
+                    val evaluationResult = next.evaluate().value()
+                    when (evaluationResult) {
+                        is Boolean -> throw EvaluationException("Cannot have nested evaluations that evaluate to booleans")
+                        is ModularInteger -> next = evaluationResult
+                        is Polynomial -> next = evaluationResult
+                    }
+                }
 
                 // Equality
                 if (operator == TokenType.EQUALS) {
@@ -72,14 +104,36 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                         return Right(false)
                     }
 
-                    when (previous) {
-                        is ModularInteger -> return Right(previous == next)
+                    return when (previous) {
+                        is ModularInteger -> Right(previous == next)
                         is Polynomial -> {
                             val modulus = state.polynomialModulus ?: throw EvaluationException("No polynomial modulus defined")
-                            return Right(previous.congruent(next as Polynomial, modulus))
+                            Right(previous.congruent(next as Polynomial, modulus))
                         }
+                        else -> throw EvaluationException("Equality not supported on ${next.javaClass.simpleName}")
                     }
                 }
+
+                // Other Operators
+                val left = if (previous is ModularInteger && next is Polynomial) next else previous
+                val right = if (previous is ModularInteger && next is Polynomial) previous else next
+                val operatorObject = operator as? TokenType.Operator ?: throw EvaluationException("$operator is not an operator")
+
+                elements[i] = if (left is Polynomial && right is Polynomial) {
+                    operatorObject.polyFunction(left, right)
+                }
+                else if (left is ModularInteger && right is ModularInteger) {
+                    operatorObject.intFunction(left, right)
+                }
+                else if (left is Polynomial && right is ModularInteger) {
+                    operator.intPolyFunction(left, right)
+                }
+                else {
+                    error("Wrong evaluation case: Left=$left & right=$right")
+                }
+
+                elements.removeAt(i + 1)
+                elements.removeAt(i - 1)
             }
         }
 
