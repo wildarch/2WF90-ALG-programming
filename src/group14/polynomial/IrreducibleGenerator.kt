@@ -14,7 +14,6 @@ open class IrreducibleGenerator(val modulus: Long, val degree: Int) {
         while (!f.isIrreducible()) {
             f = Polynomial.random(modulus, degree)
             t++
-            if (t == 10000) throw TimeoutException("Generating is stuck")
         }
         return f
     }
