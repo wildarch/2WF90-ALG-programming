@@ -62,7 +62,7 @@ open class Table<T> {
         addRow(elements.asList())
     }
 
-    private fun columnWidth(c: Int, elemFormatter: (e: T) -> String = { it.toString() }): Int {
+    private fun columnWidth(c: Int, elemFormatter: (e: T) -> String): Int {
         if (columnHeaders.size < c) {
             throw IndexOutOfBoundsException("Requested header of column $c, but table has only ${columnHeaders.size} columnHeaders")
         }
@@ -86,7 +86,7 @@ open class Table<T> {
         check(rows.size == rowHeaders.size,
                 { "There are ${rows.size} rows, but ${rowHeaders.size} row headers" })
 
-        val headers = formatHeaders(columnPadding)
+        val headers = formatHeaders(columnPadding, elemFormatter)
         val rows = rows.zip(rowHeaders).map {(row, header) ->
             formatRow(row, header, columnPadding, elemFormatter)
         }.toList()
@@ -98,17 +98,17 @@ open class Table<T> {
         ).joinToString(System.lineSeparator())
     }
 
-    private fun formatHeaders(columnPadding: Int) =
+    private fun formatHeaders(columnPadding: Int, elemFormatter: (e: T) -> String) =
             columnHeaders.mapIndexed {
-                index, s -> s.padEnd(columnWidth(index-1)) + ( if (index == 0) " |" else "")
+                index, s -> s.padEnd(columnWidth(index-1, elemFormatter)) + ( if (index == 0) " |" else "")
             }.joinToString(" ".repeat(columnPadding))
 
     private fun formatRow(row: MutableList<T>, header: String, columnPadding: Int,
                           elemFormatter: (e: T) -> String): String {
-        val l = mutableListOf(header.padEnd(columnWidth(-1)) + " |")
+        val l = mutableListOf(header.padEnd(columnWidth(-1, elemFormatter)) + " |")
         l.addAll(
             row.mapIndexed { index, t ->
-                elemFormatter(t).padEnd(columnWidth(index))
+                elemFormatter(t).padEnd(columnWidth(index, elemFormatter))
             }
         )
         return l.joinToString(" ".repeat(columnPadding))
