@@ -10,7 +10,7 @@ import java.util.*
 /**
  * @author Ruben Schellekens
  */
-open class Polynomial {
+open class Polynomial : Comparable<Polynomial> {
 
     companion object {
 
@@ -308,7 +308,7 @@ open class Polynomial {
         return buildString {
             var plus = ""
             for (i in degree downTo 0) {
-                if (coefficients.size == 0) {
+                if (coefficients.isEmpty()) {
                     append("0 ")
                     break
                 }
@@ -329,6 +329,22 @@ open class Polynomial {
             }
             append("(ℤ/${modulus}ℤ)")
         }.trim()
+    }
+
+    override fun compareTo(other: Polynomial): Int {
+        var compared = coefficients.size.compareTo(other.coefficients.size)
+        if (compared != 0) {
+            return compared
+        }
+
+        for ((a, b) in coefficients.zip(other.coefficients).reversed()) {
+            compared = a.value.compareTo(b.value)
+            if (compared != 0) {
+                return compared
+            }
+        }
+
+        return 0
     }
 
     /**
