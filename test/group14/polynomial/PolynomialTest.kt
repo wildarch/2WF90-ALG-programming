@@ -34,4 +34,17 @@ class PolynomialTest {
         assertEquals(1, a.compareTo(b))
     }
 
+    @Test
+    fun `Singular`() {
+        assertEquals(Polynomial.singular(5, 4).toPolynomialString(), Polynomial(5, 0, 0, 0, 0, 1).toPolynomialString())
+        assertEquals(Polynomial.singular(5, 0).toPolynomialString(), Polynomial(5, 1).toPolynomialString())
+    }
+
+    @Test
+    fun `Random`() {
+        for (i in 0..100) {
+            val poly = Polynomial.random(5, 3)
+            assertEquals(3, poly.degree)
+        }
+    }
 }
