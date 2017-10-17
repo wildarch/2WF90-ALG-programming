@@ -193,12 +193,9 @@ class Parser(val lexer: Lexer) {
      */
     private fun polynomial() {
         pushBlock(POLYNOMIAL)
-        var next = next()
-        if (next == null) {
-            error("Illegal polynomial definition")
-        }
+        var next: Token = next() ?: error("Illegal polynomial definition")
 
-        when (next?.type) {
+        when (next.type) {
             NUMBER, PARAMETER, SUBTRACT -> {}
             else -> error("Polynomial must start with a number or a parameter")
         }
@@ -213,7 +210,7 @@ class Parser(val lexer: Lexer) {
         var parameter = false
 
         // Parse children.
-        while (next != null) {
+        while (true) {
             when (next.type) {
                 NUMBER -> {
                     if (previous?.type == NUMBER) {
@@ -237,7 +234,7 @@ class Parser(val lexer: Lexer) {
                     if (parameter) {
                         error("Coefficient list syntax is not allowed in parameter-style definition")
                     }
-                    if (previous?.type == SEPARATOR) {
+                    if (previous.type == SEPARATOR) {
                         error("Expected a coefficient")
                     }
                     separator = true
@@ -279,7 +276,7 @@ class Parser(val lexer: Lexer) {
 
             pushChild(next.type)
             previous = next
-            next = next()
+            next = next() ?: break
         }
     }
 
@@ -294,10 +291,7 @@ class Parser(val lexer: Lexer) {
 
         // Open modulus block.
         pushBlock(META)
-        var next = next()
-        if (next == null) {
-            error("Illegal modulus definition, (mod p) expected")
-        }
+        var next: Token? = next() ?: error("Illegal modulus definition, (mod p) expected")
 
         // For the first token, don't accept a closing parentheses.
         if (next?.type != MODKEYWORD && next?.type != FIELDKEYWORD) {
@@ -305,11 +299,11 @@ class Parser(val lexer: Lexer) {
         }
 
         // Only allow 1 field definition
-        if (definedField && next?.type == FIELDKEYWORD) {
+        if (definedField && next.type == FIELDKEYWORD) {
             error("Cannot have multiple field definitions")
         }
 
-        pushChild(next!!.type)
+        pushChild(next.type)
         var previous: Token? = next
         next = next()
 
@@ -399,7 +393,7 @@ class Parser(val lexer: Lexer) {
      * Throws a parse exception.
      */
     @Throws(ParseException::class)
-    private fun error(message: String) {
+    private fun error(message: String): Nothing {
         val item = lexer.current()
         val column = lexer.column()
         throw ParseException("$message; got <${item.value}> (col:$column).", column)

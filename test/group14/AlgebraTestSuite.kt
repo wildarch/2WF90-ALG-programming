@@ -1,6 +1,9 @@
 package group14
 
+import group14.field.AdditionTableTest
 import group14.field.FiniteFieldTest
+import group14.field.MultiplicationTable
+import group14.field.MultiplicationTableTest
 import group14.integer.ModularIntegerTest
 import group14.polynomial.*
 import group14.parser.LexerTest
@@ -30,6 +33,8 @@ import org.junit.runners.Suite
         PolynomialIrreducible::class,
         PolynomialEuclidsTest::class,
         TableTest::class,
+        AdditionTableTest::class,
+        MultiplicationTableTest::class,
         ConcurrencyTest::class
 )
 object AlgebraTestSuite

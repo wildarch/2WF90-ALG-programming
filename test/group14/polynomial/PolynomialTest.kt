@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class PolynomialTest {
 
     @Test
-    fun `Polynomial String aka Pretty Printer TM`() {
+    fun toPolynomialString() {
         val poly = Polynomial(3L, 2, 1)
         assertEquals("X + 2 (ℤ/3ℤ)", poly.toPolynomialString())
 
@@ -25,6 +25,13 @@ class PolynomialTest {
     fun `Degree zero`() {
         val poly = Polynomial.zero(2L)
         assertEquals(0, poly.degree, "Polynomials without coefficients has degree 0")
+    }
+
+    @Test
+    fun ordering() {
+        val a = Polynomial(2, 1)
+        val b = Polynomial(2)
+        assertEquals(1, a.compareTo(b))
     }
 
     @Test
