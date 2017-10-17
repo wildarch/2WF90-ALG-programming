@@ -2,6 +2,7 @@ package group14
 
 import group14.field.FiniteFieldTest
 import group14.integer.ModularIntegerTest
+import group14.polynomial.*
 import group14.parser.LexerTest
 import group14.parser.ParserTest
 import group14.parser.PolynomialConverterTest
@@ -26,6 +27,9 @@ import org.junit.runners.Suite
         ParserTest::class,
         ConcurrencyTest::class,
         PolynomialLongDivision::class,
-        TableTest::class
+        PolynomialIrreducible::class,
+        PolynomialEuclidsTest::class,
+        TableTest::class,
+        ConcurrencyTest::class
 )
 object AlgebraTestSuite
