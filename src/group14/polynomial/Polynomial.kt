@@ -2,6 +2,7 @@ package group14.polynomial
 
 import group14.Primes
 import group14.integer.ModularInteger
+import group14.integer.mod
 import group14.isPrime
 import group14.superScript
 import java.util.*
@@ -18,6 +19,35 @@ open class Polynomial {
          */
         @JvmStatic
         fun zero(modulus: Long) = Polynomial(emptyArray(), modulus)
+
+        /**
+         * Returns a polynomial consisting of only 1 term with coefficient 1
+         */
+        @JvmStatic
+        fun singular(modulus: Long, degree: Int): Polynomial {
+            val coefficients = Array(degree + 1) { 0 mod modulus }
+            coefficients[degree] = 1 mod modulus
+            return Polynomial(coefficients, modulus)
+        }
+
+        /**
+         * Returns a random polynomial of given degree and modulus
+         */
+        @JvmStatic
+        fun random(modulus: Long, degree: Int, random: Random = Random()): Polynomial {
+            val coefficients = Array(degree + 1) { 0 mod modulus }
+
+            for (i in coefficients.indices) {
+                if (i == coefficients.lastIndex) {
+                    coefficients[i] = ModularInteger(random.nextInt((modulus - 1).toInt()).toLong() + 1.toLong(), modulus)
+                }
+                else {
+                    coefficients[i] = ModularInteger(random.nextInt((modulus).toInt()).toLong(), modulus)
+                }
+            }
+
+            return Polynomial(coefficients, modulus)
+        }
     }
 
     /**
@@ -90,9 +120,25 @@ open class Polynomial {
      * @return `true` when this polynomial is irreducible, `false` otherwise.
      */
     fun isIrreducible(): Boolean {
-        // TODO: Check irreducibility
-        println("WARN assuming irreducibility")
-        return true
+        require(degree > 0) { "Degree must be positive for a irreducibility test" }
+
+        // Polynomials of degree 1 are always irreducible
+        if (degree == 1) {
+            return true
+        }
+
+        // Execute the algorithm from the lecture notes.
+        var t = 0
+        do {
+            t++
+            val other = (Polynomial.singular(modulus, Math.pow(modulus.toDouble(), t.toDouble()).toInt()) - Polynomial(modulus, 0, 1))
+            val euclid = PolynomialEuclids(this, other)
+            euclid.execute()
+            val gcd = euclid.gcd
+        }
+        while (gcd == Polynomial(modulus, 1))
+
+        return t == degree
     }
 
     /**
@@ -108,9 +154,9 @@ open class Polynomial {
      */
     @Throws(IllegalArgumentException::class)
     fun congruent(other: Polynomial, with: Polynomial): Boolean {
-        require(modulus == other.modulus, {"Moduli not the same ($modulus vs ${other.modulus}"})
-        require(modulus == with.modulus, {"Modulus of mod not the same ($modulus vs ${with.modulus})"})
-        require(with.degree > 0, {"Modulus may not be a zero polynomial"})
+        require(modulus == other.modulus, { "Moduli not the same ($modulus vs ${other.modulus}" })
+        require(modulus == with.modulus, { "Modulus of mod not the same ($modulus vs ${with.modulus})" })
+        require(with.degree > 0, { "Modulus may not be a zero polynomial" })
 
         val (_, remainder) = ((this - other) / with)
         return remainder.zero

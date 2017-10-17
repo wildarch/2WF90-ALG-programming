@@ -10,7 +10,7 @@ class FiniteFieldTest {
 
     @Test
     fun `Generate elements`() {
-        val poly = Polynomial(3, 1, 0, 1, 1)
+        val poly = Polynomial(3, 2, 1, 1, 1)
         val field = FiniteField(poly)
         val elements = field.getElements()
 
@@ -21,7 +21,7 @@ class FiniteFieldTest {
 
     @Test
     fun `Is element`() {
-        val poly = Polynomial(3, 1, 0, 1, 1)
+        val poly = Polynomial(3, 2, 1, 1, 1)
         val field = FiniteField(poly)
         val elements = field.getElements()
 
@@ -36,7 +36,7 @@ class FiniteFieldTest {
 
     @Test
     fun `Zero is an element`() {
-        val poly = Polynomial(3, 1, 0, 1, 1)
+        val poly = Polynomial(3, 2, 1, 1, 1)
         val field = FiniteField(poly)
         val zero = Polynomial.zero(3)
         assertTrue(field.isElement(zero), "Zero is an element of $field")
@@ -54,7 +54,7 @@ class FiniteFieldTest {
 
     @Test
     fun `Subtraction`() {
-        val poly = Polynomial(2, 1, 1, 1, 1)
+        val poly = Polynomial(2, 1, 1, 0, 1)
         val field = FiniteField(poly)
         val a = Polynomial(2, 0, 1)
         val b = Polynomial(2, 0, 0, 1)
@@ -65,7 +65,7 @@ class FiniteFieldTest {
 
     @Test
     fun `Addition, subtraction and multiplication land in field`() {
-        val poly = Polynomial(3, 1, 0, 1, 1)
+        val poly = Polynomial(3, 2, 1, 1, 1)
         val field = FiniteField(poly)
         val elements = field.getElements()
 
