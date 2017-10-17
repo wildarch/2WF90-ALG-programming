@@ -35,6 +35,7 @@ interface Evaluator {
 
             // Keyword
             return when (firstChild.text) {
+                "table" -> TableEvaluation()
                 "parsetree" -> ParsetreeEvaluation()
                 "exit" -> ExitEvaluation()
                 "help" -> HelpEvaluation()

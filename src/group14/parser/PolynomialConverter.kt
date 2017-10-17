@@ -159,14 +159,21 @@ open class PolynomialConverter(val node: ASTNode, val modulus: Long) {
             // Case +
             else if (tracker.type() == TokenType.ADD) {
                 tracker.next(operation, coefficient, 0) ?: break
-                coefficient = tracker.child().text.toLong()
+                var power = 0
+                coefficient = if (tracker.type() == TokenType.PARAMETER) {
+                    power = 1
+                    -1
+                }
+                else {
+                    tracker.child().text.toLong()
+                }
 
                 when (tracker.child().next?.type) {
                     TokenType.ADD, TokenType.SUBTRACT, TokenType.NUMBER -> {
-                        tracker.push(operation, coefficient, 0)
+                        tracker.push(operation, coefficient, power)
                         continue@outer
                     }
-                    else -> tracker.next(operation, coefficient, 0) ?: break@outer
+                    else -> tracker.next(operation, coefficient, power) ?: break@outer
                 }
             }
 

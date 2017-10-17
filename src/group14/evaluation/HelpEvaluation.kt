@@ -11,12 +11,11 @@ import java.io.PrintStream
 open class HelpEvaluation : Evaluator {
 
     override fun evaluate(tree: Parser.ASTNode, output: PrintStream, state: EvaluationState) {
-        output.println()
         output.println("[some expression] (mod p)")
         output.println("- Outputs the result of the expression modulo p.")
         output.println("!NYI! [some expression] (mod p) (field d(X))")
         output.println("- Outputs the result of the expression modulo p in a given field.")
-        output.println("!NYI! table <add|multiply> [q(X)] (mod p)")
+        output.println("table <add|multiply> [q(X)] (mod p)")
         output.println("- Creates a addition/multiplication table of field Z/pZ[X]/(q(X)).")
         output.println("!NYI! euclid [p(X)] and [q(X)] (mod p)")
         output.println("- Executes the extended euclidean algorithm to produce gcd(p,q)= a*p(X) + b*q(X).")
