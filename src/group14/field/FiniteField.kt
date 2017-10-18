@@ -2,6 +2,7 @@ package group14.field
 
 import group14.cartesianProduct
 import group14.polynomial.Polynomial
+import group14.polynomial.PolynomialEuclids
 import java.util.*
 
 /**
@@ -104,18 +105,11 @@ data class FiniteField(
     }
 
     /**
-     * TODO implement
-     *
-     * Addition table
-     * Multiplication table
-     *
-     * For fields a,b:
-     * Addition a+b
-     * Product a*b
-     * Quotient a*b^-1 (So also inverse, e.g. Algorithm 2.3.3)
-     *
-     * Check primitivity of field element AND determine primitive elements
-     * OR
-     * Test irreducibility of polynomial mod p AND produce irreducible polynomials of given degree
+     * Calculates the inverse of `polynomial` in this field.
      */
+    fun inverse(polynomial: Polynomial): Polynomial {
+        val euclids = PolynomialEuclids(polynomial,  this.polynomial)
+        euclids.execute()
+        return euclids.y
+    }
 }
