@@ -29,7 +29,7 @@ open class HelpEvaluation : Evaluator {
         output.println("- Checks if p(X) is irreducible.")
         output.println("!NYI! findirreducibles n (mod p)")
         output.println("- Find irreducible polynomials of degree n.")
-        output.println("!NYI! elements (field d(X))")
+        output.println("elements (field d(X))")
         output.println("- Print all the elements in a given field.")
         output.println("parsetree [some input]")
         output.println("- (debug) Prints the parse tree of the given input.")
