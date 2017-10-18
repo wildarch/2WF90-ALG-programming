@@ -1,6 +1,7 @@
 package group14.field
 
 import group14.cartesianProduct
+import group14.integer.ModularInteger
 import group14.polynomial.Polynomial
 import group14.polynomial.PolynomialEuclids
 import java.util.*
@@ -104,9 +105,15 @@ data class FiniteField(
         return r
     }
 
+    /**
+     * Calculates inverse of a polynomial b
+     *
+     * @return y, with (b * y) = 1
+     */
     fun inverse(polynomial: Polynomial): Polynomial {
-        val euclids = PolynomialEuclids(polynomial,  this.polynomial)
+        val euclids = PolynomialEuclids(this.polynomial, polynomial)
         euclids.execute()
-        return euclids.y
+
+        return euclids.y * euclids.gcd[0].inverse()
     }
 }
