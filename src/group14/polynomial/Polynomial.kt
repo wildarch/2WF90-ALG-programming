@@ -358,19 +358,19 @@ open class Polynomial : Comparable<Polynomial>, EvaluationObject {
                     continue
                 }
 
-                append("$plus ")
+                append(plus)
                 plus = "+"
 
                 val coefficientResult = if (c == 1L && i != 0) "" else c.toString()
                 when {
-                    i > 1 -> append("${coefficientResult}X${superScript(i)} ")
-                    i == 1 -> append("${coefficientResult}X ")
-                    else -> append("$coefficientResult ")
+                    i > 1 -> append("${coefficientResult}X${superScript(i)}")
+                    i == 1 -> append("${coefficientResult}X")
+                    else -> append(coefficientResult)
                 }
             }
 
-            if (modMessage.isEmpty()) {
-                trimEnd()
+            if (!modMessage.isEmpty()) {
+                append(" ")
             }
             append(modulusMessage(modulus))
         }.trim()
