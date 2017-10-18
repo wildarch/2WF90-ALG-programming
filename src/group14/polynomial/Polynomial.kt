@@ -186,6 +186,7 @@ open class Polynomial : Comparable<Polynomial> {
     operator fun plus(other: ModularInteger): Polynomial {
         require(modulus == other.modulus, { "Moduli not the same" })
         val newCof = this.coefficients.clone()
+        if (newCof.isEmpty()) return Polynomial(modulus, other.value)
         newCof[0] += other
         return Polynomial(newCof, this.modulus)
     }
@@ -221,6 +222,7 @@ open class Polynomial : Comparable<Polynomial> {
     operator fun minus(other: ModularInteger): Polynomial {
         require(modulus == other.modulus, { "Moduli not the same" })
         val baseCof = this.coefficients.clone()
+        if (baseCof.isEmpty()) return Polynomial(modulus, ModularInteger.reduce(-other.value,modulus).value)
         baseCof[0] -= other
         return Polynomial(baseCof, this.modulus)
     }

@@ -106,9 +106,9 @@ data class FiniteField(
     }
 
     /**
-     * Calculates inverse of a polynomial b
+     * Calculates the inverse of `polynomial` in this field.
      *
-     * @return y, with (b * y) = 1
+     * @return y', with y * y' = 1
      */
     fun inverse(polynomial: Polynomial): Polynomial {
         val euclids = PolynomialEuclids(this.polynomial, polynomial)

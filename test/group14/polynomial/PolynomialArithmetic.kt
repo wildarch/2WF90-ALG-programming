@@ -29,6 +29,16 @@ class PolynomialArithmetic {
         val expected4 = p1
         val result4 = Polynomial.zero(5) + p1
         assertEquals("Empty first parameter", expected4.toString(), result4.toString())
+
+        val expected5 = Polynomial(5, 3)
+        val result5 = Polynomial.zero(5)+ModularInteger(3,5)
+
+        assertEquals(expected5.toPolynomialString(), result5.toPolynomialString())
+
+        val expected6 = Polynomial(5, 2)
+        val result6 = Polynomial.zero(5)-ModularInteger(3,5)
+
+        assertEquals(expected6.toPolynomialString(), result6.toPolynomialString())
     }
 
     @Test
