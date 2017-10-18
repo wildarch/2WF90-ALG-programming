@@ -56,6 +56,7 @@ open class REPL(val output: PrintStream, val options: Set<Option>) {
         while (true) {
             val input = read()
             evaluate(input)
+            println()
         }
     }
 

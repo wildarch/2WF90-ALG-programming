@@ -36,6 +36,7 @@ interface Evaluator {
             // Keyword
             return when (firstChild.text) {
                 "table" -> TableEvaluation()
+                "euclid" -> EuclidEvaluation()
                 "parsetree" -> ParsetreeEvaluation()
                 "exit" -> ExitEvaluation()
                 "help" -> HelpEvaluation()
@@ -58,4 +59,11 @@ interface Evaluator {
      */
     @Throws(EvaluationException::class)
     fun evaluate(tree: Parser.ASTNode, output: PrintStream, state: EvaluationState)
+
+    /**
+     * Throws an [EvaluationException].
+     */
+    fun error(message: String): Nothing {
+        throw EvaluationException(message)
+    }
 }
