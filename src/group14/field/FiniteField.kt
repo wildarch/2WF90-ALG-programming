@@ -104,6 +104,9 @@ data class FiniteField(
         return r
     }
 
+    /**
+     * Calculates the inverse of `polynomial` in this field.
+     */
     fun inverse(polynomial: Polynomial): Polynomial {
         val euclids = PolynomialEuclids(polynomial,  this.polynomial)
         euclids.execute()
