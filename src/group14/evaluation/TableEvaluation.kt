@@ -47,6 +47,6 @@ open class TableEvaluation : Evaluator {
         val fieldSymbol = if (Option.COEFFICIENT_LIST in state.options) "F" else "\uD835\uDD3D"
         val field = "$fieldSymbol${state.modulus}/($polynomial)"
         output.println("$tableName of $field")
-        output.println(table.format(3, style))
+        output.println(table.format(2, style))
     }
 }
