@@ -10,7 +10,7 @@ open class EvaluationException : RuntimeException {
 }
 
 inline fun evaluationCheck(predicate: Boolean, message: () -> Any?) {
-    if (predicate) {
+    if (!predicate) {
         throw EvaluationException(message()?.toString() ?: "null")
     }
 }

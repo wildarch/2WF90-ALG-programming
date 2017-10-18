@@ -77,8 +77,11 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                     }
                     else if (previous is Polynomial) {
                         evaluationCheck(state.field != null) { "No field defined" }
-                        // TODO: Polynomial Inverse
-                        previous
+                        evaluationCheck(state.field!!.modulus == previous.modulus) {
+                            "Moduli of the polynomial and field do not match " +
+                                    "(${state.field!!.modulus} vs ${(previous as Polynomial).modulus})"
+                        }
+                        state.field!!.inverse(previous)
                     }
                     else {
                         throw EvaluationException("Illegal object $previous")
@@ -88,9 +91,7 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 }
 
                 // Two sided
-                if (i + 1 >= elements.size) {
-                    throw EvaluationException("Operator $operator doesn't have a right hand side")
-                }
+                evaluationCheck(i + 1 < elements.size) { "Operator $operator doesn't have a right hand side" }
                 var next = elements[i + 1]
 
                 // Manage nested evaluations.
