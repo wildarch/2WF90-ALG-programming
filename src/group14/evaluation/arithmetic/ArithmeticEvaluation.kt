@@ -136,20 +136,25 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 val right = next
                 val operatorObject = operator as? TokenType.Operator ?: throw EvaluationException("$operator is not an operator")
 
-                elements[i] = if (left is Polynomial && right is Polynomial) {
-                    operatorObject.polyFunction(left, right)
+                try {
+                    elements[i] = if (left is Polynomial && right is Polynomial) {
+                        operatorObject.polyFunction(left, right)
+                    }
+                    else if (left is ModularInteger && right is ModularInteger) {
+                        operatorObject.intFunction(left, right)
+                    }
+                    else if (left is Polynomial && right is ModularInteger) {
+                        operator.polyIntFunction(left, right)
+                    }
+                    else if (left is ModularInteger && right is Polynomial) {
+                        operator.intPolyFunction(left, right)
+                    }
+                    else {
+                        error("Wrong evaluation case: Left=$left & right=$right")
+                    }
                 }
-                else if (left is ModularInteger && right is ModularInteger) {
-                    operatorObject.intFunction(left, right)
-                }
-                else if (left is Polynomial && right is ModularInteger) {
-                    operator.polyIntFunction(left, right)
-                }
-                else if (left is ModularInteger && right is Polynomial) {
-                    operator.intPolyFunction(left, right)
-                }
-                else {
-                    error("Wrong evaluation case: Left=$left & right=$right")
+                catch (exception: Exception) {
+                    throw EvaluationException("Could not evaluate $left${operatorObject.pattern}$right: " + exception.message, exception)
                 }
 
                 elements.removeAt(i + 1)
