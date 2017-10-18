@@ -67,7 +67,14 @@ open class ArithmeticEvaluationCreator(val tree: ASTNode, val state: EvaluationS
                     if (state.modulus == null) {
                         throw EvaluationException("Coefficient modulus must be defined")
                     }
-                    state.field = FiniteField(Polynomial.fromNode(value, state.modulus!!))
+
+                    val polynomial = Polynomial.fromNode(value, state.modulus!!)
+                    try {
+                        state.field = FiniteField(polynomial)
+                    }
+                    catch (illegalArgument: IllegalArgumentException) {
+                        throw EvaluationException("$polynomial is reducible", illegalArgument)
+                    }
                 }
             }
         }

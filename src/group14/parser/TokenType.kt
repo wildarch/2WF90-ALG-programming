@@ -61,7 +61,8 @@ sealed class TokenType {
             operator: String,
             val intFunction: (ModularInteger, ModularInteger) -> ModularInteger,
             val polyFunction: (Polynomial, Polynomial) -> Polynomial,
-            val intPolyFunction: (Polynomial, ModularInteger) -> Polynomial
+            val polyIntFunction: (Polynomial, ModularInteger) -> Polynomial,
+            val intPolyFunction: (ModularInteger, Polynomial) -> Polynomial
     ) : TokenType(ordinal, operator), EvaluationObject
 
     abstract class UnaryOperator(
@@ -73,6 +74,7 @@ sealed class TokenType {
             operator,
             { _, _ -> error("Unary operator doesn't support i,i->i functions.") },
             { _, _ -> error("Unary operator doesn't support p,p->p functions") },
+            { _, _ -> error("Unary operator doesn't support p,i->p functions") },
             { _, _ -> error("Unary operator doesn't support p,i->p functions") }
     )
 
@@ -97,19 +99,23 @@ sealed class TokenType {
     object ADD : Operator(7, "\\+",
             { a, b -> a + b },
             { a, b -> a + b },
-            { a, b -> a + b }
+            { a, b -> a + b },
+            { a, b -> b + a }
     )
     object SUBTRACT : Operator(8, "-",
             { a, b -> a - b },
             { a, b -> a - b },
-            { a, b -> a - b }
+            { a, b -> a - b },
+            { i, p -> p.times(ModularInteger.reduce(-1, i.modulus)) + i }
     )
     object MULTIPLY : Operator(9, "\\*",
             { a, b -> a * b },
             { a, b -> a * b },
-            { a, b -> a * b }
+            { a, b -> a * b },
+            { a, b -> b * a }
     )
     object POWER : Operator(10, "\\^",
+            { _, _ -> error("Operation not supported.") },
             { _, _ -> error("Operation not supported.") },
             { _, _ -> error("Operation not supported.") },
             { _, _ -> error("Operation not supported.") }
@@ -117,17 +123,20 @@ sealed class TokenType {
     object DIVIDE : Operator(11, "/",
             { a, b -> a / b },
             { a, b -> (a / b).first },
-            { a, b -> a * b.inverse() }
+            { a, b -> a * b.inverse() },
+            { a, b -> (Polynomial(a) / b).first }
     )
     object REMAINDER : Operator(12, "%",
             { a, b -> ModularInteger.reduce(a.value % b.value, a.modulus) },
             { a, b -> (a / b).second },
-            { a, b -> (a / Polynomial(arrayOf(b), a.modulus)).second }
+            { a, b -> (a / Polynomial(arrayOf(b), a.modulus)).second },
+            { a, b -> (Polynomial(a) / b).first }
     )
     object EQUALS : Operator(13, "=",
             { _, _ -> error("EQUALS not supported for i,i") },
-            { a, b -> error("EQUALS not supported for p,p") },
-            { a, b -> error("EQUALS not supported for p,i") }
+            { _, _ -> error("EQUALS not supported for p,p") },
+            { _, _ -> error("EQUALS not supported for p,i") },
+            { _, _ -> error("EQUALS not supported for i,p") }
     )
     object PARAMETER : TokenType(14, "[xX]")
     object PREVIOUS : TokenType(15, "_")

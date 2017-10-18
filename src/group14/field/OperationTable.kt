@@ -14,25 +14,9 @@ open class OperationTable(operation: (Polynomial, Polynomial) -> Polynomial, fie
     init {
         val elements = field.getElements().sorted()
         val rows = elements.map { a -> elements.map { b -> operation(a, b) } }
-        addRowHeaders(*elements.map { it.toPolynomialString() }.toTypedArray())
-        addColumnHeaders(*elements.map { it.toPolynomialString() }.toTypedArray())
+        addRowHeaders(*elements.map { it.toPolynomialString { "" } }.toTypedArray())
+        addColumnHeaders(*elements.map { it.toPolynomialString { "" } }.toTypedArray())
         rows.forEach { addRow(it) }
-    }
-
-    /**
-     * Formatting style for the elements of the table.
-     */
-    enum class FormatStyle {
-
-        /**
-         * Use of pretty polynomial representation using [Polynomial.toPolynomialString].
-         */
-        PRETTY,
-
-        /**
-         * Use of coefficient list representation using [Polynomial.toString]
-         */
-        COEFFICIENT_LIST
     }
 
     /**
@@ -45,10 +29,30 @@ open class OperationTable(operation: (Polynomial, Polynomial) -> Polynomial, fie
      * @return Human-readable table
      */
     fun format(columnPadding: Int, style: FormatStyle): String {
-        val formatter = when (style) {
-            FormatStyle.PRETTY -> Polynomial::toPolynomialString
-            FormatStyle.COEFFICIENT_LIST -> Polynomial::toString
-        }
-        return super.format(columnPadding, formatter)
+        return super.format(columnPadding, style.styler)
+    }
+
+    /**
+     * Converts polynomials to strings.
+     */
+    interface PolynomialStyler {
+
+        val styler: (Polynomial) -> String
+    }
+
+    /**
+     * Formatting style for the elements of the table.
+     */
+    enum class FormatStyle(override val styler: (Polynomial) -> String) : PolynomialStyler {
+
+        /**
+         * Use of pretty polynomial representation using [Polynomial.toPolynomialString].
+         */
+        PRETTY({ it.toPolynomialString { "" } }),
+
+        /**
+         * Use of coefficient list representation using [Polynomial.toString]
+         */
+        COEFFICIENT_LIST({ it.toString() })
     }
 }

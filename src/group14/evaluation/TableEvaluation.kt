@@ -15,11 +15,11 @@ open class TableEvaluation : Evaluator {
 
     override fun evaluate(tree: Parser.ASTNode, output: PrintStream, state: EvaluationState) {
         if (tree.children.size < 2) {
-            output.println("Usage: table <add|multiply> [q(X)] (mod p)")
+            output.println("Usage: table <add|multiply> (mod p) (field [d(X)])")
             return
         }
 
-        val evaluator = ArithmeticEvaluationCreator(tree, state).create() ?: return
+        ArithmeticEvaluationCreator(tree, state).create()
         if (state.field == null) {
             output.println("No field was defined, expected (field [d(X)])")
             return
@@ -41,6 +41,11 @@ open class TableEvaluation : Evaluator {
         else {
             OperationTable.FormatStyle.PRETTY
         }
-        output.println(table.format(2, style))
+
+        val tableName = table.javaClass.simpleName.replace("Table", " table")
+        val polynomial = style.styler(state.field!!.polynomial)
+        val field = "Z/${state.modulus}Z/($polynomial)"
+        output.println("$tableName of $field")
+        output.println(table.format(3, style))
     }
 }

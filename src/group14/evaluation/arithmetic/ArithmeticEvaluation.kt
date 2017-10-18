@@ -101,6 +101,17 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 // Equality
                 if (operator == TokenType.EQUALS) {
                     if (previous.javaClass != next.javaClass) {
+                        if (previous is ModularInteger && next is Polynomial) {
+                            val polynomial = Polynomial(previous)
+                            val congruent = next.congruent(polynomial, state.polynomialModulus ?: throw EvaluationException("No polynomial modulus defined"))
+                            return Right(congruent)
+                        }
+                        else if (next is ModularInteger && previous is Polynomial) {
+                            val polynomial = Polynomial(next)
+                            val congruent = previous.congruent(polynomial, state.polynomialModulus ?: throw EvaluationException("No polynomial modulus defined"))
+                            return Right(congruent)
+                        }
+
                         return Right(false)
                     }
 
@@ -115,8 +126,8 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 }
 
                 // Other Operators
-                val left = if (previous is ModularInteger && next is Polynomial) next else previous
-                val right = if (previous is ModularInteger && next is Polynomial) previous else next
+                val left = previous
+                val right = next
                 val operatorObject = operator as? TokenType.Operator ?: throw EvaluationException("$operator is not an operator")
 
                 elements[i] = if (left is Polynomial && right is Polynomial) {
@@ -126,6 +137,9 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                     operatorObject.intFunction(left, right)
                 }
                 else if (left is Polynomial && right is ModularInteger) {
+                    operator.polyIntFunction(left, right)
+                }
+                else if (left is ModularInteger && right is Polynomial) {
                     operator.intPolyFunction(left, right)
                 }
                 else {

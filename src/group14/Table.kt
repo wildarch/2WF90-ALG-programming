@@ -2,6 +2,7 @@ package group14
 
 /**
  * Table with row and column headers that can be pretty printed to the console.
+ * 
  * @author Daan de Graaf
  */
 open class Table<T> {

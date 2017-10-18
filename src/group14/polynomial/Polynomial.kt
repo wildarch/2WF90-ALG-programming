@@ -116,6 +116,11 @@ open class Polynomial : Comparable<Polynomial>, EvaluationObject {
     )
 
     /**
+     * Creates a polynomial of degree 0 with the value of `integer`.
+     */
+    constructor(integer: ModularInteger) : this(integer.modulus, integer.value)
+
+    /**
      * Get the degree of this polynomial.
      *
      * "The degree of a polynomial is the highest degree of its monomials with non-zero coefficients."
@@ -321,10 +326,22 @@ open class Polynomial : Comparable<Polynomial>, EvaluationObject {
      * @return E.g. `X⁶ + 2X⁵ + 4X³ + 2X² + X + 1 (Z/5Z)...`
      */
     @Suppress("RemoveCurlyBracesFromTemplate")
-    fun toPolynomialString(): String {
+    fun toPolynomialString() = toPolynomialString {
+        "(ℤ/${it}ℤ)"
+    }
+
+    /**
+     * @return E.g. `X⁶ + 2X⁵ + 4X³ + 2X² + X + 1 (Z/5Z)...`
+     */
+    fun toPolynomialString(modulusMessage: (Long) -> String): String {
         return buildString {
+            val modMessage = modulusMessage(modulus)
             if (coefficients.isEmpty()) {
-                append("0 (ℤ/${modulus}ℤ)")
+                append("0")
+                if (modMessage.isNotEmpty()) {
+                    append(" ")
+                }
+                append(modMessage)
                 return@buildString
             }
 
@@ -350,7 +367,10 @@ open class Polynomial : Comparable<Polynomial>, EvaluationObject {
                 }
             }
 
-            append("(ℤ/${modulus}ℤ)")
+            if (modMessage.isEmpty()) {
+                trimEnd()
+            }
+            append(modulusMessage(modulus))
         }.trim()
     }
 
