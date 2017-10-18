@@ -162,7 +162,7 @@ open class PolynomialConverter(val node: ASTNode, val modulus: Long) {
                 var power = 0
                 coefficient = if (tracker.type() == TokenType.PARAMETER) {
                     power = 1
-                    -1
+                    1
                 }
                 else {
                     tracker.child().text.toLong()
@@ -173,6 +173,7 @@ open class PolynomialConverter(val node: ASTNode, val modulus: Long) {
                         tracker.push(operation, coefficient, power)
                         continue@outer
                     }
+                    TokenType.POWER -> { }
                     else -> tracker.next(operation, coefficient, power) ?: break@outer
                 }
             }
