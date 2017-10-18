@@ -94,7 +94,7 @@ open class Table<T> {
         val width = Math.max(headers.length, rows.map { it.length }.max() ?: 0)
         return listOf(
                 headers,
-                "–".repeat(width),
+                "-".repeat(width),
                 rows.joinToString(System.lineSeparator())
         ).joinToString(System.lineSeparator())
     }
