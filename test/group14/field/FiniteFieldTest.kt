@@ -1,7 +1,10 @@
 package group14.field
 
+import group14.isPrime
+import group14.parser.TokenType
 import group14.polynomial.Polynomial
 import org.junit.Test
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -77,6 +80,60 @@ class FiniteFieldTest {
                 assertTrue(field.isElement(sub), "$a - $b = $sub is outside of $field")
                 val mul = field.multiply(a, b)
                 assertTrue(field.isElement(sub), "$a * $b = $mul is outside of $field")
+            }
+        }
+    }
+
+    @Test
+    fun `Inverse in field`() {
+
+        for (i in 2..55) { // Modulo all primes till 55
+            val modulus: Long = i.toLong()
+            if (modulus.isPrime()) {
+                val fieldPolynomial = Polynomial.random(modulus, 3)
+                val onePolynomial = Polynomial(modulus, 1)
+                if (fieldPolynomial.isIrreducible()) { // If random Polynomial is irreducible, create field
+                    val field = FiniteField(fieldPolynomial)
+                    for (k in 0 until modulus) { // And test all elements for inverses
+                        for (l in 0 until modulus) {
+                            for (m in 0 until modulus) {
+                                val polynomial = Polynomial(modulus, k, l, m)
+                                if (polynomial != Polynomial.zero(modulus)) {
+                                    val inversePolynomial = field.inverse(polynomial)
+                                    assertTrue(onePolynomial.congruent(polynomial * inversePolynomial, fieldPolynomial),
+                                            inversePolynomial.toPolynomialString() + "is not the inverse of "
+                                            + polynomial.toPolynomialString() + " modulus " + fieldPolynomial.toPolynomialString())
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (i in 2..55) {
+            val modulus: Long = i.toLong()
+            if (modulus.isPrime()) {
+                val fieldPolynomial = Polynomial.random(modulus, 4)
+                val onePolynomial = Polynomial(modulus, 1)
+                if (fieldPolynomial.isIrreducible()) {
+                    val field = FiniteField(fieldPolynomial)
+                    for (k in 0 until modulus) {
+                        for (l in 0 until modulus) {
+                            for (m in 0 until modulus) {
+                                for (n in 0 until modulus) {
+                                    val polynomial = Polynomial(modulus, k, l, m, n)
+                                    if (polynomial != Polynomial.zero(modulus)) {
+                                        val inversePolynomial = field.inverse(polynomial)
+                                        assertTrue(onePolynomial.congruent(polynomial * inversePolynomial, fieldPolynomial),
+                                                inversePolynomial.toPolynomialString() + "is not the inverse of "
+                                                        + polynomial.toPolynomialString() + " modulus " + fieldPolynomial.toPolynomialString())
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
