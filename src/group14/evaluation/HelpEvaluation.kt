@@ -33,6 +33,8 @@ open class HelpEvaluation : Evaluator {
         output.println("- Print all the elements in a given field.")
         output.println("parsetree [some input]")
         output.println("- (debug) Prints the parse tree of the given input.")
+        output.println("debug <qa>")
+        output.println("- (debug) Executes debug stuff.")
         output.println("exit")
         output.println("- Exits the program.")
     }
