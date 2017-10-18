@@ -37,6 +37,7 @@ interface Evaluator {
             return when (firstChild.text) {
                 "table" -> TableEvaluation()
                 "euclid" -> EuclidEvaluation()
+                "findirreducibles" -> FindIrreduciblesEvaluation()
                 "elements" -> ElementsEvaluation()
                 "parsetree" -> ParsetreeEvaluation()
                 "exit" -> ExitEvaluation()
