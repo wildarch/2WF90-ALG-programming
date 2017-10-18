@@ -68,7 +68,12 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 if (operator == TokenType.INVERSE) {
                     elements.removeAt(i)
                     elements[i - 1] = if (previous is ModularInteger) {
-                        previous.inverse()
+                        try {
+                            previous.inverse()
+                        }
+                        catch (exception: Exception) {
+                            throw EvaluationException("Could not invert '$previous': ${exception.message}")
+                        }
                     }
                     else if (previous is Polynomial) {
                         evaluationCheck(state.field != null) { "No field defined" }
@@ -151,7 +156,9 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
             }
         }
 
-        return makeResult()
+        val result = makeResult()
+        state.result = result
+        return result
     }
 
     /**

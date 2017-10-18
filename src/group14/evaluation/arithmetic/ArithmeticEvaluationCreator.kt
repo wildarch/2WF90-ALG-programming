@@ -39,6 +39,12 @@ open class ArithmeticEvaluationCreator(val tree: ASTNode, val state: EvaluationS
             when (child.type) {
                 TokenType.NUMBER -> stack.add(ModularInteger.fromNode(child, state.modulus!!))
                 TokenType.POLYNOMIAL -> stack.add(Polynomial.fromNode(child, state.modulus!!))
+                TokenType.PREVIOUS -> {
+                    val value = state.result?.value() ?: continue@outer
+                    if (value is Polynomial || value is ModularInteger) {
+                        stack.add(value as EvaluationObject)
+                    }
+                }
                 TokenType.GROUP -> {
                     val evaluation = createEvaluation(child.children) ?: continue@outer
                     stack.add(evaluation)

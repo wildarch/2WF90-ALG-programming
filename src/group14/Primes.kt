@@ -1,6 +1,7 @@
 package group14
 
 import group14.Primes.MAX_PRIME
+import java.math.BigInteger
 import java.util.*
 
 /**
@@ -53,12 +54,18 @@ object Primes {
     @JvmStatic
     @Throws(IllegalArgumentException::class)
     fun isPrimeNumber(other: Number): Boolean {
-        val value = other.toInt()
+        val value = other.toLong()
         if (value > MAX_PRIME) {
-            throw IllegalArgumentException("Integer is larger than MAX_PRIME=$MAX_PRIME.")
+            return if (BigInteger.valueOf(value).isProbablePrime(128)) {
+                System.err.println("Integer is larger than $MAX_PRIME, we cannot guarantee it's prime.")
+                true
+            }
+            else {
+                false
+            }
         }
 
-        return primes.contains(value)
+        return primes.contains(value.toInt())
     }
 
     /**
