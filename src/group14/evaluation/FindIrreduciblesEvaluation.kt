@@ -35,7 +35,7 @@ open class FindIrreduciblesEvaluation : Evaluator {
 
     override fun evaluate(tree: Parser.ASTNode, output: PrintStream, state: EvaluationState) {
         if (tree.children.size < 4) {
-            output.println("Usage: findirreducibles n ofdegree d (mod p)")
+            error("Usage: findirreducibles n ofdegree d (mod p)")
         }
 
         ArithmeticEvaluationCreator(tree, state).create()

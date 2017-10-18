@@ -25,7 +25,7 @@ open class HelpEvaluation : Evaluator {
         output.println("- Checks if p(X) is primitive in a given field.")
         output.println("!NYI! findprimitives (mod p) (field d(X))")
         output.println("- Finds all the primitive elements in a given fields.")
-        output.println("!NYI! isirreducible [p(X)] (mod p)")
+        output.println("isirreducible [p(X)] (mod p)")
         output.println("- Checks if p(X) is irreducible.")
         output.println("findirreducibles n ofdegree d (mod p)")
         output.println("- Find n (random) irreducible polynomials of degree d.")
