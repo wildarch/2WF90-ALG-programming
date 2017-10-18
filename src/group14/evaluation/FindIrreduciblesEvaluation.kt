@@ -1,8 +1,10 @@
 package group14.evaluation
 
 import group14.Option
+import group14.TaskState
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
-import group14.field.OperationTable
+import group14.field.OperationTable.FormatStyle
+import group14.launch
 import group14.parser.Parser
 import group14.parser.TokenType
 import group14.polynomial.IrreducibleGenerator
@@ -45,10 +47,10 @@ open class FindIrreduciblesEvaluation : Evaluator {
         }
 
         val style = if (Option.COEFFICIENT_LIST in state.options) {
-            OperationTable.FormatStyle.COEFFICIENT_LIST
+            FormatStyle.COEFFICIENT_LIST
         }
         else {
-            OperationTable.FormatStyle.PRETTY
+            FormatStyle.PRETTY
         }
 
         // Parse arguments.
@@ -79,10 +81,20 @@ open class FindIrreduciblesEvaluation : Evaluator {
         }
 
         // Generate polynomials.
-        val generator = IrreducibleGenerator(state.modulus!!, degree)
+        findIrreducibles(amount, degree, state.modulus!!, output, style)
+    }
+
+    private fun findIrreducibles(amount: Int, degree: Int, modulus: Long, output: PrintStream, styler: FormatStyle) {
+        // Split up the generation in parts.
+        val generator = IrreducibleGenerator(modulus, degree)
+
+        val tasks = ArrayList<TaskState<Unit>>()
         for (i in 1..amount) {
-            val polynomial = generator.generate()
-            output.println(style.styler(polynomial))
+            tasks.add(launch {
+                output.println(styler.styler(generator.generate()))
+            })
         }
+
+        tasks.forEach { it.wait() }
     }
 }
