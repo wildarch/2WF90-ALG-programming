@@ -168,6 +168,10 @@ open class PolynomialConverter(val node: ASTNode, val modulus: Long) {
                     tracker.child().text.toLong()
                 }
 
+                if (tracker.child().next?.type == TokenType.MULTIPLY) {
+                    tracker.next(operation, coefficient, power) ?: break
+                }
+
                 when (tracker.child().next?.type) {
                     TokenType.ADD, TokenType.SUBTRACT, TokenType.NUMBER -> {
                         tracker.push(operation, coefficient, power)
