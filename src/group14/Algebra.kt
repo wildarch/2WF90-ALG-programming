@@ -8,7 +8,7 @@ fun main(args: Array<String>) {
             .mapNotNull { Option.fromFlag(it) }
             .toSet()
 
-    REPL(System.out, options)
+    REPL(options)
 }
 
 fun Any?.println() = println(this)
