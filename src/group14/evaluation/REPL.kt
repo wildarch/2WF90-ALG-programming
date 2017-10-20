@@ -8,14 +8,17 @@ import group14.parser.Lexer
 import group14.parser.ParseException
 import group14.parser.Parser
 import group14.parser.TokenType
+import java.io.BufferedReader
+import java.io.InputStream
 import java.io.PrintStream
+import java.nio.Buffer
 
 /**
  * Read-Eval-Print Loop
  *
  * @author Ruben Schellekens
  */
-open class REPL(val output: PrintStream, val options: Set<Option>) {
+open class REPL constructor(val options: Set<Option> = setOf(), val input: BufferedReader = System.`in`.bufferedReader(), val output: PrintStream = System.out) {
 
     /**
      * loads the lexer regex asynchronously to prevent the user from noticing the loading time.
@@ -67,7 +70,7 @@ open class REPL(val output: PrintStream, val options: Set<Option>) {
      */
     private fun read(): String {
         print(">>> ")
-        return readLine() ?: ""
+        return input.readLine() ?: ""
     }
 
     /**
