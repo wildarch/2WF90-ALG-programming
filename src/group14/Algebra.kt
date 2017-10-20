@@ -20,10 +20,9 @@ fun main(args: Array<String>) {
         try {
             inputPath = args.get(args.indexOf("-f") + 1)
         } catch (e: IndexOutOfBoundsException) {
-            throw IllegalArgumentException("Your input is not in the correct format.")
+            throw IllegalArgumentException("Your program arguments are not in the correct format.")
         }
         inputStream = File(inputPath).inputStream()
-        System.setIn(inputStream)
 
     }
 

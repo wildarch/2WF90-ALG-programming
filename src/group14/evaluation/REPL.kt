@@ -60,7 +60,7 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
         while (true) {
             val input = read() ?: break
             evaluate(input)
-            output.println()
+            println() // No output.println otherwise not needed newlines end up in file
         }
     }
 
@@ -70,7 +70,7 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      * @return The input the user has inputted.
      */
     private fun read(): String? {
-        output.print(">>> ")
+        print(">>> ") // No output.print otherwise not needed >>> ends up in file
         return input.readLine()
     }
 
