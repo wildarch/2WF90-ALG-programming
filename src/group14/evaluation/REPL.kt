@@ -92,7 +92,7 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
             evalutor.evaluate(tree, output, evaluationState)
         }
         catch (parseException: ParseException) {
-            output.println("    ${" ".repeat(parseException.column)}^")
+            println("    ${" ".repeat(parseException.column)}^")
             output.println("ParseException: ${parseException.message}")
 
             if (Option.SHOW_STACKTRACE in options) {
@@ -113,8 +113,8 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      */
     private fun introduction() {
         // Present prompt.
-        output.println("Polynomials and Finite Fields -- Group 14 “Java met een vleugje Kotlin”")
-        output.println("Enter an expression to evaluate. Type ‘help’ for help or ‘exit’ to close the program.")
+        println("Polynomials and Finite Fields -- Group 14 “Java met een vleugje Kotlin”")
+        println("Enter an expression to evaluate. Type ‘help’ for help or ‘exit’ to close the program.")
     }
 
     /**
