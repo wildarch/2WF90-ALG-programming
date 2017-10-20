@@ -109,8 +109,8 @@ open class REPL(val output: PrintStream, val options: Set<Option>) {
      */
     private fun introduction() {
         // Present prompt.
-        output.println("Polynomials and Finite Fields -- Group 14 “Java met een vleugje Kotlin”")
-        output.println("Enter an expression to evaluate. Type ‘help’ for help or ‘exit’ to close the program.")
+        output.println("Polynomials and Finite Fields -- Group 14 \"Java met een vleugje Kotlin\"")
+        output.println("Enter an expression to evaluate. Type 'help' for help or 'exit' to close the program.")
     }
 
     /**
