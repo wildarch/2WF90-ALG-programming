@@ -58,6 +58,7 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
 
         while (true) {
             val input = read()
+            if(input == null) break
             evaluate(input)
             println()
         }
@@ -68,9 +69,9 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      *
      * @return The input the user has inputted.
      */
-    private fun read(): String {
+    private fun read(): String? {
         print(">>> ")
-        return input.readLine() ?: ""
+        return input.readLine()
     }
 
     /**
