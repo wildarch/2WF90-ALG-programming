@@ -54,13 +54,13 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      * Starts the REPL.
      */
     private fun start() {
-        introduction()
+        if (!options.contains(Option.SKIP_INTRO))
+                introduction()
 
         while (true) {
-            val input = read()
-            if(input == null) break
+            val input = read() ?: break
             evaluate(input)
-            println()
+            output.println()
         }
     }
 
@@ -70,7 +70,7 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      * @return The input the user has inputted.
      */
     private fun read(): String? {
-        print(">>> ")
+        output.print(">>> ")
         return input.readLine()
     }
 
