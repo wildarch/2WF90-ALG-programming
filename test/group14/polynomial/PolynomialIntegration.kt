@@ -1,6 +1,8 @@
 package group14.polynomial
 
+import group14.Option
 import group14.evaluation.REPL
+import group14.replTest
 import org.junit.Test
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -9,15 +11,17 @@ import kotlin.test.assertEquals
 class PolynomialIntegration {
     @Test
     fun sum() {
-        val input = "[2X + 3X^2 + 1] + [X + 1X^2 + 1] mod 4"
-        val reader = input.reader()
+        val tests = listOf(
+                Pair("[2X + 3X^2 + 1] + [X + 2X^2 + 1] (mod 5)", "3X+2 (ℤ/5ℤ)"),
+                Pair("[2X + 3X^2 + 1] + [X + 2X^2 + 1] (mod 5)", "3X+2 (ℤ/5ℤ)"),
+                Pair("[2X + 3X^2 + 1] + [X + 2X^2 + 1] (mod 5)", "3X+2 (ℤ/5ℤ)"),
+                Pair("[2X + 3X^2 + 1] + [X + 2X^2 + 1] (mod 5)", "3X+2 (ℤ/5ℤ)")
+        )
 
-        val baos = ByteArrayOutputStream()
-        val printStream = PrintStream(baos)
+        for ((input, expected) in tests) {
+            replTest(input, expected)
+        }
 
-        val repl = REPL(input = reader.buffered(), output = printStream)
-        val expected = ">>> 3X + 2"
-        val actual = baos.toString()
-        assertEquals(expected, actual)
     }
+
 }
