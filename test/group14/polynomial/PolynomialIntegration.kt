@@ -50,7 +50,7 @@ class PolynomialIntegration {
     @Test
     fun division() {
         val tests = listOf(
-                Pair("[76X^75 + 975X^4 + 4X^87] / [-432X^23 + X^8] (mod 7)", "")
+                Pair("[76X^75 + 975X^4 + 4X^87] / [-432X^23 + X^8] (mod 7)", "WRONG ANSWER!")
         )
         replTest(tests)
     }
