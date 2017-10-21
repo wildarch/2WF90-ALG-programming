@@ -38,4 +38,21 @@ class PolynomialIntegration {
         replTest(tests)
     }
 
+    @Test
+    fun `scalar multiple`() {
+        val tests = listOf(
+                Pair("2 * [X^2 + X + 2] (mod 2)", "0 (ℤ/2ℤ)"),
+                Pair("12345 * [12X^3 + 123451X^1624 + X + 987] (mod 131)", "78X¹⁶²⁴+110X³+31X+74 (ℤ/131ℤ)")
+        )
+        replTest(tests)
+    }
+
+    @Test
+    fun division() {
+        val tests = listOf(
+                Pair("[76X^75 + 975X^4 + 4X^87] / [-432X^23 + X^8] (mod 7)", "")
+        )
+        replTest(tests)
+    }
+
 }
