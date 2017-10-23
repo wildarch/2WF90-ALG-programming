@@ -113,8 +113,8 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      */
     private fun introduction() {
         // Present prompt.
-        println("Polynomials and Finite Fields -- Group 14 “Java met een vleugje Kotlin”")
-        println("Enter an expression to evaluate. Type ‘help’ for help or ‘exit’ to close the program.")
+        println("Polynomials and Finite Fields -- Group 14 \"Java met een vleugje Kotlin\"")
+        println("Enter an expression to evaluate. Type 'help' for help or 'exit' to close the program.")
     }
 
     /**
