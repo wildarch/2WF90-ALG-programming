@@ -32,6 +32,7 @@ class TaskState<T>(val future: Future<T>) {
     fun get() = future.get()!!
     fun get(timeoutMillis: Long) = get(timeoutMillis, TimeUnit.MILLISECONDS)
     fun get(timeout: Long, unit: TimeUnit) = future.get(timeout, unit)!!
+    fun kill() = future.cancel(true)
 }
 
 /**

@@ -2,6 +2,7 @@ package group14
 
 /**
  * Table with row and column headers that can be pretty printed to the console.
+ * 
  * @author Daan de Graaf
  */
 open class Table<T> {
@@ -93,7 +94,7 @@ open class Table<T> {
         val width = Math.max(headers.length, rows.map { it.length }.max() ?: 0)
         return listOf(
                 headers,
-                "–".repeat(width),
+                "-".repeat(width),
                 rows.joinToString(System.lineSeparator())
         ).joinToString(System.lineSeparator())
     }

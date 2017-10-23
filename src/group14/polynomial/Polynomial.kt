@@ -1,6 +1,7 @@
 package group14.polynomial
 
 import group14.Primes
+import group14.evaluation.arithmetic.EvaluationObject
 import group14.integer.ModularInteger
 import group14.integer.mod
 import group14.isPrime
@@ -13,7 +14,7 @@ import java.util.*
 /**
  * @author Ruben Schellekens
  */
-open class Polynomial : Comparable<Polynomial> {
+open class Polynomial : Comparable<Polynomial>, EvaluationObject {
 
     companion object {
 
@@ -113,6 +114,11 @@ open class Polynomial : Comparable<Polynomial> {
             coefficients.map { ModularInteger(it, modulus) }.toTypedArray(),
             modulus
     )
+
+    /**
+     * Creates a polynomial of degree 0 with the value of `integer`.
+     */
+    constructor(integer: ModularInteger) : this(integer.modulus, integer.value)
 
     /**
      * Get the degree of this polynomial.
@@ -322,10 +328,22 @@ open class Polynomial : Comparable<Polynomial> {
      * @return E.g. `X⁶ + 2X⁵ + 4X³ + 2X² + X + 1 (Z/5Z)...`
      */
     @Suppress("RemoveCurlyBracesFromTemplate")
-    fun toPolynomialString(): String {
+    fun toPolynomialString() = toPolynomialString {
+        "(ℤ/${it}ℤ)"
+    }
+
+    /**
+     * @return E.g. `X⁶ + 2X⁵ + 4X³ + 2X² + X + 1 (Z/5Z)...`
+     */
+    fun toPolynomialString(modulusMessage: (Long) -> String): String {
         return buildString {
+            val modMessage = modulusMessage(modulus)
             if (coefficients.isEmpty()) {
-                append("0 (ℤ/${modulus}ℤ)")
+                append("0")
+                if (modMessage.isNotEmpty()) {
+                    append(" ")
+                }
+                append(modMessage)
                 return@buildString
             }
 
@@ -340,18 +358,21 @@ open class Polynomial : Comparable<Polynomial> {
                     continue
                 }
 
-                append("$plus ")
+                append(plus)
                 plus = "+"
 
                 val coefficientResult = if (c == 1L && i != 0) "" else c.toString()
                 when {
-                    i > 1 -> append("${coefficientResult}X${superScript(i)} ")
-                    i == 1 -> append("${coefficientResult}X ")
-                    else -> append("$coefficientResult ")
+                    i > 1 -> append("${coefficientResult}X${superScript(i)}")
+                    i == 1 -> append("${coefficientResult}X")
+                    else -> append(coefficientResult)
                 }
             }
 
-            append("(ℤ/${modulus}ℤ)")
+            if (!modMessage.isEmpty()) {
+                append(" ")
+            }
+            append(modulusMessage(modulus))
         }.trim()
     }
 

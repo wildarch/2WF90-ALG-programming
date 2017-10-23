@@ -2,6 +2,7 @@ package group14.integer
 
 import group14.Primes
 import group14.assertState
+import group14.evaluation.arithmetic.EvaluationObject
 import group14.isPrime
 import group14.parser.Parser
 import group14.parser.TokenType
@@ -27,7 +28,7 @@ data class ModularInteger(
          */
         val modulus: Long
 
-) : Number() {
+) : Number(), EvaluationObject {
 
     companion object {
 

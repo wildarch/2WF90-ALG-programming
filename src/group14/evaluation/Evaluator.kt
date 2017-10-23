@@ -25,26 +25,21 @@ interface Evaluator {
         fun create(rootNode: Parser.ASTNode): Evaluator {
             // Regular evaluation.
             if (rootNode.children.isEmpty()) {
-                return object : Evaluator {
-                    // Placeholder
-                    override fun evaluate(tree: Parser.ASTNode, output: PrintStream, state: EvaluationState) {
-                        println("Not yet implemented!")
-                    }
-                }
+                return InputEvaluation()
             }
 
             val firstChild = rootNode.children[0]
             if (firstChild.type != TokenType.KEYWORD) {
-                return object : Evaluator {
-                    // Placeholder
-                    override fun evaluate(tree: Parser.ASTNode, output: PrintStream, state: EvaluationState) {
-                        println("Not yet implemented!")
-                    }
-                }
+                return InputEvaluation()
             }
 
             // Keyword
             return when (firstChild.text) {
+                "table" -> TableEvaluation()
+                "euclid" -> EuclidEvaluation()
+                "isirreducible" -> IsIrreducibleEvaluation()
+                "findirreducibles" -> FindIrreduciblesEvaluation()
+                "elements" -> ElementsEvaluation()
                 "parsetree" -> ParsetreeEvaluation()
                 "exit" -> ExitEvaluation()
                 "help" -> HelpEvaluation()
@@ -67,4 +62,11 @@ interface Evaluator {
      */
     @Throws(EvaluationException::class)
     fun evaluate(tree: Parser.ASTNode, output: PrintStream, state: EvaluationState)
+
+    /**
+     * Throws an [EvaluationException].
+     */
+    fun error(message: String): Nothing {
+        throw EvaluationException(message)
+    }
 }

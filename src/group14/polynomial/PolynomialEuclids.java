@@ -1,6 +1,7 @@
 package group14.polynomial;
 
 import kotlin.Pair;
+import kotlin.Triple;
 
 /**
  * Performs Euclid's extended algorithm for two nonzero polynomials
@@ -39,7 +40,12 @@ public class PolynomialEuclids {
     }
 
 
-    public void execute() {
+    /**
+     * Executes the extended euclidean algorithm.
+     *
+     * @return A triple of form `(x, y, gcd(a,b))`.
+     */
+    public Triple<Polynomial, Polynomial, Polynomial> execute() {
         Polynomial q, x_old, y_old, u, v;
         x = new Polynomial(a.getModulus(), 1);
         y = Polynomial.zero(a.getModulus());
@@ -60,6 +66,8 @@ public class PolynomialEuclids {
             v = y_old.minus(q.times(v));
         }
         gcd = a;
+
+        return new Triple(getX(), getY(), getGcd());
     }
 
     public Polynomial getX() {

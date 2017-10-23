@@ -226,6 +226,9 @@ class Parser(val lexer: Lexer) {
                     if (previous?.type == PARAMETER && !next.value.startsWith("-")) {
                         error("Operator expected")
                     }
+                    if (previous?.type == MULTIPLY) {
+                        error("Multiply must be followed by a parameter")
+                    }
                 }
                 SEPARATOR -> {
                     if (previous == null) {

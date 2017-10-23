@@ -1,5 +1,8 @@
 package group14.parser
 
+import group14.evaluation.arithmetic.EvaluationObject
+import group14.integer.ModularInteger
+import group14.polynomial.Polynomial
 import java.util.regex.Pattern
 
 /**
@@ -53,8 +56,28 @@ sealed class TokenType {
     }
 
     // Subtypes
-    abstract class Operator(ordinal: Int, operator: String) : TokenType(ordinal, operator)
-    abstract class UnaryOperator(ordinal: Int, operator: String) : Operator(ordinal, operator)
+    abstract class Operator(
+            ordinal: Int,
+            operator: String,
+            val intFunction: (ModularInteger, ModularInteger) -> ModularInteger,
+            val polyFunction: (Polynomial, Polynomial) -> Polynomial,
+            val polyIntFunction: (Polynomial, ModularInteger) -> Polynomial,
+            val intPolyFunction: (ModularInteger, Polynomial) -> Polynomial
+    ) : TokenType(ordinal, operator), EvaluationObject
+
+    abstract class UnaryOperator(
+            ordinal: Int,
+            operator: String,
+            val integer: (ModularInteger) -> ModularInteger
+    ) : Operator(
+            ordinal,
+            operator,
+            { _, _ -> error("Unary operator doesn't support i,i->i functions.") },
+            { _, _ -> error("Unary operator doesn't support p,p->p functions") },
+            { _, _ -> error("Unary operator doesn't support p,i->p functions") },
+            { _, _ -> error("Unary operator doesn't support p,i->p functions") }
+    )
+
     abstract class ParseBlock : TokenType(-1, "")
 
     // Parse Blocks.
@@ -63,23 +86,58 @@ sealed class TokenType {
     object FIELD : ParseBlock()
     object POLYNOMIAL : ParseBlock()
     object GROUP : ParseBlock()
-    object META: ParseBlock()
+    object META : ParseBlock()
 
     // Token Types.
-    object WHITESPACE : Operator(0, "[ \t]+")
-    object INVERSE : UnaryOperator(1, "\\^-1")
+    object WHITESPACE : TokenType(0, "[ \t]+")
+    object INVERSE : UnaryOperator(1, "\\^-1", { it.inverse() })
     object NUMBER : TokenType(2, "((?<!\\d)-\\d+|\\d+)")
     object MODKEYWORD : TokenType(3, "mod")
-    object FIELDKEYWORD: TokenType(4, "field")
-    object DEFKEYWORD: TokenType(5, "def")
+    object FIELDKEYWORD : TokenType(4, "field")
+    object DEFKEYWORD : TokenType(5, "def")
     object KEYWORD : TokenType(6, "[a-z][a-z]+")
-    object ADD : Operator(7, "\\+")
-    object SUBTRACT : Operator(8, "-")
-    object MULTIPLY : Operator(9, "\\*")
-    object POWER : Operator(10, "\\^")
-    object DIVIDE : Operator(11, "/")
-    object REMAINDER : Operator(12, "%")
-    object EQUALS : Operator(13, "=")
+    object ADD : Operator(7, "\\+",
+            { a, b -> a + b },
+            { a, b -> a + b },
+            { a, b -> a + b },
+            { a, b -> b + a }
+    )
+    object SUBTRACT : Operator(8, "-",
+            { a, b -> a - b },
+            { a, b -> a - b },
+            { a, b -> a - b },
+            { i, p -> p.times(ModularInteger.reduce(-1, i.modulus)) + i }
+    )
+    object MULTIPLY : Operator(9, "\\*",
+            { a, b -> a * b },
+            { a, b -> a * b },
+            { a, b -> a * b },
+            { a, b -> b * a }
+    )
+    object POWER : Operator(10, "\\^",
+            { _, _ -> error("Operation not supported.") },
+            { _, _ -> error("Operation not supported.") },
+            { _, _ -> error("Operation not supported.") },
+            { _, _ -> error("Operation not supported.") }
+    )
+    object DIVIDE : Operator(11, "/",
+            { a, b -> a / b },
+            { a, b -> (a / b).first },
+            { a, b -> a * b.inverse() },
+            { a, b -> (Polynomial(a) / b).first }
+    )
+    object REMAINDER : Operator(12, "%",
+            { a, b -> ModularInteger.reduce(a.value % b.value, a.modulus) },
+            { a, b -> (a / b).second },
+            { a, b -> (a / Polynomial(arrayOf(b), a.modulus)).second },
+            { a, b -> (Polynomial(a) / b).first }
+    )
+    object EQUALS : Operator(13, "=",
+            { _, _ -> error("EQUALS not supported for i,i") },
+            { _, _ -> error("EQUALS not supported for p,p") },
+            { _, _ -> error("EQUALS not supported for p,i") },
+            { _, _ -> error("EQUALS not supported for i,p") }
+    )
     object PARAMETER : TokenType(14, "[xX]")
     object PREVIOUS : TokenType(15, "_")
     object OPENBRACKET : TokenType(16, "\\[")
