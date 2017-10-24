@@ -1,5 +1,6 @@
 package group14.evaluation
 
+import FormatStyle
 import group14.Primes
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
 import group14.integer.ModularInteger
@@ -65,8 +66,8 @@ open class DebugEvaluation : Evaluator {
                 }
 
                 if (result != polynomial) {
-                    //output.println("Input '$input' does not evaluate to '${polynomial.toPolynomialString { "" }}'!")
-                    output.println("Input '$input' does not evaluate to '${FormatStyle.fromOption(state.options)}'!")
+                    val styler = FormatStyle.fromOption(state.options).styler
+                    output.println("Input '$input' does not evaluate to '${styler(polynomial)}'!")
                     continue
                 }
             }
