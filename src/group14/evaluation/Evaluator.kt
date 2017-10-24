@@ -42,6 +42,7 @@ interface Evaluator {
                 "elements", "elts" -> ElementsEvaluation()
                 "parsetree", "parse", "tree", "pt" -> ParsetreeEvaluation()
                 "clearfield", "clear", "cf", "cl" -> ClearFieldEvaluation()
+                "aliases", "alias" -> AliasesEvaluation()
                 "exit" -> ExitEvaluation()
                 "help" -> HelpEvaluation()
                 "debug" -> DebugEvaluation()
