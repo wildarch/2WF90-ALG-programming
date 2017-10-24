@@ -328,14 +328,14 @@ open class Polynomial : Comparable<Polynomial>, EvaluationObject {
      * @return E.g. `X⁶ + 2X⁵ + 4X³ + 2X² + X + 1 (Z/5Z)...`
      */
     @Suppress("RemoveCurlyBracesFromTemplate")
-    fun toPolynomialString() = toPolynomialString {
+    fun toPolynomialString() = toPolynomialString({ superScript(it) }) {
         "(ℤ/${it}ℤ)"
     }
 
     /**
      * @return E.g. `X⁶ + 2X⁵ + 4X³ + 2X² + X + 1 (Z/5Z)...`
      */
-    fun toPolynomialString(modulusMessage: (Long) -> String): String {
+    fun toPolynomialString(powerString: (Int) -> String, modulusMessage: (Long) -> String): String {
         return buildString {
             val modMessage = modulusMessage(modulus)
             if (coefficients.isEmpty()) {
@@ -363,7 +363,7 @@ open class Polynomial : Comparable<Polynomial>, EvaluationObject {
 
                 val coefficientResult = if (c == 1L && i != 0) "" else c.toString()
                 when {
-                    i > 1 -> append("${coefficientResult}X${superScript(i)}")
+                    i > 1 -> append(coefficientResult + "X" + powerString(i))
                     i == 1 -> append("${coefficientResult}X")
                     else -> append(coefficientResult)
                 }

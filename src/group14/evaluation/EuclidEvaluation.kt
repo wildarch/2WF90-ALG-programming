@@ -1,8 +1,6 @@
 package group14.evaluation
 
-import group14.Option
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
-import group14.field.OperationTable
 import group14.integer.IntegerEuclids
 import group14.parser.Parser
 import group14.parser.TokenType
@@ -92,12 +90,8 @@ open class EuclidEvaluation : Evaluator {
         }
 
         val (x, y, gcd) = euclids.execute()
-        val styler = if (Option.COEFFICIENT_LIST in state.options) {
-            OperationTable.FormatStyle.COEFFICIENT_LIST
-        }
-        else {
-            OperationTable.FormatStyle.PRETTY
-        }.styler
+
+        val styler = FormatStyle.fromOptions(state.options).styler
 
         // Print result
         val stringA = styler(a)

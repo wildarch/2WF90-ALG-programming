@@ -4,7 +4,6 @@ import group14.Option
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
 import group14.field.AdditionTable
 import group14.field.MultiplicationTable
-import group14.field.OperationTable
 import group14.parser.Parser
 import java.io.PrintStream
 
@@ -27,20 +26,15 @@ open class TableEvaluation : Evaluator {
 
         val tableType = tree.children[1].text.toLowerCase()
         val table = when (tableType) {
-            "add" -> AdditionTable(state.field!!)
-            "multiply" -> MultiplicationTable(state.field!!)
+            "add" -> AdditionTable(state.field!!, FormatStyle.fromOptions(state.options))
+            "multiply" -> MultiplicationTable(state.field!!, FormatStyle.fromOptions(state.options))
             else -> {
                 output.println("Unkown table type $tableType. Supported types: add, multiply")
                 return
             }
         }
 
-        val style = if (Option.COEFFICIENT_LIST in state.options) {
-            OperationTable.FormatStyle.COEFFICIENT_LIST
-        }
-        else {
-            OperationTable.FormatStyle.PRETTY
-        }
+        val style = FormatStyle.fromOptions(state.options)
 
         val tableName = table.javaClass.simpleName.replace("Table", " table")
         val polynomial = style.styler(state.field!!.polynomial)

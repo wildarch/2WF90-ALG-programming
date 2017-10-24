@@ -21,11 +21,6 @@ enum class Option(val flag: String) {
     UNICODE("--unicode"),
 
     /**
-     * Use fallback ASCII formatting
-     */
-    ASCII("--ascii"),
-
-    /**
      * Skip the introduction shown when starting the REPL
      */
     SKIP_INTRO("--skip-intro");
