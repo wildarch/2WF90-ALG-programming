@@ -1,8 +1,6 @@
 package group14.evaluation
 
-import group14.Option
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
-import group14.field.OperationTable
 import group14.parser.Parser
 import java.io.PrintStream
 
@@ -18,12 +16,7 @@ open class ElementsEvaluation : Evaluator {
             return
         }
 
-        val style = if (Option.COEFFICIENT_LIST in state.options) {
-            OperationTable.FormatStyle.COEFFICIENT_LIST
-        }
-        else {
-            OperationTable.FormatStyle.PRETTY
-        }
+        val style = FormatStyle.fromOptions(state.options)
 
         state.field!!.getElements().toList()
                 .sorted()

@@ -105,11 +105,28 @@ data class FiniteField(
     }
 
     /**
+     * Divides two elements within the field
+     *
+     * @return (a * b^-1) mod f, with f the irreducible polynomial of the field
+     */
+    fun divide(a: Polynomial, b: Polynomial): Polynomial {
+        require(isElement(a), {"Parameter $a is not an element of $this"})
+        require(isElement(b), {"Parameter $b is not an element of $this"})
+        return a * inverse(b)
+    }
+
+    /**
      * Calculates the inverse of `polynomial` in this field.
+     *
+     * @return y', with y * y' = 1
      */
     fun inverse(polynomial: Polynomial): Polynomial {
-        val euclids = PolynomialEuclids(polynomial,  this.polynomial)
+        val euclids = PolynomialEuclids(this.polynomial, polynomial)
         euclids.execute()
-        return euclids.y
+        return euclids.y * euclids.gcd[0].inverse()
+    }
+
+    override fun toString(): String {
+        return "F$modulus/(${polynomial.toPolynomialString()})"
     }
 }

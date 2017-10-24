@@ -1,7 +1,11 @@
 package group14.field
 
+import group14.Option
 import group14.Table
+import group14.evaluation.EvaluationState
 import group14.polynomial.Polynomial
+import group14.polynomial.PolynomialStyler
+import group14.superScript
 
 /**
  * Table resulting from applying a binary operation on each pair of elements for the given field.
@@ -9,13 +13,13 @@ import group14.polynomial.Polynomial
  *
  * @author Daan de Graaf
  */
-open class OperationTable(operation: (Polynomial, Polynomial) -> Polynomial, field: FiniteField) : Table<Polynomial>() {
+open class OperationTable(operation: (Polynomial, Polynomial) -> Polynomial, field: FiniteField, style: PolynomialStyler) : Table<Polynomial>() {
 
     init {
         val elements = field.getElements().sorted()
         val rows = elements.map { a -> elements.map { b -> operation(a, b) } }
-        addRowHeaders(*elements.map { it.toPolynomialString { "" } }.toTypedArray())
-        addColumnHeaders(*elements.map { it.toPolynomialString { "" } }.toTypedArray())
+        addRowHeaders(*elements.map { style.styler(it).substringBefore("(", "ERROR").trim() }.toTypedArray())
+        addColumnHeaders(*elements.map { style.styler(it).substringBefore("(", "ERROR").trim() }.toTypedArray())
         rows.forEach { addRow(it) }
     }
 
@@ -28,31 +32,7 @@ open class OperationTable(operation: (Polynomial, Polynomial) -> Polynomial, fie
      *          The formatting style for polynomial elements
      * @return Human-readable table
      */
-    fun format(columnPadding: Int, style: FormatStyle): String {
-        return super.format(columnPadding, style.styler)
-    }
-
-    /**
-     * Converts polynomials to strings.
-     */
-    interface PolynomialStyler {
-
-        val styler: (Polynomial) -> String
-    }
-
-    /**
-     * Formatting style for the elements of the table.
-     */
-    enum class FormatStyle(override val styler: (Polynomial) -> String) : PolynomialStyler {
-
-        /**
-         * Use of pretty polynomial representation using [Polynomial.toPolynomialString].
-         */
-        PRETTY({ it.toPolynomialString { "" } }),
-
-        /**
-         * Use of coefficient list representation using [Polynomial.toString]
-         */
-        COEFFICIENT_LIST({ it.toString() })
+    fun format(columnPadding: Int, style: PolynomialStyler): String {
+        return super.format(columnPadding, {style.styler(it).substringBefore("(", "ERROR").trim()})
     }
 }

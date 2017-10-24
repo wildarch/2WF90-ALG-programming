@@ -11,14 +11,13 @@ import group14.parser.TokenType
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.PrintStream
-import java.nio.Buffer
 
 /**
  * Read-Eval-Print Loop
  *
  * @author Ruben Schellekens
  */
-open class REPL constructor(val options: Set<Option> = setOf(), val input: BufferedReader = System.`in`.bufferedReader(), val output: PrintStream = System.out) {
+open class REPL constructor(val options: Set<Option> = setOf(), val input: InputStream = System.`in`, val output: PrintStream = System.out) {
 
     /**
      * loads the lexer regex asynchronously to prevent the user from noticing the loading time.
@@ -34,6 +33,15 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      * The current evaluation state. So helpful comment #Yay.
      */
     private var evaluationState: EvaluationState = EvaluationState(options)
+
+    /**
+     * Contains whether the input is file input or not.
+     *
+     * `true` if the input is file input, `false` if the input is standard input.
+     */
+    private val fileInput = input != System.`in`
+
+    private val inputReader = input.bufferedReader()
 
     init {
         // Load lexer regex.
@@ -54,13 +62,16 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      * Starts the REPL.
      */
     private fun start() {
-        if (!options.contains(Option.SKIP_INTRO))
-                introduction()
+        if (!options.contains(Option.SKIP_INTRO)) {
+            introduction()
+        }
 
         while (true) {
             val input = read() ?: break
             evaluate(input)
-            output.println()
+
+            // No output.println otherwise not needed newlines end up in file
+            println()
         }
     }
 
@@ -70,8 +81,16 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      * @return The input the user has inputted.
      */
     private fun read(): String? {
-        output.print(">>> ")
-        return input.readLine()
+        // No output.print otherwise not needed >>> ends up in file
+        print(">>> ")
+        val read = inputReader.readLine()
+
+        // Print input to console.
+        if (fileInput && read != null) {
+            println(read)
+        }
+
+        return read
     }
 
     /**
@@ -92,7 +111,7 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
             evalutor.evaluate(tree, output, evaluationState)
         }
         catch (parseException: ParseException) {
-            output.println("    ${" ".repeat(parseException.column)}^")
+            println("    ${" ".repeat(parseException.column)}^")
             output.println("ParseException: ${parseException.message}")
 
             if (Option.SHOW_STACKTRACE in options) {
@@ -113,8 +132,8 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      */
     private fun introduction() {
         // Present prompt.
-        output.println("Polynomials and Finite Fields -- Group 14 \"Java met een vleugje Kotlin\"")
-        output.println("Enter an expression to evaluate. Type 'help' for help or 'exit' to close the program.")
+        println("Polynomials and Finite Fields -- Group 14 \"Java met een vleugje Kotlin\"")
+        println("Enter an expression to evaluate. Type 'help' for help or 'exit' to close the program.")
     }
 
     /**

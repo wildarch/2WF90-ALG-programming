@@ -23,7 +23,6 @@ class PolynomialIntegration {
         replTest(tests)
     }
 
-
     @Test
     fun product() {
         val tests = listOf(

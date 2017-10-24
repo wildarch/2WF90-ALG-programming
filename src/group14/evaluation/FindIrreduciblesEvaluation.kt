@@ -1,13 +1,14 @@
 package group14.evaluation
 
+import FormatStyle
 import group14.Option
 import group14.TaskState
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
-import group14.field.OperationTable.FormatStyle
 import group14.launch
 import group14.parser.Parser
 import group14.parser.TokenType
 import group14.polynomial.IrreducibleGenerator
+import group14.polynomial.PolynomialStyler
 import java.io.PrintStream
 
 /**
@@ -84,7 +85,7 @@ open class FindIrreduciblesEvaluation : Evaluator {
         findIrreducibles(amount, degree, state.modulus!!, output, style)
     }
 
-    private fun findIrreducibles(amount: Int, degree: Int, modulus: Long, output: PrintStream, styler: FormatStyle) {
+    private fun findIrreducibles(amount: Int, degree: Int, modulus: Long, output: PrintStream, styler: PolynomialStyler) {
         // Split up the generation in parts.
         val generator = IrreducibleGenerator(modulus, degree)
 

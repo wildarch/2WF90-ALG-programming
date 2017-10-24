@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import kotlin.test.assertEquals
 
-
 fun replTest(input: String, expectedOutput: String) {
     val reader = input.reader()
 

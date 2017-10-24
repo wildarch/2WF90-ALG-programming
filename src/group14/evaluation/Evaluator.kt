@@ -36,11 +36,13 @@ interface Evaluator {
             // Keyword
             return when (firstChild.text) {
                 "table" -> TableEvaluation()
-                "euclid" -> EuclidEvaluation()
-                "isirreducible" -> IsIrreducibleEvaluation()
-                "findirreducibles" -> FindIrreduciblesEvaluation()
-                "elements" -> ElementsEvaluation()
-                "parsetree" -> ParsetreeEvaluation()
+                "euclid", "gcd", "euclids", "euclidean" -> EuclidEvaluation()
+                "isirreducible", "irreducible", "isirr" -> IsIrreducibleEvaluation()
+                "findirreducibles", "irreducibles", "findirr" -> FindIrreduciblesEvaluation()
+                "elements", "elts" -> ElementsEvaluation()
+                "parsetree", "parse", "tree", "pt" -> ParsetreeEvaluation()
+                "clearfield", "clear", "cf", "cl" -> ClearFieldEvaluation()
+                "aliases", "alias" -> AliasesEvaluation()
                 "exit" -> ExitEvaluation()
                 "help" -> HelpEvaluation()
                 "debug" -> DebugEvaluation()
