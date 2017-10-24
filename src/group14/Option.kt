@@ -13,7 +13,22 @@ enum class Option(val flag: String) {
     /**
      * Polynomials get printed in coefficient list style.
      */
-    COEFFICIENT_LIST("--coefficient-list");
+    COEFFICIENT_LIST("--coefficient-list"),
+
+    /**
+     * Use unicode fancy formatting
+     */
+    UNICODE("--unicode"),
+
+    /**
+     * Use fallback ASCII formatting
+     */
+    ASCII("--ascii"),
+
+    /**
+     * Skip the introduction shown when starting the REPL
+     */
+    SKIP_INTRO("--skip-intro");
 
     companion object {
 
