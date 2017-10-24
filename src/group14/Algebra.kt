@@ -14,26 +14,26 @@ fun main(args: Array<String>) {
             .toSet()
 
     if ("-f" in args) {
-        val inputPath : String
+        val inputPath: String
         try {
-            inputPath = args.get(args.indexOf("-f") + 1)
-        } catch (e: IndexOutOfBoundsException) {
+            inputPath = args[args.indexOf("-f") + 1]
+        }
+        catch (e: IndexOutOfBoundsException) {
             throw IllegalArgumentException("Your program arguments are not in the correct format.")
         }
         inputStream = File(inputPath).inputStream()
-
     }
 
     if ("-o" in args) {
-        val outputPath : String
+        val outputPath: String
         try {
-            outputPath = args.get(args.indexOf("-o") + 1)
-        } catch (e: IndexOutOfBoundsException) {
+            outputPath = args[args.indexOf("-o") + 1]
+        }
+        catch (e: IndexOutOfBoundsException) {
             throw IllegalArgumentException("Your program arguments are not in the correct format.")
         }
         val printStream = PrintStream(File(outputPath))
         outputStream.add(printStream)
-
     }
 
     REPL(options, inputStream.bufferedReader(), PrintStream(outputStream))

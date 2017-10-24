@@ -5,15 +5,21 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import kotlin.test.assertEquals
 
+class REPLTest {
 
-fun replTest(input: String, expectedOutput: String) {
-    val reader = input.reader()
+    companion object {
 
-    val baos = ByteArrayOutputStream()
-    val printStream = PrintStream(baos)
+        @JvmStatic
+        fun replTest(input: String, expectedOutput: String) {
+            val reader = input.reader()
 
-    REPL(options = setOf(Option.ASCII, Option.SKIP_INTRO), input = reader.buffered(), output = printStream)
-    val actual = baos.toString().lines().first()
-    assertEquals(">>> " + expectedOutput, actual)
+            val baos = ByteArrayOutputStream()
+            val printStream = PrintStream(baos)
+
+            REPL(options = setOf(Option.ASCII, Option.SKIP_INTRO), input = reader.buffered(), output = printStream)
+            val actual = baos.toString().lines().first()
+            assertEquals(expectedOutput, actual)
+        }
+    }
 }
 

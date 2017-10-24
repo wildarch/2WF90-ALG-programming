@@ -1,14 +1,10 @@
 package group14.polynomial
 
-import group14.Option
-import group14.evaluation.REPL
-import group14.replTest
+import group14.REPLTest
 import org.junit.Test
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
-import kotlin.test.assertEquals
 
 class PolynomialIntegration {
+
     @Test
     fun sum() {
         val tests = listOf(
@@ -19,9 +15,7 @@ class PolynomialIntegration {
         )
 
         for ((input, expected) in tests) {
-            replTest(input, expected)
+            REPLTest.replTest(input, expected)
         }
-
     }
-
 }
