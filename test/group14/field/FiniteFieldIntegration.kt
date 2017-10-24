@@ -7,6 +7,7 @@ import group14.parser.Parser
 import group14.polynomial.Polynomial
 import group14.replTest
 import org.junit.Test
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import kotlin.test.assertTrue
@@ -16,7 +17,7 @@ class FiniteFieldIntegration {
     fun sum() {
         val tests = listOf(
                 Pair("[X + 1] + [X + 1] (field [3X^2 + 1]) (mod 5)", "2X+2 (ℤ/5ℤ)"),
-                Pair("[X^3 + X] + [X^2 + 1] (field [X + 1]) (mod 3)", "X³+X²+X+1 (ℤ/3ℤ)")
+                Pair("[X^3 + X] + [X^2 + 1] (field [2X^4 + 2X^2 + 1]) (mod 3)", "X³+X²+X+1 (ℤ/3ℤ)")
         )
         replTest(tests)
     }
@@ -24,8 +25,8 @@ class FiniteFieldIntegration {
     @Test
     fun product() {
         val tests = listOf(
-                Pair("[X + 1] * [X + 1] (field [3X^2 + 1]) (mod 5)", "X²+2X+1 (ℤ/5ℤ)"),
-                Pair("[X^3 + X] * [X^2 + 1] (field [X + 1]) (mod 3)", "X⁵+2X³+X (ℤ/3ℤ)")
+                Pair("[X + 1] * [X + 1] (field [3X^2 + 1]) (mod 5)", "2X+4 (ℤ/5ℤ)"),
+                Pair("[X^3 + X] * [X^2 + 1] (field [X + 1]) (mod 3)", "EvaluationException: Could not evaluate [0, 1, 0, 1] (Z/3Z)\\*[1, 0, 1] (Z/3Z): Parameter [0, 1, 0, 1] (Z/3Z) is not an element of F3/(X+1 (ℤ/3ℤ))")
         )
         replTest(tests)
     }
@@ -53,7 +54,7 @@ class FiniteFieldIntegration {
     fun `Find irreducibles`() {
         val baos = ByteArrayOutputStream()
         val output = PrintStream(baos)
-        val input = "findirreducibles 3 of 4 (mod 3)".reader().buffered()
+        val input = ByteArrayInputStream("findirreducibles 3 of 4 (mod 3)".toByteArray())
 
         REPL(options= setOf(Option.SKIP_INTRO, Option.COEFFICIENT_LIST), input = input, output = output)
         val result = baos.toString()
