@@ -8,7 +8,6 @@ import group14.parser.Lexer
 import group14.parser.ParseException
 import group14.parser.Parser
 import group14.parser.TokenType
-import java.io.BufferedReader
 import java.io.InputStream
 import java.io.PrintStream
 
@@ -32,7 +31,7 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Input
     /**
      * The current evaluation state. So helpful comment #Yay.
      */
-    private var evaluationState: EvaluationState = EvaluationState(options)
+    private var evaluationState: EvaluationState = EvaluationState(options = options)
 
     /**
      * Contains whether the input is file input or not.

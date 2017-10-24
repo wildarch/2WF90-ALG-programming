@@ -4,6 +4,7 @@ import group14.Either
 import group14.Left
 import group14.Middle
 import group14.Right
+import group14.evaluation.Definition
 import group14.evaluation.EvaluationException
 import group14.evaluation.EvaluationState
 import group14.evaluation.evaluationCheck
@@ -12,6 +13,13 @@ import group14.parser.TokenType
 import group14.polynomial.Polynomial
 
 typealias Result = Either<ModularInteger, Polynomial, Boolean>
+
+fun makeResult(thing: Any): Result = when (thing) {
+    is ModularInteger -> Left(thing)
+    is Polynomial -> Middle(thing)
+    is Boolean -> Right(thing)
+    else -> error("No result for ${thing.javaClass.simpleName}")
+}
 
 /**
  * @author Ruben Schellekens
@@ -47,6 +55,11 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
             while (i < elements.size) {
                 var previous = elements[i - 1]
                 val operator = elements[i]
+
+                // Variables
+                previous = if (previous is Definition) {
+                    state.definitions[previous.variable]?.value() as? EvaluationObject ?: throw EvaluationException("Variable ${previous.variable} has not been defined")
+                } else previous
 
                 // Precedence.
                 if (operator !in operators) {
@@ -94,6 +107,11 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 evaluationCheck(i + 1 < elements.size) { "Operator $operator doesn't have a right hand side" }
                 var next = elements[i + 1]
 
+                // Variables
+                next = if (next is Definition) {
+                    state.definitions[next.variable]?.value() as? EvaluationObject ?: throw EvaluationException("Variable ${next.variable} has not been defined")
+                } else next
+
                 // Manage nested evaluations.
                 if (next is ArithmeticEvaluation) {
                     val evaluationResult = next.evaluate().value()
@@ -132,9 +150,11 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 }
 
                 // Other Operators
+                val operatorObject = operator as? TokenType.Operator ?: throw EvaluationException("$operator is not an operator")
+
+                // Manage variables/definitions.
                 val left = previous
                 val right = next
-                val operatorObject = operator as? TokenType.Operator ?: throw EvaluationException("$operator is not an operator")
 
                 try {
                     // Calculate OUTSIDE field.
@@ -183,8 +203,12 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
 
         // Modulus field.
         var result = makeResult()
+        val value = result.value()
         val field = state.field
-        val resultValue = result.value()
+        val resultValue = if (value is Definition) {
+            state.definitions[value.variable]?.value() ?: throw EvaluationException("Variable '${value.variable}' has not been defined")
+        } else value
+
         if (field != null && resultValue is Polynomial) {
             if (!field.isElement(elements[0] as Polynomial)) {
                 val (_, remainder) = resultValue / field.polynomial
@@ -200,9 +224,13 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
      * Puts the last remaining [EvaluationObject] into a [Result].
      */
     private fun makeResult(): Result = when (elements[0]) {
-        is ModularInteger -> Left(elements[0] as ModularInteger)
-        is Polynomial -> Middle(elements[0] as Polynomial)
-        else -> Right(elements[0] == True)
+        is ModularInteger -> makeResult(elements[0] as ModularInteger)
+        is Polynomial -> makeResult(elements[0] as Polynomial)
+        is Definition -> {
+            val def = elements[0] as Definition
+            state.definitions[def.variable] ?: throw EvaluationException("Variable '${def.variable}' has not been defined")
+        }
+        else -> makeResult(elements[0] == True)
     }
 
     /**

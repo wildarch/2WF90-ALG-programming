@@ -102,8 +102,9 @@ sealed class TokenType {
     object MODKEYWORD : TokenType(3, "mod")
     object FIELDKEYWORD : TokenType(4, "field")
     object DEFKEYWORD : TokenType(5, "def")
-    object KEYWORD : TokenType(6, "[a-z][a-z]+")
-    object ADD : Operator(7, "\\+",
+    object PARAMETER : TokenType(6, "[xX]")
+    object KEYWORD : TokenType(7, "[a-z]+")
+    object ADD : Operator(8, "\\+",
             { a, b -> a + b },
             { a, b -> a + b },
             { a, b -> a + b },
@@ -113,7 +114,7 @@ sealed class TokenType {
             { f, a, q -> f.add(Polynomial(a), q) }
 
     )
-    object SUBTRACT : Operator(8, "-",
+    object SUBTRACT : Operator(9, "-",
             { a, b -> a - b },
             { a, b -> a - b },
             { a, b -> a - b },
@@ -122,7 +123,7 @@ sealed class TokenType {
             { f, p, b -> f.subtract(p, Polynomial(b)) },
             { f, a, q -> f.subtract(Polynomial(a), q) }
     )
-    object MULTIPLY : Operator(9, "\\*",
+    object MULTIPLY : Operator(10, "\\*",
             { a, b -> a * b },
             { a, b -> a * b },
             { a, b -> a * b },
@@ -131,7 +132,7 @@ sealed class TokenType {
             { f, p, b -> f.multiply(p, Polynomial(b)) },
             { f, a, q -> f.multiply(Polynomial(a), q) }
     )
-    object POWER : Operator(10, "\\^",
+    object POWER : Operator(11, "\\^",
             { _, _ -> error("Operation not supported.") },
             { _, _ -> error("Operation not supported.") },
             { _, _ -> error("Operation not supported.") },
@@ -140,7 +141,7 @@ sealed class TokenType {
             { _, _, _ -> error("Operation not supported.") },
             { _, _, _ -> error("Operation not supported.") }
     )
-    object DIVIDE : Operator(11, "/",
+    object DIVIDE : Operator(12, "/",
             { a, b -> a / b },
             { a, b -> (a / b).first },
             { a, b -> a * b.inverse() },
@@ -149,7 +150,7 @@ sealed class TokenType {
             { f, p, b -> f.divide(p, Polynomial(b)) },
             { f, a, q -> f.divide(Polynomial(a), q) }
     )
-    object REMAINDER : Operator(12, "%",
+    object REMAINDER : Operator(13, "%",
             { a, b -> ModularInteger.reduce(a.value % b.value, a.modulus) },
             { a, b -> (a / b).second },
             { a, b -> (a / Polynomial(arrayOf(b), a.modulus)).second },
@@ -158,7 +159,7 @@ sealed class TokenType {
             { f, _, _ -> error("Operation not supported for field $f.") },
             { f, _, _ -> error("Operation not supported for field $f.") }
     )
-    object EQUALS : Operator(13, "=",
+    object EQUALS : Operator(14, "=",
             { _, _ -> error("EQUALS not supported for i,i") },
             { _, _ -> error("EQUALS not supported for p,p") },
             { _, _ -> error("EQUALS not supported for p,i") },
@@ -167,7 +168,6 @@ sealed class TokenType {
             { _, _, _ -> error("Unary operator doesn't support f,p,i->p functions") },
             { _, _, _ -> error("Unary operator doesn't support f,p,i->p functions") }
     )
-    object PARAMETER : TokenType(14, "[xX]")
     object PREVIOUS : TokenType(15, "_")
     object OPENBRACKET : TokenType(16, "\\[")
     object CLOSEBRACKET : TokenType(17, "]")

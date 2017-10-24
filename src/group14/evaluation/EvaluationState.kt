@@ -13,5 +13,6 @@ data class EvaluationState(
         var modulus: Long? = null,
         var polynomialModulus: Polynomial? = null,
         var field: FiniteField? = null,
-        var result: Result? = null
+        var result: Result? = null,
+        var definitions: MutableMap<String, Result> = HashMap()
 )
