@@ -1,6 +1,5 @@
 package group14.evaluation
 
-import group14.Option
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
 import group14.parser.Parser
 import group14.polynomial.Polynomial
@@ -21,7 +20,7 @@ open class InputEvaluation : Evaluator {
         when (result) {
         // Special treatmet for polynomials.
             is Polynomial -> {
-                output.println(FormatStyle.fromOption(state.options).styler(result))
+                output.println(FormatStyle.fromOptions(state.options).styler(result))
             }
         // Otherwise, just toString.
             else -> output.println(result.toString())

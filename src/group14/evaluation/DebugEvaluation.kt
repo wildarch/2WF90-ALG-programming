@@ -66,7 +66,7 @@ open class DebugEvaluation : Evaluator {
                 }
 
                 if (result != polynomial) {
-                    val styler = FormatStyle.fromOption(state.options).styler
+                    val styler = FormatStyle.fromOptions(state.options).styler
                     output.println("Input '$input' does not evaluate to '${styler(polynomial)}'!")
                     continue
                 }

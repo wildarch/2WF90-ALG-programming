@@ -29,10 +29,10 @@ enum class FormatStyle(override val styler: (Polynomial) -> String) : Polynomial
          * Get the option object that corresponds to the given flag.
          */
         @JvmStatic
-        fun fromOption(options: Set<Option>): FormatStyle {
+        fun fromOptions(options: Set<Option>): FormatStyle {
             return when {
-                Option.UNICODE in options -> PRETTY
                 Option.COEFFICIENT_LIST in options -> COEFFICIENT_LIST
+                Option.UNICODE in options -> PRETTY
                 else -> ASCII
             }
         }
