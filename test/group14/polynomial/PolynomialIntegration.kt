@@ -4,6 +4,7 @@ import group14.replTest
 import org.junit.Test
 
 class PolynomialIntegration {
+
     fun replTest(tests: List<Pair<String, String>>) {
         for ((input, expected) in tests) {
             replTest(input, expected)
@@ -54,5 +55,4 @@ class PolynomialIntegration {
         )
         replTest(tests)
     }
-
 }
