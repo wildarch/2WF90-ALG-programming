@@ -17,3 +17,6 @@ fun replTest(input: String, expectedOutput: String) {
     assertEquals(">>> " + expectedOutput, actual)
 }
 
+fun replTest(tests: List<Pair<String, String>>) =
+        tests.forEach({ (a, b) -> replTest(a, b)})
+

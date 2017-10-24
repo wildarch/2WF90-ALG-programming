@@ -5,12 +5,6 @@ import org.junit.Test
 
 class PolynomialIntegration {
 
-    fun replTest(tests: List<Pair<String, String>>) {
-        for ((input, expected) in tests) {
-            replTest(input, expected)
-        }
-    }
-
     @Test
     fun sum() {
         val tests = listOf(
@@ -64,6 +58,21 @@ class PolynomialIntegration {
 
     @Test
     fun `Extended euclidian algorithm`() {
+        val tests = listOf(
+                Pair("euclid [76X^75 + 975X^4 + 4X^87] and [-432X^23 + X^8] (mod 7)", "gcd(4X⁸⁷+6X⁷⁵+2X⁴, 2X²³+X⁸) = 3X⁴ = (5X¹⁸+6X¹⁷+4X¹⁶+5X¹⁵+6X¹⁴+5X¹³+6X¹²+2X¹¹+3X¹⁰+X⁹+4X⁸+X⁶+X⁵+6X⁴+5)(4X⁸⁷+6X⁷⁵+2X⁴) + (4X⁸²+2X⁸¹+6X⁸⁰+4X⁷⁹+2X⁷⁸+4X⁷⁷+2X⁷⁶+3X⁷⁵+X⁷⁴+5X⁷³+6X⁷²+4X⁷⁰+X⁶⁹+4X⁶⁸+4X⁶⁷+2X⁶⁶+3X⁶⁵+5X⁶⁴+3X⁶²+3X⁶¹+4X⁶⁰+3X⁵⁹+5X⁵⁸+X⁵⁷+3X⁵⁶+5X⁵⁵+3X⁵⁴+5X⁵³+4X⁵²+6X⁵¹+2X⁵⁰+X⁴⁹+2X⁴⁷+2X⁴⁶+5X⁴⁵+2X⁴⁴+X⁴³+3X⁴²+2X⁴¹+X⁴⁰+2X³⁹+X³⁸+5X³⁷+4X³⁶+6X³⁵+3X³⁴+6X³²+6X³¹+X³⁰+6X²⁹+3X²⁸+2X²⁷+6X²⁶+3X²⁵+6X²⁴+3X²³+X²²+5X²¹+4X²⁰+2X¹⁹+4X¹⁷+4X¹⁶+3X¹⁵+4X¹⁴+2X¹³+6X¹²+4X¹¹+2X¹⁰+4X⁹+2X⁸+3X⁷+X⁶+5X⁵+6X⁴+5X²+5X+2)(2X²³+X⁸)")
+        )
+        replTest(tests)
+    }
 
+
+    @Test
+    fun `Congruence`() {
+        val tests = listOf(
+                Pair("[X + 1] = [2X + 2] (mod [X + 1]) (mod 5)", "true"),
+                Pair("[X + 1] = [2X + 2] (mod 5) (mod [X + 1])", "true"),
+                Pair("[21X^5 + 10X^3 + 14X] = [X^3 - X] (mod [X^2 + X + 1]) (mod 3)", "true"),
+                Pair("[21X^5 + 10X^3 + 14X] = [X^3 - X] (mod [X^2 + X + 1]) (mod 5)", "false")
+        )
+        replTest(tests)
     }
 }
