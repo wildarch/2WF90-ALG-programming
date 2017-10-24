@@ -181,7 +181,17 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
             }
         }
 
-        val result = makeResult()
+        // Modulus field.
+        var result = makeResult()
+        val field = state.field
+        val resultValue = result.value()
+        if (field != null && resultValue is Polynomial) {
+            if (!field.isElement(elements[0] as Polynomial)) {
+                val (_, remainder) = resultValue / field.polynomial
+                result = Middle(remainder)
+            }
+        }
+
         state.result = result
         return result
     }
