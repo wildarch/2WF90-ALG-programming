@@ -31,6 +31,11 @@ open class EuclidEvaluation : Evaluator {
             error("Missing 'and' keyword")
         }
 
+        ArithmeticEvaluationCreator(tree, state).create()?.evaluate()
+        if (state.modulus == null) {
+            error("Coefficient modulus not defined")
+        }
+
         // Check polynomial.
         if (pNode.type == TokenType.POLYNOMIAL && qNode.type == TokenType.POLYNOMIAL) {
             val a = Polynomial.fromNode(pNode, state.modulus!!)
