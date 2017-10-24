@@ -9,9 +9,7 @@ import group14.parser.ParseException
 import group14.parser.Parser
 import group14.parser.TokenType
 import java.io.BufferedReader
-import java.io.InputStream
 import java.io.PrintStream
-import java.nio.Buffer
 
 /**
  * Read-Eval-Print Loop
@@ -35,6 +33,13 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      */
     private var evaluationState: EvaluationState = EvaluationState(options)
 
+    /**
+     * Contains whether the input is file input or not.
+     *
+     * `true` if the input is file input, `false` if the input is standard input.
+     */
+    private val fileInput = input != System.`in`
+
     init {
         // Load lexer regex.
         regexLoader = launch {
@@ -54,13 +59,16 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      * Starts the REPL.
      */
     private fun start() {
-        if (!options.contains(Option.SKIP_INTRO))
-                introduction()
+        if (!options.contains(Option.SKIP_INTRO)) {
+            introduction()
+        }
 
         while (true) {
             val input = read() ?: break
             evaluate(input)
-            println() // No output.println otherwise not needed newlines end up in file
+
+            // No output.println otherwise not needed newlines end up in file
+            println()
         }
     }
 
@@ -70,8 +78,15 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      * @return The input the user has inputted.
      */
     private fun read(): String? {
-        print(">>> ") // No output.print otherwise not needed >>> ends up in file
-        return input.readLine()
+        // No output.print otherwise not needed >>> ends up in file
+        val read = input.readLine()
+
+        // Print input to console.
+        if (fileInput && read != null) {
+            println(">>> " + read)
+        }
+
+        return read
     }
 
     /**
