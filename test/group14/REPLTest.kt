@@ -12,7 +12,7 @@ fun replTest(input: String, expectedOutput: String) {
     val baos = ByteArrayOutputStream()
     val printStream = PrintStream(baos)
 
-    REPL(options = setOf(Option.ASCII, Option.SKIP_INTRO), input = reader.buffered(), output = printStream)
+    REPL(options = setOf(Option.SKIP_INTRO), input = reader.buffered(), output = printStream)
     val actual = baos.toString().lines().first()
     assertEquals(">>> " + expectedOutput, actual)
 }
