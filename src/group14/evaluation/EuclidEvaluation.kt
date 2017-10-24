@@ -93,10 +93,10 @@ open class EuclidEvaluation : Evaluator {
 
         val (x, y, gcd) = euclids.execute()
         val styler = if (Option.COEFFICIENT_LIST in state.options) {
-            OperationTable.FormatStyle.COEFFICIENT_LIST
+            FormatStyle.COEFFICIENT_LIST
         }
         else {
-            OperationTable.FormatStyle.PRETTY
+            FormatStyle.PRETTY
         }.styler
 
         // Print result

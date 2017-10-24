@@ -21,12 +21,7 @@ open class InputEvaluation : Evaluator {
         when (result) {
         // Special treatmet for polynomials.
             is Polynomial -> {
-                if (Option.COEFFICIENT_LIST in state.options) {
-                    output.println(result.toString())
-                }
-                else {
-                    output.println(result.toPolynomialString())
-                }
+                output.println(FormatStyle.fromOption(state.options).styler(result))
             }
         // Otherwise, just toString.
             else -> output.println(result.toString())

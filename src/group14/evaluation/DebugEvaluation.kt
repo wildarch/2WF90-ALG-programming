@@ -65,7 +65,8 @@ open class DebugEvaluation : Evaluator {
                 }
 
                 if (result != polynomial) {
-                    output.println("Input '$input' does not evaluate to '${polynomial.toPolynomialString { "" }}'!")
+                    //output.println("Input '$input' does not evaluate to '${polynomial.toPolynomialString { "" }}'!")
+                    output.println("Input '$input' does not evaluate to '${FormatStyle.fromOption(state.options)}'!")
                     continue
                 }
             }

@@ -19,10 +19,10 @@ open class ElementsEvaluation : Evaluator {
         }
 
         val style = if (Option.COEFFICIENT_LIST in state.options) {
-            OperationTable.FormatStyle.COEFFICIENT_LIST
+            FormatStyle.COEFFICIENT_LIST
         }
         else {
-            OperationTable.FormatStyle.PRETTY
+            FormatStyle.PRETTY
         }
 
         state.field!!.getElements().toList()
