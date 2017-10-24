@@ -59,7 +59,18 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 // Variables
                 previous = if (previous is Definition) {
                     state.definitions[previous.variable]?.value() as? EvaluationObject ?: throw EvaluationException("Variable ${previous.variable} has not been defined")
-                } else previous
+                }
+                else previous
+
+                // Update modulus.
+                when (previous) {
+                    is ModularInteger -> previous = ModularInteger.reduce(previous.value, state.modulus!!)
+                    is Polynomial -> previous = Polynomial(previous.coefficients
+                            .map { ModularInteger.reduce(it.value, state.modulus!!) }
+                            .toTypedArray(),
+                            state.modulus!!
+                    )
+                }
 
                 // Precedence.
                 if (operator !in operators) {
@@ -110,7 +121,18 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 // Variables
                 next = if (next is Definition) {
                     state.definitions[next.variable]?.value() as? EvaluationObject ?: throw EvaluationException("Variable ${next.variable} has not been defined")
-                } else next
+                }
+                else next
+
+                // Update modulus.
+                when (next) {
+                    is ModularInteger -> next = ModularInteger.reduce(next.value, state.modulus!!)
+                    is Polynomial -> next = Polynomial(next.coefficients
+                            .map { ModularInteger.reduce(it.value, state.modulus!!) }
+                            .toTypedArray(),
+                            state.modulus!!
+                    )
+                }
 
                 // Manage nested evaluations.
                 if (next is ArithmeticEvaluation) {
@@ -207,7 +229,18 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
         val field = state.field
         val resultValue = if (value is Definition) {
             state.definitions[value.variable]?.value() ?: throw EvaluationException("Variable '${value.variable}' has not been defined")
-        } else value
+        }
+        else value
+
+        // Update modulus.
+        when (resultValue) {
+            is ModularInteger -> result = makeResult(ModularInteger.reduce(resultValue.value, state.modulus!!))
+            is Polynomial -> result = makeResult(Polynomial(resultValue.coefficients
+                    .map { ModularInteger.reduce(it.value, state.modulus!!) }
+                    .toTypedArray(),
+                    state.modulus!!
+            ))
+        }
 
         if (field != null && resultValue is Polynomial) {
             if (!field.isElement(elements[0] as Polynomial)) {
