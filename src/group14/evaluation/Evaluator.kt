@@ -41,6 +41,7 @@ interface Evaluator {
                 "findirreducibles", "irreducibles", "findirr" -> FindIrreduciblesEvaluation()
                 "elements", "elts" -> ElementsEvaluation()
                 "parsetree", "parse", "tree", "pt" -> ParsetreeEvaluation()
+                "clearfield", "clear", "cf", "cl" -> ClearFieldEvaluation()
                 "exit" -> ExitEvaluation()
                 "help" -> HelpEvaluation()
                 "debug" -> DebugEvaluation()
