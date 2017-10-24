@@ -51,8 +51,19 @@ class PolynomialIntegration {
     @Test
     fun division() {
         val tests = listOf(
-                Pair("[76X^75 + 975X^4 + 4X^87] / [-432X^23 + X^8] (mod 7)", "WRONG ANSWER!")
+                // Quotient
+                Pair("[76X^75 + 975X^4 + 4X^87] / [-432X^23 + X^8] (mod 7)", "2X⁶⁴+3X⁵²+6X⁴⁹+2X³⁷+4X³⁴+6X²²+5X¹⁹+4X⁷+X⁴ (ℤ/7ℤ)"),
+                Pair("[6X^5 + 6X^3 + 9X^2 + 6X] / [9X^6 + 16X^3 + 3] (mod 17)", "0 (ℤ/17ℤ)"),
+                // Remainder
+                Pair("[76X^75 + 975X^4 + 4X^87] % [-432X^23 + X^8] (mod 7)", "3X¹⁵+6X¹²+2X⁴ (ℤ/7ℤ)"),
+                Pair("[6X^5 + 6X^3 + 9X^2 + 6X] % [9X^6 + 16X^3 + 3] (mod 17)", "6X⁵+6X³+9X²+6X (ℤ/17ℤ)")
+
         )
         replTest(tests)
+    }
+
+    @Test
+    fun `Extended euclidian algorithm`() {
+
     }
 }
