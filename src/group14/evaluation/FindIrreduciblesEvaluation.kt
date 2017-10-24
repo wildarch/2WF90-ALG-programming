@@ -1,14 +1,13 @@
 package group14.evaluation
 
+import FormatStyle
 import group14.Option
 import group14.TaskState
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
-import group14.integer.mod
 import group14.launch
 import group14.parser.Parser
 import group14.parser.TokenType
 import group14.polynomial.IrreducibleGenerator
-import group14.polynomial.Polynomial
 import group14.polynomial.PolynomialStyler
 import java.io.PrintStream
 
