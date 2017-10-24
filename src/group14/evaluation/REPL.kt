@@ -9,6 +9,7 @@ import group14.parser.ParseException
 import group14.parser.Parser
 import group14.parser.TokenType
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.PrintStream
 
 /**
@@ -16,7 +17,7 @@ import java.io.PrintStream
  *
  * @author Ruben Schellekens
  */
-open class REPL constructor(val options: Set<Option> = setOf(), val input: BufferedReader = System.`in`.bufferedReader(), val output: PrintStream = System.out) {
+open class REPL constructor(val options: Set<Option> = setOf(), val input: InputStream = System.`in`, val output: PrintStream = System.out) {
 
     /**
      * loads the lexer regex asynchronously to prevent the user from noticing the loading time.
@@ -39,6 +40,8 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      * `true` if the input is file input, `false` if the input is standard input.
      */
     private val fileInput = input != System.`in`
+
+    private val inputReader = input.bufferedReader()
 
     init {
         // Load lexer regex.
@@ -79,11 +82,12 @@ open class REPL constructor(val options: Set<Option> = setOf(), val input: Buffe
      */
     private fun read(): String? {
         // No output.print otherwise not needed >>> ends up in file
-        val read = input.readLine()
+        print(">>> ")
+        val read = inputReader.readLine()
 
         // Print input to console.
         if (fileInput && read != null) {
-            println(">>> " + read)
+            println(read)
         }
 
         return read

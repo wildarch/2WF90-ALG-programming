@@ -36,7 +36,7 @@ fun main(args: Array<String>) {
         outputStream.add(printStream)
     }
 
-    REPL(options, inputStream.bufferedReader(), PrintStream(outputStream))
+    REPL(options, inputStream, PrintStream(outputStream))
 }
 
 fun Any?.println() = println(this)

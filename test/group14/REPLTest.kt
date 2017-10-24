@@ -16,7 +16,7 @@ class REPLTest {
             val baos = ByteArrayOutputStream()
             val printStream = PrintStream(baos)
 
-            REPL(options = setOf(Option.ASCII, Option.SKIP_INTRO), input = reader.buffered(), output = printStream)
+            REPL(options = setOf(Option.ASCII, Option.SKIP_INTRO), input = System.`in`, output = printStream)
             val actual = baos.toString().lines().first()
             assertEquals(expectedOutput, actual)
         }
