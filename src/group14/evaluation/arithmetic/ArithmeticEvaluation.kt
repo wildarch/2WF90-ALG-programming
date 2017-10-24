@@ -137,20 +137,39 @@ open class ArithmeticEvaluation(val state: EvaluationState, val elements: Mutabl
                 val operatorObject = operator as? TokenType.Operator ?: throw EvaluationException("$operator is not an operator")
 
                 try {
-                    elements[i] = if (left is Polynomial && right is Polynomial) {
-                        operatorObject.polyFunction(left, right)
+                    // Calculate OUTSIDE field.
+                    if (state.field == null) {
+                        elements[i] = if (left is Polynomial && right is Polynomial) {
+                            operatorObject.polyFunction(left, right)
+                        }
+                        else if (left is ModularInteger && right is ModularInteger) {
+                            operatorObject.intFunction(left, right)
+                        }
+                        else if (left is Polynomial && right is ModularInteger) {
+                            operator.polyIntFunction(left, right)
+                        }
+                        else if (left is ModularInteger && right is Polynomial) {
+                            operator.intPolyFunction(left, right)
+                        }
+                        else {
+                            error("Wrong evaluation case: Left=$left & right=$right")
+                        }
                     }
-                    else if (left is ModularInteger && right is ModularInteger) {
-                        operatorObject.intFunction(left, right)
-                    }
-                    else if (left is Polynomial && right is ModularInteger) {
-                        operator.polyIntFunction(left, right)
-                    }
-                    else if (left is ModularInteger && right is Polynomial) {
-                        operator.intPolyFunction(left, right)
-                    }
+                    // Calculate INSIDE field.
                     else {
-                        error("Wrong evaluation case: Left=$left & right=$right")
+                        val field = state.field!!
+                        elements[i] = if (left is Polynomial && right is Polynomial) {
+                            operatorObject.fieldPolyFunction(field, left, right)
+                        }
+                        else if (left is Polynomial && right is ModularInteger) {
+                            operator.fieldPolyIntFunction(field, left, right)
+                        }
+                        else if (left is ModularInteger && right is Polynomial) {
+                            operator.fieldIntPolyFunction(field, left, right)
+                        }
+                        else {
+                            error("Wrong evaluation case: Left=$left & right=$right (field $field)")
+                        }
                     }
                 }
                 catch (exception: Exception) {

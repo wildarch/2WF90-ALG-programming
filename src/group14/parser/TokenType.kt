@@ -1,6 +1,7 @@
 package group14.parser
 
 import group14.evaluation.arithmetic.EvaluationObject
+import group14.field.FiniteField
 import group14.integer.ModularInteger
 import group14.polynomial.Polynomial
 import java.util.regex.Pattern
@@ -62,7 +63,10 @@ sealed class TokenType {
             val intFunction: (ModularInteger, ModularInteger) -> ModularInteger,
             val polyFunction: (Polynomial, Polynomial) -> Polynomial,
             val polyIntFunction: (Polynomial, ModularInteger) -> Polynomial,
-            val intPolyFunction: (ModularInteger, Polynomial) -> Polynomial
+            val intPolyFunction: (ModularInteger, Polynomial) -> Polynomial,
+            val fieldPolyFunction: (FiniteField, Polynomial, Polynomial) -> Polynomial,
+            val fieldPolyIntFunction: (FiniteField, Polynomial, ModularInteger) -> Polynomial,
+            val fieldIntPolyFunction: (FiniteField, ModularInteger, Polynomial) -> Polynomial
     ) : TokenType(ordinal, operator), EvaluationObject
 
     abstract class UnaryOperator(
@@ -75,7 +79,10 @@ sealed class TokenType {
             { _, _ -> error("Unary operator doesn't support i,i->i functions.") },
             { _, _ -> error("Unary operator doesn't support p,p->p functions") },
             { _, _ -> error("Unary operator doesn't support p,i->p functions") },
-            { _, _ -> error("Unary operator doesn't support p,i->p functions") }
+            { _, _ -> error("Unary operator doesn't support p,i->p functions") },
+            { _, _, _ -> error("Unary operator doesn't support f,p,p->p functions") },
+            { _, _, _ -> error("Unary operator doesn't support f,p,i->p functions") },
+            { _, _, _ -> error("Unary operator doesn't support f,p,i->p functions") }
     )
 
     abstract class ParseBlock : TokenType(-1, "")
@@ -100,43 +107,65 @@ sealed class TokenType {
             { a, b -> a + b },
             { a, b -> a + b },
             { a, b -> a + b },
-            { a, b -> b + a }
+            { a, b -> b + a },
+            { f, p, q -> f.add(p, q) },
+            { f, p, b -> f.add(p, Polynomial(b)) },
+            { f, a, q -> f.add(Polynomial(a), q) }
+
     )
     object SUBTRACT : Operator(8, "-",
             { a, b -> a - b },
             { a, b -> a - b },
             { a, b -> a - b },
-            { i, p -> p.times(ModularInteger.reduce(-1, i.modulus)) + i }
+            { i, p -> p.times(ModularInteger.reduce(-1, i.modulus)) + i },
+            { f, p, q -> f.subtract(p, q) },
+            { f, p, b -> f.subtract(p, Polynomial(b)) },
+            { f, a, q -> f.subtract(Polynomial(a), q) }
     )
     object MULTIPLY : Operator(9, "\\*",
             { a, b -> a * b },
             { a, b -> a * b },
             { a, b -> a * b },
-            { a, b -> b * a }
+            { a, b -> b * a },
+            { f, p, q -> f.multiply(p, q) },
+            { f, p, b -> f.multiply(p, Polynomial(b)) },
+            { f, a, q -> f.multiply(Polynomial(a), q) }
     )
     object POWER : Operator(10, "\\^",
             { _, _ -> error("Operation not supported.") },
             { _, _ -> error("Operation not supported.") },
             { _, _ -> error("Operation not supported.") },
-            { _, _ -> error("Operation not supported.") }
+            { _, _ -> error("Operation not supported.") },
+            { _, _, _ -> error("Operation not supported.") },
+            { _, _, _ -> error("Operation not supported.") },
+            { _, _, _ -> error("Operation not supported.") }
     )
     object DIVIDE : Operator(11, "/",
             { a, b -> a / b },
             { a, b -> (a / b).first },
             { a, b -> a * b.inverse() },
-            { a, b -> (Polynomial(a) / b).first }
+            { a, b -> (Polynomial(a) / b).first },
+            { f, p, q -> f.divide(p, q) },
+            { f, p, b -> f.divide(p, Polynomial(b)) },
+            { f, a, q -> f.divide(Polynomial(a), q) }
     )
     object REMAINDER : Operator(12, "%",
             { a, b -> ModularInteger.reduce(a.value % b.value, a.modulus) },
             { a, b -> (a / b).second },
             { a, b -> (a / Polynomial(arrayOf(b), a.modulus)).second },
-            { a, b -> (Polynomial(a) / b).first }
+            { a, b -> (Polynomial(a) / b).first },
+            { f, _, _ -> error("Operation not supported for field $f.") },
+            { f, _, _ -> error("Operation not supported for field $f.") },
+            { f, _, _ -> error("Operation not supported for field $f.") }
     )
     object EQUALS : Operator(13, "=",
             { _, _ -> error("EQUALS not supported for i,i") },
             { _, _ -> error("EQUALS not supported for p,p") },
             { _, _ -> error("EQUALS not supported for p,i") },
-            { _, _ -> error("EQUALS not supported for i,p") }
+            { _, _ -> error("EQUALS not supported for i,p") },
+            { _, _, _ -> error("Unary operator doesn't support f,p,p->p functions") },
+            { _, _, _ -> error("Unary operator doesn't support f,p,i->p functions") },
+            { _, _, _ -> error("Unary operator doesn't support f,p,i->p functions") }
     )
     object PARAMETER : TokenType(14, "[xX]")
     object PREVIOUS : TokenType(15, "_")
