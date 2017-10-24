@@ -11,8 +11,6 @@ class REPLTest {
 
         @JvmStatic
         fun replTest(input: String, expectedOutput: String) {
-            val reader = input.reader()
-
             val baos = ByteArrayOutputStream()
             val printStream = PrintStream(baos)
 
