@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import kotlin.test.assertEquals
 
+
 fun replTest(input: String, expectedOutput: String) {
     val baos = ByteArrayOutputStream()
     val printStream = PrintStream(baos)
@@ -18,5 +19,5 @@ fun replTest(input: String, expectedOutput: String) {
 }
 
 fun replTest(tests: List<Pair<String, String>>) =
-        tests.forEach({ (a, b) -> replTest(a, b)})
+        tests.forEach({ (a, b) -> replTest(a, b) })
 
