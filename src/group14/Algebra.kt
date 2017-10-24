@@ -2,13 +2,11 @@ package group14
 
 import group14.evaluation.REPL
 import java.io.File
-import java.io.InputStream
 import java.io.PrintStream
 
 fun main(args: Array<String>) {
-
     var inputStream = System.`in`
-    var outputStream = MultiOutputStream(System.out)
+    val outputStream = MultiOutputStream(System.out)
 
     // Read command line flags.
     val options = args
