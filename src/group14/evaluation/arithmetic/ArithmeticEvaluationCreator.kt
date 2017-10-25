@@ -58,6 +58,7 @@ open class ArithmeticEvaluationCreator(val tree: ASTNode, val state: EvaluationS
 
     private fun scanMeta() {
         scanMod()
+        scanPolynomialMod()
         scanField()
     }
 
@@ -77,8 +78,7 @@ open class ArithmeticEvaluationCreator(val tree: ASTNode, val state: EvaluationS
                     val polynomial = Polynomial.fromNode(value, state.modulus!!)
                     try {
                         state.field = FiniteField(polynomial)
-                    }
-                    catch (illegalArgument: IllegalArgumentException) {
+                    } catch (illegalArgument: IllegalArgumentException) {
                         throw EvaluationException("$polynomial is reducible", illegalArgument)
                     }
                 }
@@ -87,7 +87,7 @@ open class ArithmeticEvaluationCreator(val tree: ASTNode, val state: EvaluationS
     }
 
     private fun scanMod() {
-        for (element in tree.children) {
+        treeloop@ for (element in tree.children) {
             if (element.type != TokenType.META || element.children[0].type != TokenType.MODKEYWORD) {
                 continue
             }
@@ -101,14 +101,32 @@ open class ArithmeticEvaluationCreator(val tree: ASTNode, val state: EvaluationS
                             throw EvaluationException("$prime is not a prime number")
                         }
                         state.modulus = prime
-                    }
-                    catch (numberFormatException: NumberFormatException) {
+                    } catch (numberFormatException: NumberFormatException) {
                         throw EvaluationException("Could not parse ${value.text}")
                     }
                 }
                 TokenType.POLYNOMIAL -> {
+                    continue@treeloop
+                }
+                else -> throw EvaluationException("Expected NUMBER or POLYNOMIAL in mod meta, got ${value.type}")
+            }
+        }
+    }
+
+    private fun scanPolynomialMod() {
+        treeloop@ for (element in tree.children) {
+            if (element.type != TokenType.META || element.children[0].type != TokenType.MODKEYWORD) {
+                continue
+            }
+
+            val value = element.children[1]
+            when (value.type) {
+                TokenType.NUMBER -> {
+                    continue@treeloop
+                }
+                TokenType.POLYNOMIAL -> {
                     if (state.modulus == null) {
-                        throw EvaluationException("Coefficient modulus must be defined first")
+                        throw EvaluationException("Coefficient modulus must be defined")
                     }
                     state.polynomialModulus = Polynomial.fromNode(value, state.modulus!!)
                 }

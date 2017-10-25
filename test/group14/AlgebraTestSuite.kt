@@ -1,6 +1,7 @@
 package group14
 
 import group14.field.AdditionTableTest
+import group14.field.FiniteFieldIntegration
 import group14.field.FiniteFieldTest
 import group14.field.MultiplicationTableTest
 import group14.integer.ModularIntegerTest
@@ -32,6 +33,7 @@ import org.junit.runners.Suite
         AdditionTableTest::class,
         MultiplicationTableTest::class,
         ConcurrencyTest::class,
-        PolynomialIntegration::class
+        PolynomialIntegration::class,
+        FiniteFieldIntegration::class
 )
 object AlgebraTestSuite
