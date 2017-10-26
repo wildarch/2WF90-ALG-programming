@@ -399,7 +399,7 @@ class Parser(val lexer: Lexer) {
     private fun error(message: String): Nothing {
         val item = lexer.current()
         val column = lexer.column()
-        throw ParseException("$message; got <${item.value}> (col:$column).", column)
+        throw ParseException("$message; got <${item.value}> [${item.type}] (col:$column).", column)
     }
 
     /**
@@ -463,6 +463,18 @@ class Parser(val lexer: Lexer) {
             val list = ArrayList<ASTNode>()
             allChildren(list)
             return list
+        }
+
+        /**
+         * Creates a subtree of children `firstChild`..`lastChild`.
+         */
+        fun subTree(firstChild: Int, lastChild: Int): ASTNode {
+            val children = this.children.subList(firstChild, lastChild + 1)
+            children[0].previous = null
+            children[children.size - 1].next = null
+            val root = ASTNode(null, "", ROOT, null, null, children)
+            children.forEach { it.parent = root }
+            return root
         }
 
         /**

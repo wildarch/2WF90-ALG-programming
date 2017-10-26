@@ -1,6 +1,7 @@
 package group14.evaluation.arithmetic
 
 import group14.Primes
+import group14.evaluation.Definition
 import group14.evaluation.EvaluationException
 import group14.evaluation.EvaluationState
 import group14.field.FiniteField
@@ -49,6 +50,7 @@ open class ArithmeticEvaluationCreator(val tree: ASTNode, val state: EvaluationS
                     val evaluation = createEvaluation(child.children) ?: continue@outer
                     stack.add(evaluation)
                 }
+                TokenType.KEYWORD -> stack.add(Definition(child.text))
                 is EvaluationObject -> stack.add(child.type as EvaluationObject)
             }
         }

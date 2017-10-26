@@ -1,7 +1,9 @@
 package group14.evaluation
 
+import FormatStyle
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
 import group14.integer.IntegerEuclids
+import group14.integer.ModularInteger
 import group14.parser.Parser
 import group14.parser.TokenType
 import group14.polynomial.Polynomial
@@ -35,30 +37,46 @@ open class EuclidEvaluation : Evaluator {
         }
 
         // Check polynomial.
-        if (pNode.type == TokenType.POLYNOMIAL && qNode.type == TokenType.POLYNOMIAL) {
-            val a = Polynomial.fromNode(pNode, state.modulus!!)
-            val b = Polynomial.fromNode(qNode, state.modulus!!)
+        if (pNode.isPolynomial() && qNode.isPolynomial()) {
+            val a = if (pNode.isVar()) {
+                val name = pNode.text
+                val result = state.definitions[name]?.value() ?: error("Variable '$name' has not been defined")
+                result as? Polynomial ?: Polynomial(result as ModularInteger)
+            }
+            else {
+                Polynomial.fromNode(pNode, state.modulus!!)
+            }
+
+            val b = if (qNode.isVar()) {
+                val name = qNode.text
+                val result = state.definitions[name]?.value() ?: error("Variable '$name' has not been defined")
+                result as? Polynomial ?: Polynomial(result as ModularInteger)
+            }
+            else {
+                Polynomial.fromNode(qNode, state.modulus!!)
+            }
+
             polynomialEuclid(tree, output, state, a, b)
             return
         }
-        else if (pNode.type != TokenType.POLYNOMIAL && qNode.type == TokenType.POLYNOMIAL) {
+        else if (!pNode.isPolynomial() && qNode.isPolynomial()) {
             error("p(x) must be a polynomial, got $pNode")
         }
-        else if (qNode.type != TokenType.POLYNOMIAL && pNode.type == TokenType.POLYNOMIAL) {
+        else if (!qNode.isPolynomial() && pNode.isPolynomial()) {
             error("q(x) must be a polynomial, got $qNode")
         }
 
         // Check integers.
-        if (pNode.type == TokenType.NUMBER && qNode.type == TokenType.NUMBER) {
+        if (pNode.isNumber() && qNode.isNumber()) {
             val a = pNode.text.toLong()
             val b = qNode.text.toLong()
             integerEuclid(output, state, a, b)
             return
         }
-        else if (pNode.type == TokenType.NUMBER && qNode.type != TokenType.NUMBER) {
+        else if (pNode.isNumber() && !qNode.isNumber()) {
             error("q must be a number, got $qNode")
         }
-        else if (qNode.type == TokenType.NUMBER && pNode.type == TokenType.NUMBER) {
+        else if (qNode.isNumber() && !pNode.isNumber()) {
             error("p must be a number, got $pNode")
         }
 
@@ -104,6 +122,13 @@ open class EuclidEvaluation : Evaluator {
         val stringX = styler(x)
         val stringY = styler(y)
         val stringGCD = styler(gcd)
-        output.println("gcd($stringA, $stringB) = $stringGCD = ($stringX)($stringA) + ($stringY)($stringB)")
+        output.println(
+                "gcd($stringA, $stringB) = $stringGCD = ($stringX)($stringA) + ($stringY)($stringB)"
+                        .replace(Regex(" \\([ℤZ]/\\d+[ℤZ]\\)"), "")
+        )
     }
+
+    private fun Parser.ASTNode.isNumber() = type == TokenType.NUMBER
+    private fun Parser.ASTNode.isPolynomial() = type == TokenType.POLYNOMIAL || isVar()
+    private fun Parser.ASTNode.isVar() = type == TokenType.KEYWORD
 }

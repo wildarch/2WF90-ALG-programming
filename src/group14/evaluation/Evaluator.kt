@@ -29,6 +29,9 @@ interface Evaluator {
             }
 
             val firstChild = rootNode.children[0]
+            if (firstChild.type == TokenType.DEFKEYWORD) {
+                return DefinitionEvaluation()
+            }
             if (firstChild.type != TokenType.KEYWORD) {
                 return InputEvaluation()
             }
@@ -46,7 +49,7 @@ interface Evaluator {
                 "exit" -> ExitEvaluation()
                 "help" -> HelpEvaluation()
                 "debug" -> DebugEvaluation()
-                else -> ErrorEvaluation(firstChild.text)
+                else -> InputEvaluation()
             }
         }
     }
