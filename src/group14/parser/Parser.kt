@@ -168,7 +168,7 @@ class Parser(val lexer: Lexer) {
                     if (previous?.type == NUMBER) {
                         error("Cannot have two consecutive numbers")
                     }
-                    if (previous?.type == OPENBRACKET) {
+                    if (previous?.type == OPENBRACKET && !next.value.startsWith("-")) {
                         error("Polynomial must not be followed by a number")
                     }
 

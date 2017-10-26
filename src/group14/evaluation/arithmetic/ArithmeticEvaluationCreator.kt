@@ -55,6 +55,10 @@ open class ArithmeticEvaluationCreator(val tree: ASTNode, val state: EvaluationS
             }
         }
 
+        if (stack.size == 2 && stack[1] is ModularInteger) {
+            stack.add(1, TokenType.ADD)
+        }
+
         return if (stack.isEmpty()) null else ArithmeticEvaluation(state, stack)
     }
 
