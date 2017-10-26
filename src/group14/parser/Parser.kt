@@ -378,7 +378,7 @@ class Parser(val lexer: Lexer) {
      */
     private fun checkInvalidOperators() {
         if (lexer.lexedTokens() > 2) {
-            val behindType = lexer.lookBehindNoWhitespace().type
+            val behindType = lexer.lookBehindNoWhitespace()?.type
             val currentType = lexer.current().type
             if (behindType !is Operator || currentType !is Operator) {
                 return

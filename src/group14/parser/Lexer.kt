@@ -54,7 +54,7 @@ open class Lexer(input: String) {
             if (token.type == WHITESPACE) {
                 whitespaceBuffer = group
             }
-            else if (lexedTokens() > 1 && lookBehind().type != WHITESPACE) {
+            else if (lexedTokens() > 1 && lookBehind()?.type != WHITESPACE) {
                 whitespaceBuffer = ""
             }
 
@@ -78,7 +78,7 @@ open class Lexer(input: String) {
     /**
      * Get the current token without advancing.
      */
-    fun current() = lookBehind(0)
+    fun current() = lookBehind(0)!!
 
     /**
      * Looks `distance` tokens behind.
@@ -86,7 +86,13 @@ open class Lexer(input: String) {
      * @throws ArrayIndexOutOfBoundsException When there is no token available.
      */
     @Throws(ArrayIndexOutOfBoundsException::class)
-    fun lookBehind(distance: Int = 1) = tokens[tokens.size - 1 - distance]
+    fun lookBehind(distance: Int = 1): Token? {
+        val index = tokens.size - 1 - distance
+        if (index !in 0 until tokens.size) {
+            return null
+        }
+        return tokens[index]
+    }
 
     /**
      * Looks `distance` tokens behind and if it found whitespace, it will look one further back.
@@ -94,10 +100,10 @@ open class Lexer(input: String) {
      * @throws ArrayIndexOutOfBoundsException When there is no token available.
      */
     @Throws(ArrayIndexOutOfBoundsException::class)
-    fun lookBehindNoWhitespace(distance: Int = 1): Token {
+    fun lookBehindNoWhitespace(distance: Int = 1): Token? {
         var behind = lookBehind(distance)
         var i = 1
-        while (behind.type == WHITESPACE) {
+        while (behind?.type == WHITESPACE) {
             behind = lookBehind(distance + i)
             i++
         }
