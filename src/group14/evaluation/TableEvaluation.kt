@@ -1,5 +1,6 @@
 package group14.evaluation
 
+import FormatStyle
 import group14.Option
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
 import group14.field.AdditionTable
@@ -37,7 +38,7 @@ open class TableEvaluation : Evaluator {
         val style = FormatStyle.fromOptions(state.options)
 
         val tableName = table.javaClass.simpleName.replace("Table", " table")
-        val polynomial = style.styler(state.field!!.polynomial)
+        val polynomial = style.styler(state.field!!.polynomial).substringBefore("(").trim()
         val fieldSymbol = if (Option.UNICODE in state.options) "\uD835\uDD3D" else "F"
         val field = "$fieldSymbol${state.modulus}/($polynomial)"
         output.println("$tableName of $field")
