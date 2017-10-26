@@ -31,7 +31,7 @@ open class EuclidEvaluation : Evaluator {
             error("Missing 'and' keyword")
         }
 
-        ArithmeticEvaluationCreator(tree, state).create()?.evaluate()
+        ArithmeticEvaluationCreator(tree, state).create()
         if (state.modulus == null) {
             error("Coefficient modulus not defined")
         }
