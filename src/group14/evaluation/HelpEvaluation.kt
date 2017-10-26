@@ -15,6 +15,8 @@ open class HelpEvaluation : Evaluator {
         output.println("- Outputs the result of the expression modulo p.")
         output.println("(mod p) (field d(X))")
         output.println("- Start working in field Fp/(d(x)).")
+        output.println("def <variable> = [expression]")
+        output.println("- Assigns the value of the expression to the given variable (all lowercase).")
         output.println("table <add|multiply> (mod p) (field (d(X))")
         output.println("- Creates a addition/multiplication table of field Z/pZ[X]/(q(X)).")
         output.println("clearfield")
