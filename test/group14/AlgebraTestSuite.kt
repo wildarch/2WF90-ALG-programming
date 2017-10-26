@@ -17,23 +17,23 @@ import org.junit.runners.Suite
  */
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-        PolynomialConverterTest::class,
+        ConcurrencyTest::class,
+        FuzzTester::class,
+        TableTest::class,
         UtilKtTest::class,
+        AdditionTableTest::class,
+        FiniteFieldIntegration::class,
         FiniteFieldTest::class,
+        MultiplicationTableTest::class,
         ModularIntegerTest::class,
-        PolynomialArithmetic::class,
-        PolynomialTest::class,
         LexerTest::class,
         ParserTest::class,
-        ConcurrencyTest::class,
-        PolynomialLongDivision::class,
-        PolynomialIrreducible::class,
+        PolynomialConverterTest::class,
+        PolynomialArithmetic::class,
         PolynomialEuclidsTest::class,
-        TableTest::class,
-        AdditionTableTest::class,
-        MultiplicationTableTest::class,
-        ConcurrencyTest::class,
         PolynomialIntegration::class,
-        FiniteFieldIntegration::class
+        PolynomialIrreducible::class,
+        PolynomialLongDivision::class,
+        PolynomialTest::class
 )
 object AlgebraTestSuite
