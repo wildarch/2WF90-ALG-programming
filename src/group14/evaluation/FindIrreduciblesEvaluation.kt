@@ -1,7 +1,6 @@
 package group14.evaluation
 
 import FormatStyle
-import group14.Option
 import group14.TaskState
 import group14.evaluation.arithmetic.ArithmeticEvaluationCreator
 import group14.launch
@@ -47,12 +46,7 @@ open class FindIrreduciblesEvaluation : Evaluator {
             return
         }
 
-        val style = if (Option.COEFFICIENT_LIST in state.options) {
-            FormatStyle.COEFFICIENT_LIST
-        }
-        else {
-            FormatStyle.PRETTY
-        }
+        val style = FormatStyle.fromOptions(state.options)
 
         // Parse arguments.
         val amountNode = tree.children[1]
