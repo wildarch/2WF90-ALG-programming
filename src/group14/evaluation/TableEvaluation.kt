@@ -38,7 +38,7 @@ open class TableEvaluation : Evaluator {
 
         val tableName = table.javaClass.simpleName.replace("Table", " table")
         val polynomial = style.styler(state.field!!.polynomial)
-        val fieldSymbol = if (Option.COEFFICIENT_LIST in state.options) "F" else "\uD835\uDD3D"
+        val fieldSymbol = if (Option.UNICODE in state.options) "\uD835\uDD3D" else "F"
         val field = "$fieldSymbol${state.modulus}/($polynomial)"
         output.println("$tableName of $field")
         output.println(table.format(2, style))
